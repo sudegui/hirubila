@@ -84,16 +84,16 @@ public class Inbox extends BaseEntity {
 	private String content;
 	
 	@Persistent
-	@NotNull(message="Type blank")
+	@NotNull(message="{validation.error.null}")
 	private TYPE type;
 	
 	@Persistent
-	@NotNull(message="Type blank")
+	@NotNull(message="{validation.error.null}")
 	private USER user;
 	
 	@Persistent
-	@NotNull(message="Mail blank")
-	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="Bad mail")
+	@NotNull(message="{validation.error.null}")
+	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="{validation.error.regexp.field.mail}")
 	private String from;
 	
 	@Persistent
@@ -106,7 +106,7 @@ public class Inbox extends BaseEntity {
 	private Boolean active = Boolean.TRUE;
 	
 	@Persistent
-	@NotNull(message="ORIGIN blank")
+	@NotNull(message="{validation.error.null}")
 	private ORIGIN origin = ORIGIN.REQUEST;
 	
 	@Persistent

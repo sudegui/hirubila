@@ -118,6 +118,9 @@ public class RegionController extends BaseModelController {
 					locale, ordering, paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("order", ordering);
+			
+			model.addAttribute("provincesMap", this.getProvincesMap());
+			model.addAttribute("regionsMap", this.getRegionsMap());
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -127,10 +130,22 @@ public class RegionController extends BaseModelController {
 	
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value="/list", method=RequestMethod.GET)
-	public String list(Model model, Locale locale) {
+	public String list(Model model, Locale locale,
+			@RequestParam(defaultValue="1", required=false) Integer page, 
+			@RequestParam(defaultValue="", required=false) String order) {
 		try {
-			model.addAttribute("regions", this.serviceLocator.getTerritorialService().getAllRegions(locale));
-			model.addAttribute("regionsMap", this.getRegionsMap());
+			String ordering = order != null && !("").equals(order) ? order : "name";
+			PageManager<Region> paginator = new PageManager<Region>();
+			paginator.setOffset(this.getPageSize());
+			paginator.setUrlBase("/" + locale.getLanguage() + 
+					"/territorial/region/list");
+			paginator.setStart((page-1)*paginator.getOffset());
+			paginator.setSize(this.serviceLocator.getTerritorialService().countRegions());
+			paginator.setCollection(this.serviceLocator.getTerritorialService().getRegions(locale, ordering, paginator.getStart(), paginator.getEnd()));
+			model.addAttribute("paginator", paginator);
+			model.addAttribute("order", ordering);
+			
+			model.addAttribute("provincesMap", this.getProvincesMap());
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			return "common.error";

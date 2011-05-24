@@ -154,7 +154,7 @@ new TWTR.Widget({
     				<p>${result.description}</p>
                 	<div class="barra_enlaces"> 
                 		<p>                               
-		                   <a href="<c:url value='/${rc.locale.language}/search/results/send?link=${result.link}'/>" rel="shadowbox;height=450;width=450" class="envia_mail" target="_blank"><fmt:message key="search.result.sendByEmail"/></a> - 
+		                   <a href="<c:url value='/${rc.locale.language}/search/results/send?link=${result.link}'/>" rel="shadowbox;height=550;width=500" class="envia_mail" target="_blank"><fmt:message key="search.result.sendByEmail"/></a> - 
 		                   <a id="link_compartir_${status.count}" class="comparte_link" onClick="muestra_oculta('${status.count}')" ><fmt:message key="search.result.share"/></a> - 
 		                   <a href="<c:url value='/${rc.locale.language}/search/results/error'/>" rel="shadowbox;height=302;width=450" ><fmt:message key="search.result.send.error"/></a>
               			</p>
@@ -215,7 +215,7 @@ new TWTR.Widget({
 	    	</ul>
         </div>
         
-      <p class="txt_mediador"><fmt:message key="search.footer.message.part1"/> <a href="#"><fmt:message key="search.footer.message.part2"/></a>.</p>
+      <p class="txt_mediador"><fmt:message key="search.footer.message.part1"/> <a href="<c:url value='/${rc.locale.language}/search/mediators'/>"><fmt:message key="search.footer.message.part2"/></a>.</p>
     </div>
 </div>
 </body>

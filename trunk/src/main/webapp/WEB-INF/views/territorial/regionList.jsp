@@ -4,6 +4,7 @@
 <%@ include file="/WEB-INF/views/common/options_menu.jsp"%>		
 		<h1><fmt:message key="territorial.region.section.header"/> (<fmt:message key="message.total.upper"/> ${fn:length(regions)})</h1>
 		
+		<%@ include file="/WEB-INF/views/common/paginator-tables.jsp"%>	
 		
 		<table>
 			<tr>
@@ -11,10 +12,10 @@
 				<th><fmt:message key="region.fields.province"/></th>
 				<th><fmt:message key="generic.options.message"/></th>
 			</tr>
-			<c:forEach items="${regions}" var="region" varStatus="counter">
+			<c:forEach items="${paginator.collection}" var="region" varStatus="counter">
 				<tr>
 					<td>${region.name}</td>
-					<td>${provincesMap[rc.locale.language][region.province].name}</td>		
+					<td>${provincesMap[rc.locale.language][region.province].name}</td>
 					<td>
 						<div id="menu-item-${counter.count}" class="options-menu">		
 							<a class="expand-menu" href="#menu-item-${counter.count}"><fmt:message key="generic.options.message"/></a>

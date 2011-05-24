@@ -18,7 +18,8 @@ public interface I18nTerritorialService {
 	Province getProvince(Long id, Locale locale) throws Exception;
 	void save(Province province, Locale locale) throws Exception;
 	void delete(Province province, Locale locale) throws Exception;
-	
+	Collection<Province> getProvinces(Locale locale, String ordering, int init, int end) throws Exception;	
+	long countProvinces();
 	
 	/*Region's methods. */
 	Region createRegion();
@@ -28,7 +29,10 @@ public interface I18nTerritorialService {
 	List<Region> getRegionsByProvince(Long idProvince, Locale locale) throws Exception;
 	void save(Region region, Locale locale) throws Exception;
 	void delete(Region region, Locale locale) throws Exception;
-		
+	Collection<Region> getRegionsByProvince(Long idProvince, Locale locale, String ordering, int init, int end) throws Exception;	
+	Collection<Region> getRegions(Locale locale, String ordering, int init, int end) throws Exception;	
+	long countRegions();
+	long countRegionsByProvince(Long provinceId);
 	
 	/* Town's methods. */
 	Town createTown();
@@ -39,10 +43,12 @@ public interface I18nTerritorialService {
 	Collection<Town> getTowns(Locale locale, String ordering, int init, int end) throws Exception;
 	Collection<Town> getTownsByRegion(Long idRegion, Locale locale, String ordering) throws Exception;
 	Collection<Town> getTownsByRegion(Long idRegion, Locale locale, String ordering, int init, int end) throws Exception;
+	Collection<Town> getTownsByProvince(Long idRegion, Locale locale, String ordering, int init, int end) throws Exception;
 	Collection<Town> getTownsByProvince(Long idProvince, Locale locale) throws Exception;
 	List<Town> findTownsByName(String name, Locale locale);
 	
 	long countTowns();
 	long countTownsByRegion(Long regionId);
+	long countTownsByProvince(Long regionId);
 	
 }

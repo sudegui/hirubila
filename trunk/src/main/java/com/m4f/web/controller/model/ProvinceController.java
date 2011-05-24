@@ -14,7 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.m4f.business.domain.extended.Province;
+import com.m4f.business.domain.extended.Region;
+import com.m4f.business.domain.extended.Town;
+import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 
 
@@ -87,10 +92,23 @@ public class ProvinceController extends BaseModelController {
 	
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value="/{provinceId}/regions", method=RequestMethod.GET)
-	public String getRegions(@PathVariable Long provinceId, Model model, Locale locale) {
+	public String getRegions(@PathVariable Long provinceId, Model model, Locale locale,
+			@RequestParam(defaultValue="1", required=false) Integer page, 
+			@RequestParam(defaultValue="", required=false) String order) {
 		try {
-			model.addAttribute("province", this.serviceLocator.getTerritorialService().getProvince(provinceId,locale));
-			model.addAttribute("regions", this.serviceLocator.getTerritorialService().getRegionsByProvince(provinceId, locale));
+			String ordering = order != null && !("").equals(order) ? order : "name";
+			PageManager<Region> paginator = new PageManager<Region>();
+			paginator.setOffset(this.getPageSize());
+			paginator.setUrlBase("/" + locale.getLanguage() + 
+					"/territorial/province/" +  provinceId + "/towns/");
+			paginator.setStart((page-1)*paginator.getOffset());
+			paginator.setSize(this.serviceLocator.getTerritorialService().countRegionsByProvince(provinceId));
+			paginator.setCollection(this.serviceLocator.getTerritorialService().getRegionsByProvince(provinceId, 
+					locale, ordering, paginator.getStart(), paginator.getEnd()));
+			model.addAttribute("paginator", paginator);
+			model.addAttribute("order", ordering);
+			
+			model.addAttribute("provincesMap", this.getProvincesMap());
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -100,10 +118,24 @@ public class ProvinceController extends BaseModelController {
 	
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value="/{provinceId}/towns", method=RequestMethod.GET)
-	public String getTowns(@PathVariable Long provinceId, Model model, Locale locale) {
+	public String getTowns(@PathVariable Long provinceId, Model model, Locale locale,
+			@RequestParam(defaultValue="1", required=false) Integer page, 
+			@RequestParam(defaultValue="", required=false) String order) {
 		try {
-			model.addAttribute("province", this.serviceLocator.getTerritorialService().getProvince(provinceId,locale));
-			model.addAttribute("towns", this.serviceLocator.getTerritorialService().getTownsByProvince(provinceId, locale));
+			String ordering = order != null && !("").equals(order) ? order : "name";
+			PageManager<Town> paginator = new PageManager<Town>();
+			paginator.setOffset(this.getPageSize());
+			paginator.setUrlBase("/" + locale.getLanguage() + 
+					"/territorial/province/" +  provinceId + "/towns/");
+			paginator.setStart((page-1)*paginator.getOffset());
+			paginator.setSize(this.serviceLocator.getTerritorialService().countTownsByProvince(provinceId));
+			paginator.setCollection(this.serviceLocator.getTerritorialService().getTownsByProvince(provinceId, 
+					locale, ordering, paginator.getStart(), paginator.getEnd()));
+			model.addAttribute("paginator", paginator);
+			model.addAttribute("order", ordering);
+			
+			//model.addAttribute("province", this.serviceLocator.getTerritorialService().getProvince(provinceId,locale));
+			//model.addAttribute("towns", this.serviceLocator.getTerritorialService().getTownsByProvince(provinceId, locale));
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -113,10 +145,20 @@ public class ProvinceController extends BaseModelController {
 	
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value="/list", method=RequestMethod.GET)
-	public String list(Model model, Locale locale) {
+	public String list(Model model, Locale locale,
+			@RequestParam(defaultValue="1", required=false) Integer page, 
+			@RequestParam(defaultValue="", required=false) String order) {
 		try {
-			model.addAttribute("provinces", 
-					this.serviceLocator.getTerritorialService().getAllProvinces(locale));
+			String ordering = order != null && !("").equals(order) ? order : "name";
+			PageManager<Province> paginator = new PageManager<Province>();
+			paginator.setOffset(this.getPageSize());
+			paginator.setUrlBase("/" + locale.getLanguage() + 
+					"/territorial/province/list");
+			paginator.setStart((page-1)*paginator.getOffset());
+			paginator.setSize(this.serviceLocator.getTerritorialService().countProvinces());
+			paginator.setCollection(this.serviceLocator.getTerritorialService().getProvinces(locale, ordering, paginator.getStart(), paginator.getEnd()));
+			model.addAttribute("paginator", paginator);
+			model.addAttribute("order", ordering);
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			return "common/error";

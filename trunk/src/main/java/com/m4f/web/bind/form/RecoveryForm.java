@@ -4,8 +4,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class RecoveryForm {
-	@NotNull(message="Mail blank")
-	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="Bad mail")
+	@NotNull(message="{validation.error.null}")
+	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="{validation.error.regexp.field.mail}")
 	private String email;
 	
 	public RecoveryForm() {

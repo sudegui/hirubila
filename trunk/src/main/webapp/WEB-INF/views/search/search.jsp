@@ -97,7 +97,7 @@
             <input type="submit" value="<fmt:message key='oficial.learning.type'/>" title="<fmt:message key='oficial.learning.type'/>" onClick="$('#collection').val('hirubila-reglated-');return true;"/>
             </p>
 	        </form:form>
-	        <p class="txt_mediador"><fmt:message key="search.footer.message.part1"/> <a href="#"><fmt:message key="search.footer.message.part2"/></a>.</p>
+	        <p class="txt_mediador"><fmt:message key="search.footer.message.part1"/> <a href="<c:url value='/${rc.locale.language}/search/mediators'/>"><fmt:message key="search.footer.message.part2"/></a>.</p>
 	    </div>
 	</div>
 </body>

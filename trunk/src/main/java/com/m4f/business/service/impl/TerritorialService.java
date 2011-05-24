@@ -63,6 +63,19 @@ public class TerritorialService extends I18nDAOBaseService implements I18nTerrit
 		return this.DAO.findById(Province.class, locale, id);
 	}
 
+	@Override
+	@Cacheable(cacheName="provinces")
+	public Collection<Province> getProvinces(Locale locale,
+			String ordering, int init, int end) throws Exception {
+		return this.DAO.findEntitiesByRange(Province.class, locale, init, end, ordering);
+	}
+	
+	@Override
+	@Cacheable(cacheName="provinces")
+	public long countProvinces() {
+		return this.DAO.count(Province.class);
+	}
+	
 	/* Region's operations */
 	
 	@Override
@@ -112,6 +125,36 @@ public class TerritorialService extends I18nDAOBaseService implements I18nTerrit
 			regionsMap.put(region.getId(), region);
 		}
 		return regionsMap;
+	}
+	
+	@Override
+	@Cacheable(cacheName="regions")
+	public Collection<Region> getRegionsByProvince(Long idProvince, Locale locale,
+			String ordering, int init, int end) throws Exception {
+		return this.DAO.findEntitiesByRange(Region.class, locale, 
+				"province == provinceParam", "Long provinceParam", new Object[]{ idProvince }, 
+				init, end, ordering);
+	}
+	
+	@Override
+	@Cacheable(cacheName="regions")
+	public Collection<Region> getRegions(Locale locale,
+			String ordering, int init, int end) throws Exception {
+		return this.DAO.findEntitiesByRange(Region.class, locale, init, end, ordering);
+	}
+	
+	@Override
+	@Cacheable(cacheName="regions")
+	public long countRegions() {
+		return this.DAO.count(Region.class);
+	}
+	
+	@Override
+	@Cacheable(cacheName="regions")
+	public long countRegionsByProvince(Long provinceId) {
+		Map<String, Object> filter = new HashMap<String, Object>();
+		filter.put("province", provinceId);
+		return this.DAO.count(Region.class, filter);
 	}
 	
 	/* Town's operations */
@@ -189,6 +232,14 @@ public class TerritorialService extends I18nDAOBaseService implements I18nTerrit
 				init, end, ordering);
 	}
 	
+	@Override
+	@Cacheable(cacheName="towns")
+	public Collection<Town> getTownsByProvince(Long idProvince, Locale locale,
+			String ordering, int init, int end) throws Exception {
+		return this.DAO.findEntitiesByRange(Town.class, locale, 
+				"province == provinceParam", "Long provinceParam", new Object[]{ idProvince }, 
+				init, end, ordering);
+	}
 	
 	@Override
 	@Cacheable(cacheName="towns")
@@ -201,6 +252,14 @@ public class TerritorialService extends I18nDAOBaseService implements I18nTerrit
 	public long countTownsByRegion(Long regionId) {
 		Map<String, Object> filter = new HashMap<String, Object>();
 		filter.put("region", regionId);
+		return this.DAO.count(Town.class, filter);
+	}
+	
+	@Override
+	@Cacheable(cacheName="towns")
+	public long countTownsByProvince(Long provinceId) {
+		Map<String, Object> filter = new HashMap<String, Object>();
+		filter.put("province", provinceId);
 		return this.DAO.count(Town.class, filter);
 	}
 }

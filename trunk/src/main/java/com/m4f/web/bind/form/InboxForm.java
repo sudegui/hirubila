@@ -11,13 +11,13 @@ public class InboxForm {
 
 	private String name;
 	
-	@NotNull(message="Content blank")
+	@NotNull
 	private String content;
 	
 	private TYPE type;
 
-	@NotNull(message="Mail blank")
-	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="Bad mail")
+	@NotNull(message="{validation.error.null}")
+	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="{validation.error.regexp.field.mail}")
 	private String from;
 
 	public Long getId() {
