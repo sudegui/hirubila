@@ -11,7 +11,7 @@ public class InboxForm {
 
 	private String name;
 	
-	@NotNull
+	@NotNull(message="{validation.error.null}")
 	private String content;
 	
 	private TYPE type;
