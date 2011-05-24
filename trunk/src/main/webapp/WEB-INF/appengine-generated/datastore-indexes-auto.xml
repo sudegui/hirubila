@@ -1,0 +1,8 @@
+<datastore-indexes>
+    <!-- Used 2 times in query history -->
+    <datastore-index kind="CourseCatalog" ancestor="false" source="auto">
+        <property name="lang" direction="asc"/>
+        <property name="regulated" direction="asc"/>
+        <property name="title" direction="asc"/>
+    </datastore-index>
+</datastore-indexes>

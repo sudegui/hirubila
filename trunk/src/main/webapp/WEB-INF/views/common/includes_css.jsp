@@ -1,0 +1,2 @@
+<link href="<c:url value='/static/style/smoothness/jquery-ui-1.8.10.custom.css'/>" rel="stylesheet" type="text/css" />
+<link href="<c:url value='/static/style/style.css'/>" rel="stylesheet" type="text/css" />
