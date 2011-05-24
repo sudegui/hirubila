@@ -2,7 +2,7 @@
 <%@page isELIgnored="false" %>
 <%@ include file="/WEB-INF/views/common/includes.jsp"%>
 <%@ include file="/WEB-INF/views/common/options_menu.jsp"%>		
-		<h1><fmt:message key="territorial.region.section.header"/> (<fmt:message key="message.total.upper"/> ${fn:length(regions)})</h1>
+		<h1><fmt:message key="territorial.region.section.header"/> (<fmt:message key="message.total.upper"/> ${paginator.size})</h1>
 		
 		<%@ include file="/WEB-INF/views/common/paginator-tables.jsp"%>	
 		
