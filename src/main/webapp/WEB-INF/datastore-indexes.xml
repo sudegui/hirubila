@@ -1,6 +1,4 @@
 <datastore-indexes autoGenerate="true">
-
-
     <datastore-index kind="School" ancestor="false">
         <property name="provider" direction="asc"/>
         <property name="name" direction="asc"/>
@@ -35,5 +33,25 @@
         <property name="providerId" direction="asc"/>
         <property name="school" direction="asc"/>
         <property name="date" direction="desc"/>
+    </datastore-index>
+    
+    <datastore-index kind="Inbox" ancestor="false" source="manual">
+        <property name="active" direction="asc"/>
+        <property name="origin" direction="asc"/>
+        <property name="created" direction="desc"/>
+    </datastore-index>
+    
+    <datastore-index kind="Inbox" ancestor="false" source="manual">
+        <property name="active" direction="asc"/>
+        <property name="origin" direction="asc"/>
+        <property name="readed" direction="asc"/>
+        <property name="created" direction="desc"/>
+    </datastore-index>
+    
+    <datastore-index kind="Inbox" ancestor="false" source="manual">
+        <property name="active" direction="asc"/>
+        <property name="origin" direction="asc"/>
+        <property name="user" direction="asc"/>
+        <property name="created" direction="desc"/>
     </datastore-index>
 </datastore-indexes>
