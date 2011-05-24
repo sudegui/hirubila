@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queue-entries>
+	<queue>
+		<name>provider</name>
+		<rate>10/s</rate>
+	</queue>
+	<queue>
+		<name>school</name>
+		<rate>10/s</rate>
+	</queue>
+	<queue>
+		<name>email</name>
+		<rate>5/s</rate>
+	</queue>
+	<queue>
+		<name>batch</name>
+		<rate>10/s</rate>
+	</queue>
+</queue-entries>
