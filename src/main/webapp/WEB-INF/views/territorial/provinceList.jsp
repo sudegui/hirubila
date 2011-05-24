@@ -4,12 +4,14 @@
 <%@ include file="/WEB-INF/views/common/options_menu.jsp"%>
 		<h1><fmt:message key="territorial.province.list.section.header"/> (<fmt:message key="message.total.upper"/> ${fn:length(provinces)})</h1>
 		
+		<%@ include file="/WEB-INF/views/common/paginator-tables.jsp"%>	
+		
 		<table>
 			<tr>
 				<th><fmt:message key="province.fields.name"/></th>
 				<th><fmt:message key="generic.options.message"/></th>
 			</tr>
-			<c:forEach items="${provinces}" var="province" varStatus="counter">
+			<c:forEach items="${paginator.collection}" var="province" varStatus="counter">
 				<tr>
 					<td>${province.name}</td>
 					<td>
@@ -23,7 +25,7 @@
 									</a>
 								</li>
 								<li>
-									<a href="<c:url value='/${rc.locale.language}/territorial/region/${province.id}/towns/'/>" title="${province.name}">
+									<a href="<c:url value='/${rc.locale.language}/territorial/province/${province.id}/towns/'/>" title="${province.name}">
 										<fmt:message key="territorial.region.actions.viewTowns"/>
 									</a>
 								</li>

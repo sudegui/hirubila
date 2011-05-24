@@ -12,6 +12,7 @@
 	<link href="<c:url value='/static/search/css/estilo.css'/>" rel="stylesheet" type="text/css" />
 	
 	<link rel="stylesheet" href="<c:url value='/static/qaptcha/css/QapTcha.jquery.css'/>" type="text/css" />
+	<link href="<c:url value='/static/style/smoothness/jquery-ui-1.8.10.custom.css'/>" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="<c:url value='/static/qaptcha/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<c:url value='/static/qaptcha/js/jquery-ui.js'/>"></script>
 	<script type="text/javascript" src="<c:url value='/static/qaptcha/js/jquery.ui.touch.js'/>"></script> 

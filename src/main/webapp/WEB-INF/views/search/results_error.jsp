@@ -10,6 +10,7 @@
 	<title><fmt:message key="search.results.error.title"/></title>
 	<link href="<c:url value='/static/search/css/reset.css'/>" rel="stylesheet" type="text/css" />
 	<link href="<c:url value='/static/search/css/estilo.css'/>" rel="stylesheet" type="text/css" />
+	<link href="<c:url value='/static/style/smoothness/jquery-ui-1.8.10.custom.css'/>" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="<c:url value='/static/search/js/shadowbox.js'/>"></script>
 	<script type="text/javascript">
 	function close() {
@@ -27,7 +28,7 @@
 	<label for="pormail_tunombre"><fmt:message key="search.results.error.name"/>:</label>  
     <form:input path="name"/>
     
-    <form:errors path="from" cssClass="ui-state-error"/>
+    <form:errors path="from" cssClass="ui-state-error" />
     <label for="pormail_tumail"><fmt:message key="search.results.error.email"/>:</label>
     <form:input path="from"/>
   

@@ -506,7 +506,7 @@
 	</definition>
 	
 	<definition name="extended.public.course" extends="extended.school.base">
-		<put-attribute name="title" value="school.detail.section.title"/>
+		<put-attribute name="title" value="course.detail.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/extended/public/course.jsp" />
 	</definition>
 	
@@ -522,7 +522,7 @@
 	</definition>
 		
 	<definition name="extended.course.detail" extends="extended.course.base">
-		<put-attribute name="title" value="course.detail.section.header"/>
+		<put-attribute name="title" value="course.detail.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/extended/course/detail.jsp" />
 	</definition>
 	

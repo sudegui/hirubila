@@ -17,25 +17,25 @@ public class ResultSearchEmail extends BaseEntity {
 	private Long id;
 	
 	@Persistent
-	@NotNull(message="From name blank")
+	@NotNull(message="{validation.error.null}")
 	private String fromName;
 	
 	@Persistent
-	@NotNull(message="From name blank")
+	@NotNull(message="{validation.error.null}")
 	private String toName;
 	
 	@Persistent
-	@NotNull(message="Mail blank")
-	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="Bad mail")
+	@NotNull(message="{validation.error.null}")
+	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="{validation.error.regexp.field.mail}")
 	private String from;
 	
 	@Persistent
-	@NotNull(message="Mail blank")
-	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="Bad mail")
+	@NotNull(message="{validation.error.null}")
+	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message="{validation.error.regexp.field.mail}")
 	private String to;
 	
 	@Persistent
-	@NotNull(message="Result Link blank")
+	@NotNull(message="{validation.error.null}")
 	private String resultLink;
 	
 	@Persistent
