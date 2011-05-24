@@ -22,7 +22,6 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Course;
-import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.GlobalConfiguration;
 import com.m4f.business.domain.Inbox;
 import com.m4f.business.domain.InternalUser;
@@ -34,7 +33,6 @@ import com.m4f.business.domain.extended.ExtendedCourse;
 import com.m4f.business.domain.extended.ExtendedSchool;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
-import com.m4f.web.bind.form.CronTaskReportFilterForm;
 import com.m4f.web.bind.form.FilterForm;
 import com.m4f.web.bind.form.InboxFilterForm;
 import com.m4f.web.controller.BaseController;
@@ -275,7 +273,7 @@ public class AdminController extends BaseController {
 		try {
 			String ordering = order != null && !("").equals(order) ? order : "-created";
 			PageManager<Inbox> paginator = new PageManager<Inbox>();
-			paginator.setOffset(/*this.getPageSize()*/1);
+			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage() + 
 					"/dashboard/admin/suggestions");
 			paginator.setStart((page-1)*paginator.getOffset());

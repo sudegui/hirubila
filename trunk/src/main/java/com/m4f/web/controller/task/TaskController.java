@@ -587,11 +587,11 @@ public class TaskController extends BaseController  {
 			try {
 				Message msg = new MimeMessage(session);
 				msg.setFrom(new InternetAddress(new StringBuffer("admin").append(EMAIL_DOMAIN_SUFFIX).toString(), 
-						this.getMessage("search.result.send.from")));
+						this.getMessage("suggestion.problem.response.from")));
 				msg.addRecipient(Message.RecipientType.TO,
                          new InternetAddress(messageReq.getFrom(), messageReq.getName()));
-		        msg.setSubject(new StringBuffer("En respuesta a su mensaje con código: ").append(messageReq.getId()).toString());
-		        msg.setText(new StringBuffer(messageRes.getContent()).append("\n No responda a esta dirección debido a que no existe.").toString());
+				msg.setSubject(this.getMessage("suggestion.problem.response.subject", messageReq.getId()));
+				msg.setText(new StringBuffer(messageRes.getContent()).append("\n\n\n").append(this.getMessage("suggestion.problem.response.advice")).toString());
 		        Transport.send(msg);
 			} catch (AddressException e) {
 				LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
