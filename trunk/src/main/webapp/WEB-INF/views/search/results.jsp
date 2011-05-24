@@ -156,7 +156,7 @@ new TWTR.Widget({
                 		<p>                               
 		                   <a href="<c:url value='/${rc.locale.language}/search/results/send?link=${result.link}'/>" rel="shadowbox;height=550;width=500" class="envia_mail" target="_blank"><fmt:message key="search.result.sendByEmail"/></a> - 
 		                   <a id="link_compartir_${status.count}" class="comparte_link" onClick="muestra_oculta('${status.count}')" ><fmt:message key="search.result.share"/></a> - 
-		                   <a href="<c:url value='/${rc.locale.language}/search/results/error'/>" rel="shadowbox;height=302;width=450" ><fmt:message key="search.result.send.error"/></a>
+		                   <a href="<c:url value='/${rc.locale.language}/search/results/error'/>" rel="shadowbox;height=350;width=450" ><fmt:message key="search.result.send.error"/></a>
               			</p>
               			<div class="caja_compartir" id="caja_compartir_${status.count}" style="display:none">
               				<p><fmt:message key="search.result.shareIn"/>: 
