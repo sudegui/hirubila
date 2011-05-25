@@ -34,7 +34,7 @@
   <cron>
   	<url>/launcher/updatefromfeeds</url>
   	<description>Generate in a round-robin method all internal feeds.</description>
-  	<schedule>every 30 minutes</schedule>
+  	<schedule>every 90 minutes</schedule>
   </cron>
   
 <!--    <cron>
