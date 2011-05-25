@@ -20,7 +20,7 @@ import com.m4f.business.domain.ifc.UserSeteable;
 public class MediationService extends BaseEntity implements UserSeteable {
 	
 	public enum UPDATE_METHOD {
-		OVERWRITE_ALL("Sobreescribir TODO"), APPEND_NEW("Añadir sólo nuevos");
+		OVERWRITE_ALL("Sobreescribir TODO"), APPEND_NEW("Agregar solo nuevos");
 		
 		private final String displayName;
 		
