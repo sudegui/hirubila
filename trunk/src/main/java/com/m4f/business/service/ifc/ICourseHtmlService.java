@@ -5,17 +5,8 @@ import java.util.Collection;
 import java.util.Locale;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
-import com.m4f.business.domain.CourseHtml;
 
 public interface ICourseHtmlService {
-	
-	CourseHtml create();
-	void save(CourseHtml courseHtml) throws Exception;
-	CourseHtml get(Long courseId, String language) throws Exception;
-	CourseHtml convertToCourseHTML(Course course, Locale locale, URL urlCourse) throws Exception;
-	long count(Locale locale) throws Exception;
-	Collection<CourseHtml> getCourses(Locale locale, String ordering, int init, int end) throws Exception;
-	void delete(CourseHtml course, Locale locale) throws Exception;
 	
 	// COURSECATALOG
 	CourseCatalog createCourseCatalog();

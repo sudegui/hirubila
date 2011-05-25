@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import com.google.appengine.api.datastore.Category;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
-import com.m4f.business.domain.CourseHtml;
 import com.m4f.business.domain.School;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.utils.cache.annotations.Cacheable;

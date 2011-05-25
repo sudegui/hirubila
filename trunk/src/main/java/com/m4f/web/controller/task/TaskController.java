@@ -420,30 +420,6 @@ public class TaskController extends BaseController  {
 		return "task.launched";
 	}
 	
-	
-	@RequestMapping(value="/catalog/create", method=RequestMethod.POST)
-	public String createCourseCatalog(@RequestHeader("host") String host, 
-			@RequestParam(required=true) Long courseId) throws Exception {
-		List<Locale> locales = this.getAvailableLanguages();
-		for(Locale locale : locales) {
-			LOGGER.log(Level.FINE, new StringBuffer("Tarea de generacion html del catalogo para el curso con id: ")
-			.append(courseId).append(" y locale: ").append(locale).toString());
-			try {
-				Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
-				URL urlCourse = new URL("http://" + host + "/" + locale.getLanguage() + 
-						"/catalog/course/detail/" + course.getId());
-				this.serviceLocator.getCourseHtmlService().convertToCourseHTML(course, locale, urlCourse);
-	
-				LOGGER.log(Level.FINE, new StringBuffer("Fin de la tarea html para el catalago del curso: ")
-				.append(courseId).append(" y locale: ").append(locale).toString());
-		
-			} catch(Exception e) {
-				this.viewHelper.errorManagement(e);
-				throw e;
-			}
-		}
-		return "task.launched";
-	}
 	/**
 	 * END CREATE CATALOG OLD WAY
 	 */

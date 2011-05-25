@@ -14,7 +14,6 @@ import java.util.Map;
 import com.google.appengine.api.datastore.Blob;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
-import com.m4f.business.domain.CourseHtml;
 import com.m4f.business.service.ifc.ICourseHtmlService;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
@@ -27,89 +26,6 @@ public class CourseHtmlServiceImpl extends DAOBaseService implements ICourseHtml
 		super(dao);
 	}
 
-	@Override
-	public CourseHtml create() {
-		return this.DAO.createInstance(CourseHtml.class);
-	}                                                                                                                
-	
-	@Override
-	//@Cacheflush(cacheName="htmlcourses")
-	public void save(CourseHtml courseHtml) throws Exception {
-		this.DAO.saveOrUpdate(courseHtml);
-	}
-	
-	@Override
-	public long count(Locale locale) throws Exception {
-		Map<String, Object> filter = new HashMap<String, Object>();
-		filter.put("lang", locale.getLanguage());
-		return this.DAO.count(CourseHtml.class, filter);
-	}
-	
-	@Override
-	//@Cacheable(cacheName="htmlcourses")
-	public CourseHtml get(Long courseId, 
-			String language) throws Exception {
-		CourseHtml courseHtml = this.DAO.findEntity(CourseHtml.class, 
-				"courseId == idParam && lang == langParam", 
-				"java.lang.Long idParam, java.lang.String langParam", 
-				new Object[]{courseId, language});	
-		return courseHtml;
-	}
-
-	@Override
-	//@Cacheable(cacheName="htmlcourses")
-	public Collection<CourseHtml> getCourses(Locale locale, 
-			String ordering, int init, int end) throws Exception {
-		String filter = "courseId == idParam && lang == langParam"; 
-		String params = "java.lang.String langParam";
-		return this.DAO.findEntitiesByRange(CourseHtml.class, filter, params, 
-				new Object[]{locale.getLanguage()}, ordering, init, end);
-	}
-
-	@Override
-	//@Cacheflush(cacheName="htmlcourses")
-	public CourseHtml convertToCourseHTML(Course course, Locale locale,
-			URL urlCourse) throws Exception {
-		CourseHtml courseHTML = this.get(course.getId(), locale.getLanguage());
-		
-		if(courseHTML == null) {
-			courseHTML = this.create();
-			courseHTML.setCourseId(course.getId());
-			courseHTML.setLang(locale.getLanguage());
-		}
-		
-		courseHTML.setDate(Calendar.getInstance(new Locale("es")).getTime());
-		courseHTML.setTitle(course.getTitle());
-		URLConnection connection = urlCourse.openConnection();
-		connection.setAllowUserInteraction(false);         
-		connection.setDoOutput(true);
-		ByteArrayOutputStream tmpOut = new ByteArrayOutputStream();
-		byte[] buf = new byte[512];
-		       int len;
-		       while (true) {
-		            len = connection.getInputStream().read(buf);
-		            if (len == -1) {
-		                break;
-		            }
-		            tmpOut.write(buf, 0, len);
-		        }
-		    tmpOut.close();
-			Blob content = new Blob(tmpOut.toByteArray());
-			courseHTML.setContent(content);
-			this.save(courseHTML);
-		
-		return courseHTML;
-	}
-
-	@Override
-	//@Cacheflush(cacheName="htmlcourses")
-	public void delete(CourseHtml course, Locale locale) throws Exception {
-		this.DAO.delete(course);		
-	}
-	
-	/****************
-	 * COURSE CATALOG
-	 */
 	@Override
 	public CourseCatalog createCourseCatalog() {
 		return this.DAO.createInstance(CourseCatalog.class);
