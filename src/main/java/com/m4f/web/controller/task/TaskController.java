@@ -136,7 +136,7 @@ public class TaskController extends BaseController  {
 	
 	@RequestMapping(value="/updatecourses", method=RequestMethod.POST)
 	public String updateCourses(@RequestParam(required=true) Long schoolId,
-			@RequestParam(required=true) Long dumpId) {
+			@RequestParam(required=true) Long dumpId) throws Exception {
 		LOGGER.log(Level.INFO, "Starting the update courses from school's queue...");
 		School school = null;
 		try {
@@ -164,7 +164,8 @@ public class TaskController extends BaseController  {
 			return "common.error";
 		} catch (Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
+			throw e;
+			//return "common.error";
 		}
 		return "task.launched";
 	}
