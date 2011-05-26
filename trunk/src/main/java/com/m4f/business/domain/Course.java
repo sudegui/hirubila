@@ -188,6 +188,7 @@ public class Course extends BaseEntity implements Taggeable {
 	}
 
 	public Set<Category> getTags() {
+		this.initTags();
 		return this.tags;
 	}
 	
