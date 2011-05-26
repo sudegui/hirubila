@@ -4,17 +4,21 @@
 <script type="text/javascript" src="<c:url value='/static/js/jquery.chainedSelects.js'/>"></script>
 
 <script type="text/javascript">
+
 	var languages = [];
 
 	<c:forEach items="${langs}" var="lang">
 		languages.push(new language('<fmt:message key="${lang.key}"/>', '${lang.key}'));
 	</c:forEach>
 
+	
+	
 	function language(desc, lang) {
 		this.desc = desc;
 		this.lang = lang;	
 	}
 
+	
 	function getTags(url) {
 		var url = '/${rc.locale.language}' + url;
 		$.getJSON(url, function(data){	
@@ -40,6 +44,8 @@
 		 });
 	}
 
+	
+	
 	function markTags() {
 		var tags = [];
 		var tagsText = $('#tags').val().trim();
@@ -53,12 +59,17 @@
 			});
 		});
 	}
+
+	
 	
 	$(document).ready(function(){
+
+		
 		$('#multilanguage-dialog').dialog({
 			title: '<fmt:message key="multilanguage.action.edit.dialog.title"/>',
-			autoOpen: false, 
+			autoOpen: false
 		});
+		
 		
 		$(".expand-menu").click(function(){
 			$('.content-options-menu', $(this).parent()).slideToggle("slow");
@@ -91,6 +102,9 @@
 			$(this).text('');
 			$(this).append(link);
 		});
+		
+		var selectedMenu = "${menuId}";
+		$("#" + selectedMenu).addClass('selected');
 		
 	});
 

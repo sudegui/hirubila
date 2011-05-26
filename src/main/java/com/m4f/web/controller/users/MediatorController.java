@@ -87,7 +87,8 @@ public class MediatorController extends BaseController {
 	@Secured({"ROLE_AUTOMATIC_MEDIATOR"})
 	@RequestMapping(value="/catalog/courses", method=RequestMethod.GET)
 	public String getCourses(Principal currentUser, Model model, Locale locale, 
-			@RequestParam(defaultValue="1", required=false) Integer page, @RequestParam(defaultValue="", required=false) String order) {
+			@RequestParam(defaultValue="1", required=false) Integer page, 
+			@RequestParam(defaultValue="", required=false) String order) {
 		try {
 			String ordering = order != null && !("").equals(order) ? order : "title";
 			Provider provider = this.getProviderByUserName(currentUser.getName(), locale);

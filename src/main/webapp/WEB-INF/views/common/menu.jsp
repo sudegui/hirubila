@@ -81,13 +81,3 @@
     		-->
         </ul>
 </div>
-
-<script>
-	var selectedMenu = "${menuId}";
-	$("ul#menu > li").addClass(function(i, class) {	
-   		if ( this.id === selectedMenu ) {
-        	class += 'selected';
-    	}
-    	return class;
-	});
-</script>
