@@ -11,9 +11,9 @@
         <property name="javax.jdo.option.RetainValues" value="true"/>
         <property name="datanucleus.appengine.autoCreateDatastoreTxns" value="true"/>
         <property name="datanucleus.DetachOnClose" value="true"/>
-        <!--  
+        <!--  --> 
         <property name="javax.jdo.option.Multithreaded" value="true"/>
-        --> 
+        
     </persistence-manager-factory>
 </jdoconfig>
 
