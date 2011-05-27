@@ -2,7 +2,7 @@
 <%@page isELIgnored="false" %>
 <%@ include file="/WEB-INF/views/common/includes.jsp"%>
 		
-		<h1><fmt:message key="error.list.section.header"/> (<fmt:message key="message.total.upper"/> ${fn:length(errors)})</h1>
+		<h1><fmt:message key="dumperParseError.list.section.header"/> (<fmt:message key="message.total.upper"/> ${fn:length(errors)})</h1>
 		
 		<a href="<c:url value='/${rc.locale.language}/parsererror/delete/all'/>" title="delete all">
 							<fmt:message key="business.action.deleteall"/>
