@@ -430,7 +430,7 @@ public class TaskController extends BaseController  {
 			@RequestParam(required=true) Integer start, @RequestParam(required=true) Integer finish) throws Exception {
 		try {
 			Locale locale = this.getAvailableLanguages().size() > 0 ? this.getAvailableLanguages().get(0) : Locale.getDefault();
-			Collection<Course> courses = this.serviceLocator.getCourseService().getCourses(null, locale, start, finish);
+			Collection<Course> courses = this.serviceLocator.getCourseService().getCourses("title", locale, start, finish);
 			for(Course course : courses) {
 				Queue queue = QueueFactory.getQueue(this.BATCH_QUEUE);
 				String urlTask = new StringBuffer("/task/catalog/createnew").toString();
