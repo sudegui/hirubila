@@ -66,8 +66,8 @@
 			</sec:authorize>
 
 			<sec:authorize ifAnyGranted="ROLE_AUTOMATIC_MEDIATOR">
-				<li id="tutorialsMenu"><a href="<c:url value='/${rc.locale.language}/summary'/>" title='<fmt:message key="site.sections.summaryMenu"/>'>
-	    		<fmt:message key="site.sections.summaryMenu"/></a>
+				<li id="summaryMenu"><a href="<c:url value='/${rc.locale.language}/summary'/>" title='<fmt:message key="site.sections.summary"/>'>
+	    		<fmt:message key="site.sections.summary"/></a>
 	    		</li>
 			</sec:authorize>
 	    		    	

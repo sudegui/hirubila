@@ -93,7 +93,7 @@
 	</definition>
 	
 	<definition name="admin.summary.crontaskreport" extends="base.1col.definition">
-		<put-attribute name="menuId" value="processMenu"/>
+		<put-attribute name="menuId" value="summaryMenu"/>
 	</definition>
 	
 	<!-- End Bases views definitions -->
