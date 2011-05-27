@@ -65,12 +65,8 @@ public class SearchController extends BaseController {
 				SearchParamsImpl params = new SearchParamsImpl();
 				params.addParam(PARAM.SEARCH_URI, this.serviceLocator.getAppConfigurationService().
 						getGlobalConfiguration().getSearchUri());
-				params.addParam(PARAM.BASE_COLLECTION_NAME, this.serviceLocator.getAppConfigurationService().
-						getGlobalConfiguration().getSearchBaseCollectionName());												
+				params.addParam(PARAM.BASE_COLLECTION_NAME, collection);												
 				params.addParam(PARAM.LANG, locale.getLanguage());
-				// params.addParam(PARAM.START, start != null ? start.toString()
-				// : "");
-
 				PageManager<ISearchResults> paginator = new PageManager<ISearchResults>();
 				paginator.setStart((page - 1) * paginator.getOffset());
 				params.addParam(PARAM.START, String.valueOf(paginator
