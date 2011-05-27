@@ -2,7 +2,7 @@
 <%@page isELIgnored="false" %>
 <%@ include file="/WEB-INF/views/common/includes.jsp"%>
 
-<h1><fmt:message key="error.list.section.header"/> (<fmt:message key="message.total.upper"/> ${paginator.size})</h1>
+<h1><fmt:message key="dumpererror.list.section.header"/> (<fmt:message key="message.total.upper"/> ${paginator.size})</h1>
 
 <c:if test="${paginator.size > 0 && (paginator.pageStart < paginator.pageEnd)}">
 			<table>

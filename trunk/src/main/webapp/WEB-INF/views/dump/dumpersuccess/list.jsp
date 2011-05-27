@@ -33,11 +33,11 @@
 			
 <table style="width:100%; border-spacing:0;">
 	<tr>
-		<th><fmt:message key="dum.success.fields.identifier"/></th>
-		<th><fmt:message key="dum.success.fields.entityClass"/></th>			
-		<th><fmt:message key="dum.success.fields.entityId"/></th>
-		<th><fmt:message key="dum.success.fields.time"/></th>
-		<th><fmt:message key="dum.success.fields.language"/></th>
+		<th><fmt:message key="dump.success.fields.identifier"/></th>
+		<th><fmt:message key="dump.success.fields.entityClass"/></th>			
+		<th><fmt:message key="dump.success.fields.entityId"/></th>
+		<th><fmt:message key="dump.success.fields.time"/></th>
+		<th><fmt:message key="dump.success.fields.language"/></th>
 	</tr>
 	<c:forEach items="${paginator.collection}" var="suc">
 	<tr>

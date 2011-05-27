@@ -159,17 +159,17 @@
 	</definition>
 		
 	<definition name="dump.parsererror.list" extends="feed.base">
-		<put-attribute name="title" value="dump.parsererror.list.section.title"/>
+		<put-attribute name="title" value="dumperParseError.list.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/dump/parsererror/list.jsp" />
 	</definition>
 		
 	<definition name="dump.dumpererror.list" extends="feed.base">
-		<put-attribute name="title" value="dump.dumpererror.list.section.title"/>
+		<put-attribute name="title" value="dumpererror.list.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/dump/dumpererror/list.jsp" />
 	</definition>
 	
 	<definition name="dump.dumpersuccess.list" extends="feed.base">
-		<put-attribute name="title" value="dump.dumpersuccess.list.section.title"/>
+		<put-attribute name="title" value="dumpersuccess.list.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/dump/dumpersuccess/list.jsp" />
 	</definition>
 	
@@ -581,13 +581,13 @@
 		<put-attribute name="menuId" value="summaryMenu"/>
 	</definition>
 	
-	<definition name="summary.today" extends="territorial.base">
-		<put-attribute name="menuId" value="catalogMenu"/>
+	<definition name="summary.today" extends="summary.base">
+		<put-attribute name="menuId" value="summaryMenu"/>
 		<put-attribute name="body" value="/WEB-INF/views/summary/today.jsp" />
 	</definition>
 	
-	<definition name="summary.admin.today" extends="territorial.base">
-		<put-attribute name="menuId" value=""/>
+	<definition name="summary.admin.today" extends="summary.base">
+		<put-attribute name="menuId" value="catalogMenu"/>
 		<put-attribute name="body" value="/WEB-INF/views/summary/today.jsp" />
 	</definition>
 	

@@ -201,7 +201,7 @@ public class ProviderController extends BaseModelController {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
 		}
-		return "summary.today";
+		return "summary.admin.today";
 	}
 	
 	@RequestMapping(value="/ajax/{providerId}", method=RequestMethod.GET)
