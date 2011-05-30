@@ -134,7 +134,7 @@
 				<p><span><fmt:message key="school.fields.name"/></span><form:input id="name" path="name"/></p>
 				
 				<form:errors path="contactInfo.telephone" cssClass="ui-state-error"/>				
-				<p><span><fmt:message key="contactInfo.fields.phone"/></span><form:input id="contactInfo.telephone" path="contactInfo.telephone"/></p>
+				<p><span><fmt:message key="contactInfo.fields.telephone"/></span><form:input id="contactInfo.telephone" path="contactInfo.telephone"/></p>
 				
 				<form:errors path="contactInfo.fax" cssClass="ui-state-error"/>
 				<p><span><fmt:message key="contactInfo.fields.fax"/></span><form:input id="contactInfo.fax" path="contactInfo.fax"/></p>
