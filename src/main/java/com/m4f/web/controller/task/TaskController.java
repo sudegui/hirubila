@@ -621,7 +621,7 @@ public class TaskController extends BaseController  {
 	private void storeSchools(Dump dump, Provider provider, 
 			List<School> schools, Locale locale) throws Exception {
 		for(School school : schools) {
-			this.serviceLocator.getDumperManager().dumpSchool(dump, provider, school, locale);
+			this.serviceLocator.getDumperManager().dumpSchool(dump, school, locale, provider);
 		}
 	}
 	
@@ -655,8 +655,8 @@ public class TaskController extends BaseController  {
 			Provider provider = this.serviceLocator.getProviderService().getProviderById(school.getProvider(), locale);
 			for(Course course : lista) {
 				course.setRegulated(provider.getRegulated());
-				this.serviceLocator.getDumperManager().dumpCourse(dump, course, school, provider,
-						province.getName(), region.getName(), town.getName(), locale);
+				this.serviceLocator.getDumperManager().dumpCourse(dump, course, locale, school, provider,
+						province.getName(), region.getName(), town.getName());
 			}
 		}
 		

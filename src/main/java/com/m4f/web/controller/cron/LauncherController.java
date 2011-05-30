@@ -33,46 +33,6 @@ public class LauncherController extends BaseController {
 	
 	private static final Logger LOGGER = Logger.getLogger(LauncherController.class.getName());
 	
-	/**
-	 * Load all schools and relationed courses from all registered providers.
-	 * 
-	 * @param model spring model object.
-	 * 
-	 * @return tiles's registered view.
-	 */
-	@RequestMapping(value="/updatecourses", method=RequestMethod.GET)
-	public String updateAllCourses(Model model) {
-		LOGGER.info("++++ Starting the update courses cron task...");
-		Queue queue = QueueFactory.getQueue(this.PROVIDER_QUEUE);
-		List<Provider> providers = null;
-		try {
-			providers = this.serviceLocator.getProviderService().getAllProviders(new Locale("es"));
-			for(Provider provider : providers) {
-				if((provider.getFeed()!=null) && (!"".equals(provider.getFeed()))) {
-					Dump dump = this.serviceLocator.getDumpService().createDump();
-					dump.setDescription(new StringBuffer("Launched dump for provider ( ").
-							append(provider.getId()).append(" - ").append(provider.getName()).append(" )").toString());
-					dump.setLaunched(Calendar.getInstance(new Locale("es")).getTime());
-					dump.setOwner(provider.getId());
-					dump.setOwnerClass(Provider.class.getName());
-					this.serviceLocator.getDumpService().save(dump);
-					LOGGER.log(Level.FINEST, "Processing provider: (" + provider.toString());
-					TaskOptions options = TaskOptions.Builder.withUrl("/task/updateschools");
-					options.param("providerId", provider.getId().toString());
-					options.param("dumpId", "" + dump.getId());
-					options.method(Method.POST);
-					queue.add(options);
-				}
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			model.addAttribute("message", 
-					"Error recuperando los proveedores de información.");
-			return "common.error";
-		}	
-		LOGGER.info("+++++ Ending the update courses cron task...");
-		return "cron.launched";
-	}
 	
 	/**
 	 * Load schools from one registered provider's feed.
@@ -115,6 +75,8 @@ public class LauncherController extends BaseController {
 		return "cron.launched";
 	}
 	
+	
+	
 	@RequestMapping(value="/updatecourses/{schoolId}", method=RequestMethod.GET)
 	public String updateAllCourses(@PathVariable Long schoolId, Model model) {
 		School school = null;
@@ -151,21 +113,7 @@ public class LauncherController extends BaseController {
 		return "cron.launched";
 	}
 	
-	@RequestMapping(value="/i18n/delete/all", method=RequestMethod.GET)
-	public String deleteAll(Model model, Locale locale) {
-		try {
-			LOGGER.severe("#### deleting all.............");
-			
-			Queue queue = QueueFactory.getQueue(this.BATCH_QUEUE);
-			TaskOptions options = TaskOptions.Builder.withUrl("/es/i18n/delete/all");
-			options.method(Method.GET);
-			queue.add(options);
-		} catch (Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		return "cron.launched";
-	}
+	
 	
 	/**
 	 * Create a task to generate a feed with all extended schools
@@ -227,7 +175,7 @@ public class LauncherController extends BaseController {
 	 * 
 	 * @return tiles's registered view.
 	 */
-	@RequestMapping(value="/createHtmlCatalogNew", method=RequestMethod.GET)
+	@RequestMapping(value="/createHtmlCatalog", method=RequestMethod.GET)
 	public String createHtmlCatalogNew(Locale locale) {
 		final int RANGE = 200;
 		final int LIMIT = 100000;
@@ -261,7 +209,7 @@ public class LauncherController extends BaseController {
 	 * 
 	 * @return tiles's registered view.
 	 */
-	@RequestMapping(value="/deleteHtmlCatalogNew", method=RequestMethod.GET)
+	@RequestMapping(value="/deleteHtmlCatalog", method=RequestMethod.GET)
 	public String deleteHtmlCatalogNew(Locale locale) {
 		final int RANGE = 200;
 		final int LIMIT = 100000;
@@ -374,7 +322,6 @@ public class LauncherController extends BaseController {
 			List<Long> ids = this.serviceLocator.getMediatorService().getAllMediationServiceManualIds();
 			if(ids != null && ids.size() > 0) {
 				id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
-				
 				if(id != null) {
 					// Invoke the task with the id obtained
 					Queue queue = QueueFactory.getDefaultQueue(); // TODO

@@ -592,6 +592,7 @@
 	</definition>
 	
 	<definition name="summary.admin.crontaskreport.list" extends="admin.summary.crontaskreport">
+		<put-attribute name="menuId" value="processMenu"/>	
 		<put-attribute name="title" value="process.index.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/summary/crontaskreportlist.jsp" />
 	</definition>
