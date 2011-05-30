@@ -2,6 +2,8 @@ package com.m4f.web.controller;
 
 import java.util.Locale;
 import java.util.logging.Logger;
+
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import com.m4f.utils.feeds.events.model.StoreErrorEvent;
 import com.m4f.utils.feeds.events.model.StoreSuccessEvent;
 
 @Controller
+@Secured({"ROLE_ADMIN","ROLE_MANUAL_MEDIATOR","ROLE_AUTOMATIC_MEDIATOR"})
 @RequestMapping("/dump")
 public class DumpController extends BaseController {
 	

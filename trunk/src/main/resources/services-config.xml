@@ -190,10 +190,10 @@
          
         
          <aop:aspect ref="dumperHypervisor">
-         	<aop:pointcut id="dumpSchoolOperation" expression="target(com.m4f.utils.feeds.parser.ifc.DumperCapable) and args(dump,provider,school,locale)" />
+         	<aop:pointcut id="dumpSchoolOperation" expression="execution(* com.m4f.utils.feeds.parser.ifc.DumperCapable.dumpSchool(..)) and args(dump,school,locale,provider,..)" />
          	<aop:after-returning pointcut-ref="dumpSchoolOperation" method="registerSchoolOperation" returning="retVal" arg-names="dump,provider,school,locale,retVal"/>
-         	<aop:pointcut id="dumpCourseOperation" expression="target(com.m4f.utils.feeds.parser.ifc.DumperCapable) and args(dump,course,locale)" />
-         	<aop:after-returning pointcut-ref="dumpCourseOperation" method="registerCourseValidationError" returning="retVal" arg-names="dump,course,locale,retVal"/>
+         	<aop:pointcut id="dumpCourseOperation" expression="execution(* com.m4f.utils.feeds.parser.ifc.DumperCapable.dumpCourse(..)) and args(dump,course,locale,..)" />
+         	<aop:after-returning pointcut-ref="dumpCourseOperation" method="registerCourseOperation" returning="retVal" arg-names="dump,course,locale,retVal"/>
          </aop:aspect>
          
           

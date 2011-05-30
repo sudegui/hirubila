@@ -70,6 +70,11 @@
 								<fmt:message key="provider.action.schoolsManaged"/>
 							</a>
 						</li>
+						<li>
+							<a href="<c:url value='/${rc.locale.language}/provider/${provider.id}/courses/'/>" title="${provider.name}">
+								<fmt:message key="provider.action.coursesManaged"/>
+							</a>
+						</li>
 	   				</ul>	
 	   			</div>
 			</td>

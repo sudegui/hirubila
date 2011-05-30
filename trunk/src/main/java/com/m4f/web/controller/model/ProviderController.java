@@ -161,6 +161,31 @@ public class ProviderController extends BaseModelController {
 		return "school.list";
 	}
 	
+	@RequestMapping(value="/{providerId}/courses", method=RequestMethod.GET)
+	public String getCourses(@PathVariable Long providerId, Model model, Locale locale, 
+			@RequestParam(defaultValue="1", required=false) Integer page) {
+		try {
+			Provider provider = this.serviceLocator.getProviderService().getProviderById(providerId, locale);
+			if(provider == null) {
+				String message = "Provider with id " + providerId + " doesn't exist.";
+				model.addAttribute("message", message);
+				return "common.error";
+			}
+			model.addAttribute("provider", provider);
+			PageManager<Course> paginator = new PageManager<Course>();
+			paginator.setUrlBase("/" + locale.getLanguage() + "/provider/" + provider.getId() + "/courses");
+			paginator.setStart((page-1)*paginator.getOffset());
+			paginator.setSize(this.serviceLocator.getCourseService().countCoursesByProvider(provider.getId()));
+			paginator.setCollection(this.serviceLocator.getCourseService().getCoursesByProvider(providerId, 
+					null, locale, paginator.getStart(), paginator.getEnd()));
+			model.addAttribute("paginator", paginator);
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			return "common.error";
+		}
+		return "course.list";
+	}
+	
 	@RequestMapping(value="/{providerId}/dumps", method=RequestMethod.GET)
 	public String getDumps(@PathVariable Long providerId, Model model, Locale locale, 
 			@RequestParam(defaultValue="1", required=false) Integer page) {

@@ -13,33 +13,17 @@
   	<schedule>every day 20:30</schedule>
   </cron>
 	
-  <cron>
-  	<url>/es/launcher/updatecourses</url>
-  	<description>Update all Schools and their Courses using the Provider's information</description>
-  	<schedule>every day 21:30</schedule>
-  </cron>
-  
-  <cron>
-  	<url>/es/launcher/createHtmlCatalog</url>
-  	<description>Create HTML Catalog for new courses</description>
-  	<schedule>every day 22:30</schedule>
-  </cron>
-  
-  <cron>
-  	<url>/es/launcher/updateHtmlCatalog</url>
-  	<description>Update HTML Catalog for updated courses</description>
-  	<schedule>every day 23:30</schedule>
-  </cron>
---> 
+-->
+
   <cron>
   	<url>/launcher/updatefromfeeds</url>
   	<description>Generate in a round-robin method all internal feeds.</description>
   	<schedule>every 90 minutes</schedule>
   </cron>
   
-<!--    <cron>
+  <cron>
   	<url>/launcher/internalFeedGeneration</url>
   	<description>Generate in a round-robin method all internal feeds.</description>
   	<schedule>every 1 hours</schedule>
-  </cron> -->
+  </cron>
 </cronentries>

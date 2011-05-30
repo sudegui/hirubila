@@ -81,9 +81,8 @@ public class DumperHypervisor {
 		}
 	}
 	
-	public void registerCourseValidationError(Dump dump, Course course, 
+	public void registerCourseOperation(Dump dump, Course course, 
 			Locale locale, List<FieldError> retVal) {
-		LOGGER.info("Aki estoy");
 		if(!retVal.isEmpty()) {
 			this.registerCourseError(dump, retVal, course, locale);
 		} else {
