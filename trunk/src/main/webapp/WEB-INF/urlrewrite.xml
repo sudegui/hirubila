@@ -69,12 +69,12 @@
 	
 	<rule>
 		<from>/task/**</from>
-		<to>/app/task/$1</to>
+		<to>/app/task/$1?lang=es</to>
 	</rule>
 	
 	<rule>
 		<from>/launcher/**</from>
-		<to>/app/launcher/$1</to>
+		<to>/app/launcher/$1?lang=es</to>
 	</rule>
 	
 	<rule>

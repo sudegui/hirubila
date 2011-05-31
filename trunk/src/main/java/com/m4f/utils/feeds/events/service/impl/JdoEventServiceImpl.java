@@ -3,6 +3,7 @@ package com.m4f.utils.feeds.events.service.impl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.m4f.utils.feeds.events.model.Dump;
@@ -98,6 +99,14 @@ public class JdoEventServiceImpl extends JdoBaseService implements EventService 
 		return this.DAO.count(ParserErrorEvent.class, filter);
 	}
 	
+	@Override
+	public long countParserErrorEventsByDump(Dump dump, Locale locale) throws Exception {
+		Map<String, Object> filter = new HashMap<String, Object>();
+		filter.put("dumpId", dump.getId());
+		filter.put("language", locale.getLanguage());
+		return this.DAO.count(ParserErrorEvent.class, filter);
+	}
+	
 	/*****************************************************************
 	 * 				Dumper Errors Events Methods 
 	 *****************************************************************/
@@ -134,6 +143,7 @@ public class JdoEventServiceImpl extends JdoBaseService implements EventService 
 				filter, params, new Long[] {dump.getId()}, null);
 	}
 	
+	
 	@Override
 	public void deleteStoreErrorEventsByDump(Dump dump) throws Exception {
 		this.DAO.delete(this.getStoreErrorEventsByDump(dump));
@@ -143,6 +153,14 @@ public class JdoEventServiceImpl extends JdoBaseService implements EventService 
 	public long countStoreErrorEventsByDump(Dump dump) throws Exception {
 		Map<String, Object> filter = new HashMap<String, Object>();
 		filter.put("dumpId", dump.getId());
+		return this.DAO.count(StoreErrorEvent.class, filter);
+	}
+	
+	@Override
+	public long countStoreErrorEventsByDump(Dump dump, Locale locale) throws Exception {
+		Map<String, Object> filter = new HashMap<String, Object>();
+		filter.put("dumpId", dump.getId());
+		filter.put("language", locale.getLanguage());
 		return this.DAO.count(StoreErrorEvent.class, filter);
 	}
 	
@@ -173,6 +191,15 @@ public class JdoEventServiceImpl extends JdoBaseService implements EventService 
 	}
 	
 	@Override
+	public List<StoreSuccessEvent> getStoreSuccessEventByDump(Dump dump, 
+			Locale locale) throws Exception {
+		String filter = "dumpId == dumpIdParam && language == langParam";
+		String params = "java.lang.Long dumpIdParam,java.lang.String langParam";
+		return (List<StoreSuccessEvent>) this.DAO.findEntities(StoreSuccessEvent.class, 
+				filter, params, new Object[] {dump.getId(),locale.getLanguage()}, null);
+	}
+	
+	@Override
 	public List<StoreSuccessEvent> getStoreSuccessEventByDump(Dump dump, int init, 
 			int end, String ordering) throws Exception {
 		String filter = "dumpId == dumpIdParam";
@@ -181,6 +208,14 @@ public class JdoEventServiceImpl extends JdoBaseService implements EventService 
 				filter, params, new Long[] {dump.getId()}, null, init, end);
 	}
 	
+	@Override
+	public List<StoreSuccessEvent> getStoreSuccessEventByDump(Dump dump, int init, 
+			int end, String ordering, Locale locale) throws Exception {
+		String filter = "dumpId == dumpIdParam && language == langParam";
+		String params = "java.lang.Long dumpIdParam,java.lang.String langParam";
+		return (List<StoreSuccessEvent>) this.DAO.findEntities(StoreSuccessEvent.class, 
+				filter, params, new Object[] {dump.getId(),locale.getLanguage()}, null);
+	}
 	
 	@Override
 	public void deleteStoreSuccessEventsByDump(Dump dump) throws Exception {
@@ -193,5 +228,15 @@ public class JdoEventServiceImpl extends JdoBaseService implements EventService 
 		filter.put("dumpId", dump.getId());
 		return this.DAO.count(StoreSuccessEvent.class, filter);
 	}
-
+	
+	
+	@Override
+	public long countStoreSuccessEventsByDump(Dump dump, 
+			Locale locale) throws Exception {
+		Map<String, Object> filter = new HashMap<String, Object>();
+		filter.put("dumpId", dump.getId());
+		filter.put("language", locale.getLanguage());
+		return this.DAO.count(StoreSuccessEvent.class, filter);
+	}
+	
 }

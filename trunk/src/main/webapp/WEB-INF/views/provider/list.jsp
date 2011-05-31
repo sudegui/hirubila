@@ -39,6 +39,16 @@
 					<br>
 					<ul class="content-options-menu" style="display: none">
 	        			<li>
+							<a href="<c:url value='/${rc.locale.language}/provider/${provider.id}/schools/'/>" title="${provider.name}">
+								<fmt:message key="provider.action.schoolsManaged"/>
+							</a>
+						</li>
+						<li>
+							<a href="<c:url value='/${rc.locale.language}/provider/${provider.id}/courses/'/>" title="${provider.name}">
+								<fmt:message key="provider.action.coursesManaged"/>
+							</a>
+						</li>
+	        			<li>
 	        				<a href="<c:url value='/${rc.locale.language}/provider/edit/${provider.id}/'/>" title="${provider.name}">
 								<fmt:message key="school.action.edit"/>
 							</a>
@@ -56,23 +66,8 @@
 							</a>
 						</li>
 						<li>
-							<a href="<c:url value='/${rc.locale.language}/provider/${provider.id}/dumps/'/>" title="${provider.name}">
-								<fmt:message key="provider.action.feedMonitoring"/>
-							</a>
-						</li>
-						<li>
 							<a href="<c:url value='/${rc.locale.language}/provider/${provider.id}/summary/'/>" title="${provider.name}">
 								<fmt:message key="provider.action.summary"/>
-							</a>
-						</li>
-						<li>
-							<a href="<c:url value='/${rc.locale.language}/provider/${provider.id}/schools/'/>" title="${provider.name}">
-								<fmt:message key="provider.action.schoolsManaged"/>
-							</a>
-						</li>
-						<li>
-							<a href="<c:url value='/${rc.locale.language}/provider/${provider.id}/courses/'/>" title="${provider.name}">
-								<fmt:message key="provider.action.coursesManaged"/>
 							</a>
 						</li>
 	   				</ul>	

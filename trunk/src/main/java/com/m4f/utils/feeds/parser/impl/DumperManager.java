@@ -145,7 +145,6 @@ public class DumperManager implements DumperCapable {
 			properties.add("name");
 			properties.add("feed");
 			this.beanManager.mergeObjects(newSchool, oldSchool, properties);
-			newSchool.setId(oldSchool.getId());
 			oldSchool.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
 			this.schoolService.save(oldSchool, locale);
 		}

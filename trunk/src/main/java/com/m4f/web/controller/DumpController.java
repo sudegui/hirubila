@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
+import com.m4f.utils.feeds.events.model.ParserErrorEvent;
 import com.m4f.utils.feeds.events.model.StoreErrorEvent;
 import com.m4f.utils.feeds.events.model.StoreSuccessEvent;
 
@@ -55,14 +56,20 @@ public class DumpController extends BaseController {
 	}
 	
 	@RequestMapping(value="/{dumpId}/events/parser-error", method=RequestMethod.GET)
-	public String getParseErrors(@PathVariable Long dumpId, Model model, Locale locale) {
+	public String getParseErrors(@PathVariable Long dumpId, Model model, Locale locale,
+			@RequestParam(defaultValue="1", required=false) Integer page) {
 		try {
 			Dump dump = this.serviceLocator.getDumpService().getDump(dumpId);
 			if(dump == null) {
 				model.addAttribute("message", "Dump with id " + dumpId + " doesn´t exist.");
 				return "common/error";
 			}
-			model.addAttribute("errors",this.serviceLocator.getEventService().getParserErrorByDump(dump));
+			PageManager<ParserErrorEvent> paginator = new PageManager<ParserErrorEvent>();
+			paginator.setUrlBase("/" + locale.getLanguage() + "/dump/" + dumpId + "/events/parser-error");
+			paginator.setStart((page-1)*paginator.getOffset());
+			paginator.setSize(this.serviceLocator.getEventService().countParserErrorEventsByDump(dump));
+			paginator.setCollection(this.serviceLocator.getEventService().getParserErrorByDump(dump));
+			model.addAttribute("paginator", paginator);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			model.addAttribute("message", "Exception produced ...");
@@ -111,9 +118,9 @@ public class DumpController extends BaseController {
 			paginator.setUrlBase("/" + locale.getLanguage() + "/dump/" + dump.getId() + 
 					"/events/store-success");
 			paginator.setStart((page-1)*paginator.getOffset());
-			paginator.setSize(this.serviceLocator.getEventService().countStoreSuccessEventsByDump(dump));
+			paginator.setSize(this.serviceLocator.getEventService().countStoreSuccessEventsByDump(dump, locale));
 			paginator.setCollection(this.serviceLocator.getEventService().getStoreSuccessEventByDump(dump, 
-					paginator.getStart(), paginator.getEnd(), null));
+					paginator.getStart(), paginator.getEnd(), null, locale));
 			model.addAttribute("paginator", paginator);	
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));

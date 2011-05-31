@@ -1,6 +1,7 @@
 package com.m4f.utils.feeds.events.service.ifc;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.events.model.StoreErrorEvent;
@@ -30,6 +31,7 @@ public interface EventService {
 	List<ParserErrorEvent> getParserErrorEventByDump(Dump dump, int init, int end, String ordering) throws Exception;
 	void deleteParserErrorEventsByDump(Dump dump) throws Exception;
 	long countParserErrorEventsByDump(Dump dump) throws Exception;
+	long countParserErrorEventsByDump(Dump dump, Locale locale) throws Exception;
 	
 	/*****************************************************************
 	 * 				Dumper Errors Events Methods 
@@ -41,6 +43,7 @@ public interface EventService {
 	List<StoreErrorEvent> getStoreErrorEventByDump(Dump dump, int init, int end, String ordering) throws Exception;
 	void deleteStoreErrorEventsByDump(Dump dump) throws Exception;
 	long countStoreErrorEventsByDump(Dump dump) throws Exception;
+	long countStoreErrorEventsByDump(Dump dump, Locale locale) throws Exception;
 	
 	/*****************************************************************
 	 * 				Dumper Success Events Methods 
@@ -50,7 +53,10 @@ public interface EventService {
 	List<StoreSuccessEvent> getAllStoreSuccessEvents() throws Exception;
 	StoreSuccessEvent getStoreSuccessEvent(Long id) throws Exception;
 	List<StoreSuccessEvent> getStoreSuccessEventByDump(Dump dump) throws Exception;
+	List<StoreSuccessEvent> getStoreSuccessEventByDump(Dump dump, Locale locale) throws Exception;
 	List<StoreSuccessEvent> getStoreSuccessEventByDump(Dump dump, int init, int end, String ordering) throws Exception;
+	List<StoreSuccessEvent> getStoreSuccessEventByDump(Dump dump, int init, int end, String ordering, Locale locale) throws Exception;
 	void deleteStoreSuccessEventsByDump(Dump dump) throws Exception;
 	long countStoreSuccessEventsByDump(Dump dump) throws Exception;
+	long countStoreSuccessEventsByDump(Dump dump, Locale locale) throws Exception;
 }

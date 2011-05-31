@@ -71,9 +71,9 @@
 
 				return false;
 			});
-
+			
 		$('#schools-dialog').dialog({
-			title: 'Schools selection',
+			title: '<fmt:message key="generic.action.school.selection.dialog"/>',
 			autoOpen: false, 
 			height: 300,
 			width: 300,

@@ -94,9 +94,9 @@ public class TodayController extends BaseController {
 		try {
 			Dump dump = this.serviceLocator.getDumpService().getDump(dumpId);
 			/* List of Longs for representing the number of xml error, validation errors, and successful operation */
-			Long parseErrors = this.serviceLocator.getEventService().countParserErrorEventsByDump(dump);
-			Long storeErrors = this.serviceLocator.getEventService().countStoreErrorEventsByDump(dump);
-			Long successful = this.serviceLocator.getEventService().countStoreSuccessEventsByDump(dump);
+			Long parseErrors = this.serviceLocator.getEventService().countParserErrorEventsByDump(dump, locale);
+			Long storeErrors = this.serviceLocator.getEventService().countStoreErrorEventsByDump(dump, locale);
+			Long successful = this.serviceLocator.getEventService().countStoreSuccessEventsByDump(dump, locale);
 			stats.add(parseErrors);
 			stats.add(storeErrors);
 			stats.add(successful);

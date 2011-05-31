@@ -244,7 +244,7 @@ public class TaskController extends BaseController  {
 		try {
 			provider = this.serviceLocator.getProviderService().getProviderById(providerId, Locale.getDefault());
 			//Set report description
-			report.setDescription(new StringBuffer("Provider: ").append(provider.getName()).toString());
+			report.setDescription(new StringBuffer("Proveedor de feeds: ").append(provider.getName()).toString());
 			dump = this.serviceLocator.getDumpService().getDump(dumpId);
 			if(provider == null) {
 				LOGGER.severe("Provider with id " + providerId + " doesn's exist.");
@@ -295,28 +295,27 @@ public class TaskController extends BaseController  {
 			report.setResult("OK");
 		} catch (ParserConfigurationException e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("FAIL: ").append(e.getMessage()).toString());
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
 			this.serviceLocator.getCronTaskReportService().save(report);
 			return "common.error";
 		} catch (SAXException e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("FAIL: ").append(e.getMessage()).toString());
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
 			this.serviceLocator.getCronTaskReportService().save(report);
 			return "common.error";
 		} catch (IOException e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("FAIL: ").append(e.getMessage()).toString());
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
 			this.serviceLocator.getCronTaskReportService().save(report);
 			return "common.error";
 		} catch (Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("FAIL: ").append(e.getMessage()).toString());
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
 			this.serviceLocator.getCronTaskReportService().save(report);
 			return "common.error";
 		}
 		LOGGER.info("--- Ending the update schools from provider's (" + 
 				providerId + ") queue...");
-		
 		this.serviceLocator.getCronTaskReportService().save(report);
 		return "task.launched";
 	}
@@ -332,14 +331,13 @@ public class TaskController extends BaseController  {
 		report.setObject_id(mediationId);
 		report.setDate(new Date());
 		report.setType(CronTaskReport.TYPE.INTERNAL_FEED);
-		
 		try {
 			// Start the process
 			Locale locale = this.getAvailableLanguages().get(0);
 			Provider provider = this.serviceLocator.getProviderService().getProviderByMediationService(mediationId, locale);
 			MediationService mediationService = this.serviceLocator.getMediatorService().getMediationService(mediationId, Locale.getDefault());
 			//Set report description
-			report.setDescription(new StringBuffer("MediationService: ").append(mediationService.getName()).toString());
+			report.setDescription(new StringBuffer("Servicio de mediación: ").append(mediationService.getName()).toString());
 			if(!mediationService.getHasFeed()) { // All must be manual mediator, but it's another check.
 				FeedSchools feedSchools = this.serviceLocator.getInternalFeedService().createFeedSchools(host, provider, mediationService);
 				this.serviceLocator.getInternalFeedService().saveFeedSchools(feedSchools);
@@ -352,22 +350,19 @@ public class TaskController extends BaseController  {
 				}
 				for(ExtendedSchool school : schools.values()) {
 					FeedCourses feedCourse = this.serviceLocator.getInternalFeedService().
-						createFeedCourses(host, provider, mediationService, school );
-					
+						createFeedCourses(host, provider, mediationService, school ); 	
 					this.serviceLocator.getInternalFeedService().saveFeedCourses(feedCourse);
 				}
-				
 				// Set result into report
 				report.setResult("OK");
 			}
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("FAIL: ").append(e.getMessage()).toString());
-			this.serviceLocator.getCronTaskReportService().save(report);
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
 			throw e;
+		} finally {
+			this.serviceLocator.getCronTaskReportService().save(report);
 		}
-		
-		this.serviceLocator.getCronTaskReportService().save(report);
 		return "task.launched";
 	}
 	/**

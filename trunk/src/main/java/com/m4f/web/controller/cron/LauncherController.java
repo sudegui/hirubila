@@ -53,7 +53,7 @@ public class LauncherController extends BaseController {
 				return "common.error";
 			}
 			Dump dump = this.serviceLocator.getDumpService().createDump();
-			String message = "Launched dump for provider (" + 
+			String message = "Proceso de importación del proveedor (" + 
 				provider.getId() + "-" + provider.getName() + ")";
 			dump.setDescription(message);
 			dump.setLaunched(Calendar.getInstance(new Locale("es")).getTime());
@@ -283,7 +283,7 @@ public class LauncherController extends BaseController {
 			if(id != null) {
 				// Dump file
 				Dump dump = this.serviceLocator.getDumpService().createDump();
-				String message = "Launched dump for provider (" + 
+				String message = "Proceso de importación del proveedor (" + 
 					id + "-" + " " + ")";
 				dump.setDescription(message);
 				dump.setLaunched(Calendar.getInstance(new Locale("es")).getTime());

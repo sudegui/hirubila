@@ -31,6 +31,10 @@ public class DumperHypervisor {
 	
 	public void registerSchoolOperation(Dump dump, Provider provider, School school, 
 			Locale locale, List<FieldError> retVal) {
+		/*Un centro que cumple esta condición ya existía en la base de datos.*/
+		if(school.getId() == null) {
+			return;
+		}
 		if(!retVal.isEmpty()) {
 			this.registerSchoolError(dump, retVal, school, locale);
 		} else {
@@ -83,6 +87,10 @@ public class DumperHypervisor {
 	
 	public void registerCourseOperation(Dump dump, Course course, 
 			Locale locale, List<FieldError> retVal) {
+		/*Un curso que cumple esta condición ya existía en la base de datos.*/
+		if(course.getId() == null) {
+			return;
+		}
 		if(!retVal.isEmpty()) {
 			this.registerCourseError(dump, retVal, course, locale);
 		} else {
