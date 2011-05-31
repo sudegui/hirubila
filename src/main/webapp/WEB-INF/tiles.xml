@@ -583,11 +583,13 @@
 	
 	<definition name="summary.today" extends="summary.base">
 		<put-attribute name="menuId" value="summaryMenu"/>
+		<put-attribute name="title" value="summary.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/summary/today.jsp" />
 	</definition>
 	
 	<definition name="summary.admin.today" extends="summary.base">
 		<put-attribute name="menuId" value="catalogMenu"/>
+		<put-attribute name="title" value="summary.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/summary/today.jsp" />
 	</definition>
 	

@@ -14,7 +14,7 @@
 		<tr>
 			<th class="sortable" order="name"><fmt:message key="mediationService.fields.name"/></th>
 			<th class="sortable" order="hasFeed"><fmt:message key="mediationService.fields.automatic"/></th>
-			<th><fmt:message key="mediationService.actions"/></th>
+			<th><fmt:message key="generic.options.operations"/></th>
 		</tr>
 	</thead>
 	<tbody>

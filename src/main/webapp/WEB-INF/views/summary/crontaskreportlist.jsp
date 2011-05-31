@@ -8,26 +8,7 @@
 <h1><fmt:message key="process.index.section.header"/> (<fmt:message key="message.total.upper"/> ${paginator.size})</h1>
 	
 	
-	<c:if test="${paginator.size > 0 && (paginator.pageStart < paginator.pageEnd)}">
-	<table>
-		<tr>
-		<c:if test="${paginator.currentPage != paginator.pageStart}">
-			<td><a href="<c:url value='${paginator.urlBase}?page=${paginator.currentPage-1}&order=${order}&typeFilter=${filter.type}'/>">Anterior</a></td>
-		</c:if>
-		<c:forEach items='${paginator.pagesIterator}' var='page'>
-	  						<c:if test="${page == paginator.currentPage}">
-	  							<td>${page}</td>
-	  						</c:if>
-	  						<c:if test="${page != paginator.currentPage}">
-	  							<td><a href="<c:url value='${paginator.urlBase}?page=${page}&order=${order}&typeFilter=${filter.type}'/>" title="Schools">${page}</a></td>
-	  						</c:if>
-					</c:forEach>
-					<c:if test="${paginator.currentPage != paginator.pageEnd}">
-			<td><a href="<c:url value='${paginator.urlBase}?page=${paginator.currentPage+1}&order=${order}&typeFilter=${filter.type}'/>">Siguiente</a></td>
-		</c:if>
-		</tr>
-	</table>	
-	</c:if>
+	<%@ include file="/WEB-INF/views/common/paginator-tables.jsp"%>
 
 	<form:form commandName="filter" action="/${rc.locale.language}/summary/crontaskreport">
 		<form:errors path="type" cssClass="ui-state-error"/>
@@ -44,7 +25,7 @@
 	<table style="width:100%; border-spacing:0;">
 		<thead>
 		<tr>
-			<th><fmt:message key="process.fields.id"/></th>
+			
 			<th><fmt:message key="process.fields.type"/></th>
 			<th><fmt:message key="process.fields.description"/></th>
 			<th><fmt:message key="process.fields.date"/></th>
@@ -54,9 +35,22 @@
 		<tbody>
 		<c:forEach items="${paginator.collection}" var="cronTask" varStatus="counter">
 		<tr>	
-			<td>${cronTask.id}</td>
+			
 			<td>${cronTask.type.displayName}</td>
-			<td>${cronTask.description}</td>
+			<c:choose>
+				<c:when test="${cronTask.type eq 'PROVIDER_FEED'}">
+					<td>
+					<a href="<c:url value='/${rc.locale.language}/provider/${cronTask.object_id}/summary/'/>" title="Resumen de todos los procesos">
+								${cronTask.description}
+					</a>
+					</td>
+					
+				</c:when>
+				<c:otherwise>
+					<td>${cronTask.description}</td>	
+				</c:otherwise>
+			</c:choose>
+			
 			<td><fmt:formatDate value="${cronTask.date}" type="date" pattern="dd-MM-yyyy hh:mm:ss" /></td>
 			<td>${cronTask.result}</td>
 		</tr>

@@ -2,33 +2,34 @@
 <%@page isELIgnored="false" %>
 <%@ include file="/WEB-INF/views/common/includes.jsp"%>
 		
-		<h1><fmt:message key="dumperParseError.list.section.header"/> (<fmt:message key="message.total.upper"/> ${fn:length(errors)})</h1>
+		<h1><fmt:message key="dumperParseError.list.section.header"/> (<fmt:message key="message.total.upper"/> ${paginator.size})</h1>
 		
-		<a href="<c:url value='/${rc.locale.language}/parsererror/delete/all'/>" title="delete all">
-							<fmt:message key="business.action.deleteall"/>
-		</a>
+		<%@ include file="/WEB-INF/views/common/paginator-tables.jsp"%>
 		
 		<table style="width:100%; border-spacing:0;">
+			<thead>
 			<tr>
-				<th>Entity Class</th>			
-				<th>Entity ID</th>
-				<th>Time</th>
-				<th>Cause</th>
-				<th>Operations</th>
+				<th><fmt:message key="dump.parseError.fields.origen"/></th>	
+				<th><fmt:message key="dump.parseError.fields.date"/></th>
+				<th><fmt:message key="dump.parseError.fields.cause"/></th>
 			</tr>
-			<c:forEach items="${errors}" var="error">
+			</thead>
+			<tbody>
+			<c:forEach items="${paginator.collection}" var="error">
 				<tr>
-					<td>${error.entityClass}</td>			
-					<td>${error.entityId}</td>
-					<td>${error.when}</td>
-					<td class="description-collapse">${error.cause.value}</td>
 					<td>
-						<ul>
-							<li><a href="<c:url value='/${rc.locale.language}/parsererror/delete/${error.id}'/>" title="${error.id}">
-								<fmt:message key="school.action.delete"/></a></li>
-						</ul>
-						
-					</td>
+						<c:choose>
+							<c:when test="${error.entityClass == 'com.m4f.business.domain.Provider'}">
+								<a href="<c:url value='/${rc.locale.language}/provider/detail/${error.entityId}'/>" title="detalle" target="_blank"><fmt:message key="${error.entityClass}"/></a>
+							</c:when>
+							<c:when test="${error.entityClass == 'com.m4f.business.domain.School'}">
+								<a href="<c:url value='/${rc.locale.language}/school/detail/${error.entityId}'/>" title="detalle" target="_blank"><fmt:message key="${error.entityClass}"/></a>
+							</c:when>
+						</c:choose>
+					</td>			
+					<td><fmt:formatDate value="${error.when}" type="date" pattern="dd-MM-yyyy hh:mm:ss" /></td>
+					<td class="description-collapse">${error.cause.value}</td>
 				</tr>
 			</c:forEach>
+			</tbody>
 		</table>

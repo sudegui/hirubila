@@ -44,8 +44,8 @@ private static final Logger LOGGER = Logger.getLogger(ExtendedCourseController.c
 	
 	@Secured("ROLE_MANUAL_MEDIATOR")
 	@RequestMapping( method=RequestMethod.GET)
-	public String getForm(Principal currentUser, Model model, 
-			Locale locale, @RequestHeader("referer") String referer, 
+	public String getForm(Principal currentUser, Model model, Locale locale, 
+			@RequestHeader(required=false,value="referer") String referer, 
 			HttpSession session) {
 		try {
 			MediationService mediationService = this.getMediationService(currentUser);
@@ -61,7 +61,23 @@ private static final Logger LOGGER = Logger.getLogger(ExtendedCourseController.c
 	}
 	
 	@Secured("ROLE_MANUAL_MEDIATOR")
-	@RequestMapping( method=RequestMethod.POST)
+	@RequestMapping(value="/edit/{courseId}", method=RequestMethod.GET)
+	public String edit(@PathVariable Long courseId, Model model, Locale locale, 
+			@RequestHeader(required=false,value="referer") String referer, HttpSession session) {
+		try {
+			ExtendedCourse course = this.serviceLocator.getExtendedCourseService().getCourse(courseId, locale);
+			model.addAttribute("course", course);
+			model.addAttribute("school", this.serviceLocator.getExtendedSchoolService().getSchool(course.getSchool(), locale));
+			session.setAttribute(this.REFERER_PARAM, referer);
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			return "common.error";
+		}
+		return "extended.course.form";
+	}
+	
+	@Secured("ROLE_MANUAL_MEDIATOR")
+	@RequestMapping(method=RequestMethod.POST)
 	public String save(@ModelAttribute("course") @Valid ExtendedCourse course, 
 			BindingResult result, Principal principal, Locale locale, Model model, 
 			@RequestHeader("Host") String host, HttpSession session) {				
@@ -89,22 +105,7 @@ private static final Logger LOGGER = Logger.getLogger(ExtendedCourseController.c
 		return "redirect:" + returnURL;
 	}
 	
-	@Secured("ROLE_MANUAL_MEDIATOR")
-	@RequestMapping(value="/edit/{courseId}", method=RequestMethod.GET)
-	public String edit(@PathVariable Long courseId, Model model,
-			Locale locale, @RequestHeader("referer") String referer, 
-			HttpSession session) {
-		try {
-			ExtendedCourse course = this.serviceLocator.getExtendedCourseService().getCourse(courseId, locale);
-			model.addAttribute("course", course);
-			model.addAttribute("school", this.serviceLocator.getExtendedSchoolService().getSchool(course.getSchool(), locale));
-			session.setAttribute(this.REFERER_PARAM, referer);
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		return "extended.course.form";
-	}
+	
 	
 	@Secured("ROLE_MANUAL_MEDIATOR")
 	@RequestMapping(value="/delete/{courseId}", method=RequestMethod.GET)

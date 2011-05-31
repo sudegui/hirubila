@@ -13,7 +13,7 @@ import javax.jdo.annotations.PrimaryKey;
 public class CronTaskReport extends BaseEntity {
 	
 	public enum TYPE {
-		PROVIDER_FEED("Provider feed import process"), INTERNAL_FEED("Internal feed generation");
+		PROVIDER_FEED("Importacion de feed de un proveedor"), INTERNAL_FEED("Generacion interna feed mediador manual");
 		
 		private final String displayName;
 		
@@ -100,6 +100,9 @@ public class CronTaskReport extends BaseEntity {
 
 	public void setResult(String result) {
 		this.result = result;
+		if(result.length()>500) {
+			this.result = result.substring(0, 490);
+		}
 	}
 
 	public String getDescription() {
@@ -108,5 +111,8 @@ public class CronTaskReport extends BaseEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
+		if(description.length()>500) {
+			this.description = description.substring(0, 490);
+		}
 	}
 }

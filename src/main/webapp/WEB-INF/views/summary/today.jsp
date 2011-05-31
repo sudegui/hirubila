@@ -25,12 +25,12 @@ function updateChart(id) {
 		data.addColumn('string', 'Type');
 		data.addColumn('number', 'Results');
 		
-		data.addRow(['Parse Errors', dump[0]]);
-		data.addRow(['Validation Errors', dump[1]]);
-		data.addRow(['Successful', dump[2]]);
+		data.addRow(['<fmt:message key="dump.main.action.feedError"/> ' + '(' + dump[0] + ')', dump[0]]);
+		data.addRow(['<fmt:message key="dump.main.action.saveError"/> ' + '(' + dump[1] + ')', dump[1]]);
+		data.addRow(['<fmt:message key="dump.main.action.successOperations"/> ' + '(' + dump[2] + ')', dump[2]]);
 
 		
-		chart.draw(data, {width: 400, height: 240, is3D: true, title: '<fmt:message key="summary.chart.title"/>: '+id, enableEvents:true});
+		chart.draw(data, {width: 500, height: 240, is3D: true, title: '<fmt:message key="summary.chart.title"/>: '+id, enableEvents:true});
 		// Assign  event  handler
         google.visualization.events.addListener(chart, 'select', function mouseEventHandler()  {
         	var selection = chart.getSelection();
@@ -85,12 +85,26 @@ function rowData(id, date, description) {
 
 
  <!--Div that will hold the pie chart-->
-    <div id="summaryChart"></div>
+ 
+ 	<table style="background:none;">
+ 		<tr>
+ 			<td width='60%'>
+				<div id="summaryChart"></div>		
+ 			</td>
+ 			<td>
+ 				<p><fmt:message key="summary.action.view.advice.1"/></p>
+ 				<p><fmt:message key="summary.action.view.advice.2"/></p>
+ 			</td>
+ 		</tr>
+ 	</table>
+    
+    
     <div id="debugger"></div>
     
+    <p><fmt:message key="summary.action.view.advice.3"/></p>
     <c:if test="${dumpId != null}">
 	    <div id="historicalTable">
-	    	<table id="historical">
+	    	<table id="historical" style="width:100%; border-spacing:0;">
 	    		<thead>
 		    		<tr>
 		    			<th><fmt:message key="summary.table.fields.id"/></th>
