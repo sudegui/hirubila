@@ -12,6 +12,7 @@ import com.m4f.business.service.ifc.I18nSchoolService;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
 import com.m4f.utils.i18n.dao.ifc.I18nDAOSupport;
+import com.m4f.utils.StackTraceUtil;
 
 public class SchoolServiceImpl extends I18nDAOBaseService implements I18nSchoolService {
 	
@@ -81,7 +82,7 @@ public class SchoolServiceImpl extends I18nDAOBaseService implements I18nSchoolS
 			try {
 				this.DAO.saveOrUpdate(school, locale);
 			} catch(Exception e) {
-				
+				LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			}
 		}
 	}		

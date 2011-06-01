@@ -115,9 +115,7 @@
 	              </select>
               </c:forEach>
             </form>
-            <!--  
-            <p class="descarga_pdf"><a href="#"><fmt:message key="search.mediators.net.dowload.pdf"/></a></p>
-            -->
+            <p class="descarga_pdf"><a href="http://clients.m4f.es/mediadores-${rc.locale.language}.pdf" target="_blank" type="application/pdf"><fmt:message key="search.mediators.net.dowload.pdf"/></a></p>
 			<div class="caja_hiru_dcha">
             	<h2><fmt:message key="search.mediators.net.question.three"/></h2>
                 <p><strong><fmt:message key="search.mediators.net.message.part1"/></strong>&nbsp;<fmt:message key="search.mediators.net.message.part2"/>
