@@ -1,0 +1,11 @@
+<!-- Indices written at Wed, 1 Jun 2011 14:22:23 UTC -->
+
+<datastore-indexes>
+
+    <!-- Used 2 times in query history -->
+    <datastore-index kind="MediationService" ancestor="false" source="auto">
+        <property name="province" direction="asc"/>
+        <property name="name" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>

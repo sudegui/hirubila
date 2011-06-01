@@ -12,7 +12,7 @@
 	</xs:simpleType>
 	<xs:element name="unique_id" type="xs:token">
 		<xs:annotation>
-			<xs:documentation>Identificativo único del centro.</xs:documentation>
+			<xs:documentation>Identificador unico del centro.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
 	<xs:element name="izena" type="xs:token">
@@ -22,27 +22,27 @@
 	</xs:element>
 	<xs:element name="telefonoa" type="xs:token">
 		<xs:annotation>
-			<xs:documentation>Números de teléfono del centro, separados por coma.</xs:documentation>
+			<xs:documentation>Numeros de telefono del centro, separados por coma.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
 	<xs:element name="faxa" type="xs:token">
 		<xs:annotation>
-			<xs:documentation>Número de Fax del centro.</xs:documentation>
+			<xs:documentation>Numero de Fax del centro.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
 	<xs:element name="postae" type="xs:token">
 		<xs:annotation>
-			<xs:documentation>Buzón o correo electrónico del centro.</xs:documentation>
+			<xs:documentation>Buzon o correo electronico del centro.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
 	<xs:element name="helbidea" type="xs:token">
 		<xs:annotation>
-			<xs:documentation>Dirección del centro.</xs:documentation>
+			<xs:documentation>Direccion del centro.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
 	<xs:element name="pk" type="xs:token">
 		<xs:annotation>
-			<xs:documentation>Código postal del municipio donde se ubica el centro.</xs:documentation>
+			<xs:documentation>Codigo postal del municipio donde se ubica el centro.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
 	<xs:element name="web_orria" type="xs:anyURI">
@@ -57,12 +57,12 @@
 	</xs:element>
 	<xs:element name="moderatua" type="xs:string">
 		<xs:annotation>
-			<xs:documentation>Elemento no significativo, ya que no se tiene en cuenta para ningún proceso.</xs:documentation>
+			<xs:documentation>Elemento no significativo, ya que no se tiene en cuenta para ningun proceso.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
 	<xs:element name="feed" type="xs:anyURI">
 		<xs:annotation>
-			<xs:documentation>Feed a través del cual se pueden recuperar los cursos del centro.</xs:documentation>
+			<xs:documentation>Feed a traves del cual se pueden recuperar los cursos del centro.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
 	<xs:element name="zentroa">

@@ -1,29 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
-<!-- 
-   <cron>
-  	<url>/es/launcher/internalFeeds/schools</url>
-  	<description>Generate a feed of extendedSchools data</description>
-  	<schedule>every day 20:00</schedule>
-  </cron>
-  
-   <cron>
-  	<url>/es/launcher/internalFeeds/courses</url>
-  	<description>Generate a feed of extendedCourses data</description>
-  	<schedule>every day 20:30</schedule>
-  </cron>
-	
--->
-
   <cron>
   	<url>/launcher/updatefromfeeds</url>
   	<description>Generate in a round-robin method all internal feeds.</description>
-  	<schedule>every 90 minutes</schedule>
+  	<schedule>every 120 minutes</schedule>
   </cron>
   
   <cron>
   	<url>/launcher/internalFeedGeneration</url>
   	<description>Generate in a round-robin method all internal feeds.</description>
-  	<schedule>every 2 hours</schedule>
+  	<schedule>every 150 minutes</schedule>
   </cron>
 </cronentries>
