@@ -31,7 +31,7 @@ public abstract class BaseController {
 	
 	protected final String PROVIDER_QUEUE = "provider";
 	protected final String SCHOOL_QUEUE = "school";
-	protected final String BATCH_QUEUE = "batch";
+	//protected final String BATCH_QUEUE = "batch";
 	
 	
 	private static final Logger LOGGER = Logger.getLogger(BaseController.class.getName());

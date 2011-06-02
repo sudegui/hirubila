@@ -369,29 +369,6 @@ public class TaskController extends BaseController  {
 	 * END INTERNAL FEED GENERATION
 	 */
 	
-	/**
-	 * START CREATE CATALOG OLD WAY
-	 */
-	@RequestMapping(value="/catalog/createpaginated", method=RequestMethod.POST)
-	public String createCatalogPaginated(@RequestHeader("host") String host, 
-			@RequestParam(required=true) Integer start, @RequestParam(required=true) Integer finish) {
-		try {
-			Locale locale = this.getAvailableLanguages().size() > 0 ? this.getAvailableLanguages().get(0) : Locale.getDefault();
-			Collection<Course> courses = this.serviceLocator.getCourseService().getCourses(null, locale, start, finish);
-			for(Course course : courses) {
-				Queue queue = QueueFactory.getQueue(this.BATCH_QUEUE);
-				String urlTask = new StringBuffer("/task/catalog/create").toString();
-				TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
-				options.method(Method.POST);
-				options.param("courseId", course.getId().toString());
-				queue.add(options);
-			}
-		} catch(Exception e) {
-			this.viewHelper.errorManagement(e);
-		}
-		return "task.launched";
-	}
-	
 	@RequestMapping(value="/catalog/udpatepaginated", method=RequestMethod.POST)
 	public String updateCatalogPaginated(@RequestHeader("host") String host, @RequestParam(required=false) Long from,
 			@RequestParam(required=true) Integer start, @RequestParam(required=true) Integer finish) {
@@ -420,7 +397,7 @@ public class TaskController extends BaseController  {
 	/**
 	 * START CREATE CATALOG NEW WAY
 	 */
-	@RequestMapping(value="/catalog/createpaginatednew", method=RequestMethod.POST)
+	@RequestMapping(value="/catalog/createpaginated", method=RequestMethod.POST)
 	public String createCatalogPaginatedNew(@RequestHeader("host") String host, 
 			@RequestParam(required=true) Integer start, @RequestParam(required=true) Integer finish) throws Exception {
 		try {

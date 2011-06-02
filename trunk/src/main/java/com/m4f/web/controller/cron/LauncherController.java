@@ -4,15 +4,12 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -114,57 +111,6 @@ public class LauncherController extends BaseController {
 	}
 	
 	
-	
-	/**
-	 * Create a task to generate a feed with all extended schools
-	 * 
-	 * 
-	 * @return tiles's registered view.
-	 */
-	@RequestMapping(value="/internalFeeds/schools", method=RequestMethod.GET)
-	public String generateSchoolsFeed(Model model, Locale locale) {
-		try {
-			LOGGER.severe("#### Generating schools feed (cron task).............");
-			Queue queue = QueueFactory.getQueue(this.BATCH_QUEUE);
-			String urlTask = new StringBuffer("/task/internalFeeds/schools").toString();
-			TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
-			options.method(Method.GET);
-			queue.add(options);
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		
-		return "cron.launched";
-	}
-	
-	/**
-	 * Create a sequence of tasks to generate a feed with all courses relationed with a specific school.
-	 * 
-	 * 
-	 * @return tiles's registered view.
-	 */
-	@RequestMapping(value="/internalFeeds/courses", method=RequestMethod.GET)
-	public String generateCoursesFeed(Model model, Locale locale) {
-		try {
-			LOGGER.severe("#### Generating courses feed (cron task).............");
-			Collection<Provider> providers = this.serviceLocator.getProviderService().getAllProviders(Boolean.TRUE, Locale.getDefault());
-			for(Provider provider : providers) {
-				Queue queue = QueueFactory.getQueue(this.BATCH_QUEUE);
-				String urlTask = new StringBuffer("/task/internalFeeds/course").toString();
-				TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
-				options.method(Method.POST);
-				options.param("providerId", provider.getId().toString());
-				queue.add(options);
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		
-		return "cron.launched";
-	}
-	
 	/*
 	 * START CREATE CATALOG NEW WAY
 	 */
@@ -189,7 +135,7 @@ public class LauncherController extends BaseController {
 		
 			for(Integer page : paginator.getPagesIterator()) {
 				Queue queue = QueueFactory.getQueue("default");
-				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/createpaginatednew");
+				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/createpaginated");
 				options.param("start", "" +(page-1)*RANGE);
 				options.param("finish", "" + (page)*RANGE);
 				options.method(Method.POST);
