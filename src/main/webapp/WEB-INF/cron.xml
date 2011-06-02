@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
   <cron>
-  	<url>/launcher/updatefromfeeds</url>
-  	<description>Generate in a round-robin method all internal feeds.</description>
-  	<schedule>every 120 minutes</schedule>
+  	<url>/launcher/loadprovider</url>
+  	<description>Generate in a round-robin method the of a provider school feed.</description>
+  	<schedule>every 90 minutes</schedule>
   </cron>
-  
   <cron>
   	<url>/launcher/internalFeedGeneration</url>
   	<description>Generate in a round-robin method all internal feeds.</description>
-  	<schedule>every 150 minutes</schedule>
+  	<schedule>every 100 minutes</schedule>
   </cron>
 </cronentries>

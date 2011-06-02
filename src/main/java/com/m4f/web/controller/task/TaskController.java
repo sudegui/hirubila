@@ -176,60 +176,13 @@ public class TaskController extends BaseController  {
 		return "task.launched";
 	}
 	
-	/**
-	 * START INTERNAL FEED GENERATION
-	 */
-	@RequestMapping(value="/internalFeeds/schools", method=RequestMethod.GET)
-	public String generateInternalFeedSchools(@RequestHeader("host") String host, HttpServletRequest request) {
-		try {
-			Collection<Provider> providers = this.serviceLocator.getProviderService().getAllProviders(Boolean.TRUE, Locale.getDefault());
-			for(Provider provider : providers) {
-				MediationService mediationService = this.serviceLocator.getMediatorService().getMediationService(provider.getMediationService(), Locale.getDefault());
-				if(!mediationService.getHasFeed()) {
-					FeedSchools feed = this.serviceLocator.getInternalFeedService().createFeedSchools(host, provider, mediationService);
-					this.serviceLocator.getInternalFeedService().saveFeedSchools(feed);
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		
-		return "task.launched";
-	}
 	
-	@RequestMapping(value="/internalFeeds/course", method=RequestMethod.POST)
-	public String generateInternalFeedCoursesBySchool(@RequestHeader("host") String host, 
-			HttpServletRequest request, @RequestParam(required=true) Long providerId) {
-		try {
-			Provider provider = this.serviceLocator.getProviderService().getProviderById(providerId, Locale.getDefault());
-			MediationService mediationService = this.serviceLocator.getMediatorService().getMediationService(provider.getMediationService(), Locale.getDefault());
-			if(!mediationService.getHasFeed()) {
-				HashMap<Long, ExtendedSchool> schools = new HashMap<Long, ExtendedSchool>();
-				Collection<ExtendedCourse> courses = this.serviceLocator.getExtendedCourseService().getCoursesByOwner(mediationService.getId(), null, Locale.getDefault());
-				for(ExtendedCourse course : courses) {
-					ExtendedSchool school = this.serviceLocator.getExtendedSchoolService().getSchool(course.getSchool(), Locale.getDefault());
-					if(school != null) schools.put(school.getId(), school);
-				}
-				for(ExtendedSchool school : schools.values()) {
-					FeedCourses feed = this.serviceLocator.getInternalFeedService().
-						createFeedCourses(host, provider, mediationService, school );
-					
-					this.serviceLocator.getInternalFeedService().saveFeedCourses(feed);
-				}
-			}
-
-		} catch(Exception e) {
-			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		return "task.launched";
-	}
+	
 	
 	/*
 	 * This task creates/updates schools and courses information from one provider feed
 	 */
-	@RequestMapping(value="/updatedatafromfeed", method=RequestMethod.POST)
+	@RequestMapping(value="/loadproviderfeed", method=RequestMethod.POST)
 	public String updateDataFromFeed(@RequestParam(required=true) Long providerId, 
 			@RequestParam(required=true) Long dumpId) throws Exception {
 		LOGGER.log(Level.INFO, "----- Starting the update schools from provider's queue...");
@@ -238,7 +191,6 @@ public class TaskController extends BaseController  {
 		report.setObject_id(providerId);
 		report.setDate(new Date());
 		report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
-		
 		Provider provider = null;
 		Dump dump = null;
 		try {
@@ -369,33 +321,11 @@ public class TaskController extends BaseController  {
 	 * END INTERNAL FEED GENERATION
 	 */
 	
-	@RequestMapping(value="/catalog/udpatepaginated", method=RequestMethod.POST)
-	public String updateCatalogPaginated(@RequestHeader("host") String host, @RequestParam(required=false) Long from,
-			@RequestParam(required=true) Integer start, @RequestParam(required=true) Integer finish) {
-		try {
-			Date fromDate = null;
-			if(from != null) fromDate = new Date(from);
-			Locale locale = this.getAvailableLanguages().size() > 0 ? this.getAvailableLanguages().get(0) : Locale.getDefault();
-			Collection<Course> courses = this.serviceLocator.getCourseService().getUpdatedCourses(fromDate, null, locale, start, finish);
-			for(Course course : courses) {
-				Queue queue = QueueFactory.getQueue(this.BATCH_QUEUE);
-				String urlTask = new StringBuffer("/task/catalog/create").toString();
-				TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
-				options.method(Method.POST);
-				options.param("courseId", course.getId().toString());
-				queue.add(options);
-			}
-		} catch(Exception e) {
-			this.viewHelper.errorManagement(e);
-		}
-		return "task.launched";
-	}
+	
+	
 	
 	/**
-	 * END CREATE CATALOG OLD WAY
-	 */
-	/**
-	 * START CREATE CATALOG NEW WAY
+	 * CATALOG CREATION TASKS
 	 */
 	@RequestMapping(value="/catalog/createpaginated", method=RequestMethod.POST)
 	public String createCatalogPaginatedNew(@RequestHeader("host") String host, 
@@ -404,8 +334,8 @@ public class TaskController extends BaseController  {
 			Locale locale = this.getAvailableLanguages().size() > 0 ? this.getAvailableLanguages().get(0) : Locale.getDefault();
 			Collection<Course> courses = this.serviceLocator.getCourseService().getCourses("title", locale, start, finish);
 			for(Course course : courses) {
-				Queue queue = QueueFactory.getQueue(this.BATCH_QUEUE);
-				String urlTask = new StringBuffer("/task/catalog/createnew").toString();
+				Queue queue = QueueFactory.getQueue(this.CATALOG_QUEUE);
+				String urlTask = new StringBuffer("/task/catalog/create").toString();
 				TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
 				options.method(Method.POST);
 				options.param("courseId", course.getId().toString());
@@ -418,7 +348,7 @@ public class TaskController extends BaseController  {
 		return "task.launched";
 	}
 	
-	@RequestMapping(value="/catalog/createnew", method=RequestMethod.POST)
+	@RequestMapping(value="/catalog/create", method=RequestMethod.POST)
 	public String createCourseCatalogNew(@RequestHeader("host") String host, 
 			@RequestParam(required=true) Long courseId) throws Exception {
 		try {
@@ -463,12 +393,18 @@ public class TaskController extends BaseController  {
 		return "task.launched";
 	}
 	
-	@RequestMapping(value="/catalog/deletepaginatednew", method=RequestMethod.POST)
+	/**
+	 * CATALOG DELETION TASKS
+	 */
+	@RequestMapping(value="/catalog/deletepaginated", method=RequestMethod.POST)
 	public String deleteCatalogPaginatedNew(@RequestHeader("host") String host, 
-			@RequestParam(required=true) Integer start, @RequestParam(required=true) Integer finish) {
+			@RequestParam(required=true) Integer start, 
+			@RequestParam(required=true) Integer finish) {
 		try {
 			for(Locale locale : this.getAvailableLanguages()) {
-				Collection<CourseCatalog> courses = this.serviceLocator.getCourseHtmlService().getCoursesCatalog(null, locale, start, finish);
+				Collection<CourseCatalog> courses = 
+					this.serviceLocator.getCourseHtmlService().getCoursesCatalog(null, 
+							locale, start, finish);
 				for(CourseCatalog course : courses) {
 					this.serviceLocator.getCourseHtmlService().delete(course);
 				}
@@ -478,9 +414,7 @@ public class TaskController extends BaseController  {
 		}
 		return "task.launched";
 	}
-	/**
-	 * END CREATE CATALOG NEW WAY
-	 */
+	
 	
 	/**
 	 * RESULT SEARCH EMAIL
@@ -598,7 +532,7 @@ public class TaskController extends BaseController  {
 	}
 	
 	private void storeCourses(Dump dump, School school, 
-			Map<String, List<Course>> courses) throws Exception{
+			Map<String, List<Course>> courses) throws Exception {
 		for(String lang : courses.keySet()) {
 			Locale locale = new Locale(lang);
 			ArrayList<Course> lista = new ArrayList<Course>();
@@ -631,21 +565,5 @@ public class TaskController extends BaseController  {
 						province.getName(), region.getName(), town.getName());
 			}
 		}
-		
-		// TODO Eliminacion de los cursos de que no han llegado en el feed. 
-		/*Iterator<String> it = courses.keySet().iterator();
-		Locale locale = new Locale(it.next());
-		List<Course> lista = courses.get(locale.getLanguage());
-		List<Course> coursesDelete = new ArrayList<Course>();
-		Collection<Course> coursesOld = this.serviceLocator.getCourseService().getCoursesBySchool(school, null, locale);
-		for(Course c : coursesOld) {
-			if(!lista.contains(c)) {
-				coursesDelete.add(c);
-			}
-		}
-		for(Course c : coursesDelete) {
-			this.serviceLocator.getCourseHtmlService().deleteCourseCatalogByCourseId(c.getId());
-			this.serviceLocator.getCourseService().delete(c, Locale.getDefault());
-		}*/
 	}
 }

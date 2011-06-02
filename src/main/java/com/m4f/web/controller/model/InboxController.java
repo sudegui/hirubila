@@ -157,12 +157,10 @@ private static final Logger LOGGER = Logger.getLogger(InboxController.class.getN
 				inboxRes.setFrom("admin@hirubila.m4f.es");
 				inboxRes.setUser(USER.INTERNAL);
 				inboxRes.setOrigin(ORIGIN.RESPONSE);
-				
 				// Save
 				this.serviceLocator.getInboxService().save(inboxRes, locale);
-				
 				// Create task to send an email response
-				Queue queue = QueueFactory.getQueue("email");
+				Queue queue = QueueFactory.getQueue(this.MAIL_QUEUE);
 				queue.add(TaskOptions.Builder.withUrl("/task/sendInboxResponse")
 						.param("inboxId", inboxRes.getId().toString()).method(Method.POST));
 			}

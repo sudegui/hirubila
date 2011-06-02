@@ -362,7 +362,7 @@ public class AdminController extends BaseController {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
 		}
-		Queue queue = QueueFactory.getDefaultQueue();
+		Queue queue = QueueFactory.getQueue(this.PROVIDER_QUEUE);
 		TaskOptions options = TaskOptions.Builder.withUrl("/task/management/delete/provider");
 		options.param("providerId", String.valueOf(providerId));
 		options.method(Method.POST);

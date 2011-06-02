@@ -122,7 +122,7 @@ public class LauncherController extends BaseController {
 	 * @return tiles's registered view.
 	 */
 	@RequestMapping(value="/createHtmlCatalog", method=RequestMethod.GET)
-	public String createHtmlCatalogNew(Locale locale) {
+	public String createHtmlCatalog(Locale locale) {
 		final int RANGE = 200;
 		final int LIMIT = 100000;
 		try {
@@ -134,7 +134,7 @@ public class LauncherController extends BaseController {
 			paginator.setSize(this.serviceLocator.getCourseService().count());
 		
 			for(Integer page : paginator.getPagesIterator()) {
-				Queue queue = QueueFactory.getQueue("default");
+				Queue queue = QueueFactory.getQueue(this.CATALOG_QUEUE);
 				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/createpaginated");
 				options.param("start", "" +(page-1)*RANGE);
 				options.param("finish", "" + (page)*RANGE);
@@ -168,8 +168,8 @@ public class LauncherController extends BaseController {
 			paginator.setSize(this.serviceLocator.getCourseHtmlService().countCourseCatalog(locale));
 		
 			for(Integer page : paginator.getPagesIterator()) {
-				Queue queue = QueueFactory.getQueue("default");
-				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/deletepaginatednew");
+				Queue queue = QueueFactory.getQueue(this.CATALOG_QUEUE);
+				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/deletepaginated");
 				options.param("start", "" +(page-1)*RANGE);
 				options.param("finish", "" + (page)*RANGE);
 				options.method(Method.POST);
@@ -195,7 +195,7 @@ public class LauncherController extends BaseController {
 		try {
 			Collection<MediationService> mediationServices = this.serviceLocator.getMediatorService().getMediationServices(false, Locale.getDefault());
 			for(MediationService m : mediationServices) {
-				Queue queue = QueueFactory.getDefaultQueue();
+				Queue queue = QueueFactory.getQueue(this.PROVIDER_QUEUE);
 				TaskOptions options = TaskOptions.Builder.withUrl("/task/createprovidersmanual");
 				options.param("mediationId", String.valueOf(m.getId()));
 				options.method(Method.POST);
@@ -211,13 +211,14 @@ public class LauncherController extends BaseController {
 	/*
 	 * CRON TO EXECUTE IN ORDER AND IN ROUND-ROBIN METHOD THE SCHOOLS AND COURSES FROM THEIR PROVIDER
 	 */
-	@RequestMapping(value="/updatefromfeeds", method=RequestMethod.GET)
-	public String updateFromFeeds() throws Exception {
+	@RequestMapping(value="/loadprovider", method=RequestMethod.GET)
+	public String loadProviderFeed() throws Exception {
 		CronTaskReport report = null;
 		try {
 			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_FEED);
 		} catch(Exception e) {
-			LOGGER.severe(new StringBuffer("No se ha podido recuperara el ultimo CronTaskReport").append(StackTraceUtil.getStackTrace(e)).toString());			
+			LOGGER.severe(new StringBuffer("No se ha podido recuperara el " +
+					"ultimo CronTaskReport").append(StackTraceUtil.getStackTrace(e)).toString());			
 		}
 		try {
 			// Get a list with all manual mediation service ids.
@@ -237,8 +238,8 @@ public class LauncherController extends BaseController {
 				dump.setOwnerClass(Provider.class.getName());
 				this.serviceLocator.getDumpService().save(dump);
 				// Invoke the task with the id obtained
-				Queue queue = QueueFactory.getQueue("school"); // TODO
-				TaskOptions options = TaskOptions.Builder.withUrl("/task/updatedatafromfeed");
+				Queue queue = QueueFactory.getQueue(this.PROVIDER_QUEUE);
+				TaskOptions options = TaskOptions.Builder.withUrl("/task/loadproviderfeed");
 				options.param("providerId", String.valueOf(id));
 				options.param("dumpId", String.valueOf(dump.getId()));
 				options.method(Method.POST);
@@ -270,7 +271,7 @@ public class LauncherController extends BaseController {
 				id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
 				if(id != null) {
 					// Invoke the task with the id obtained
-					Queue queue = QueueFactory.getDefaultQueue(); // TODO
+					Queue queue = QueueFactory.getQueue(this.INTERNAL_FEED_QUEUE);
 					TaskOptions options = TaskOptions.Builder.withUrl("/task/internalFeeds/mediation");
 					options.param("mediationId", String.valueOf(id));
 					options.method(Method.POST);

@@ -3,17 +3,43 @@
 	<queue>
 		<name>provider</name>
 		<rate>2/s</rate>
+		<retry-parameters>
+      		<task-retry-limit>5</task-retry-limit>
+      		<min-backoff-seconds>30</min-backoff-seconds>
+     	 	<max-backoff-seconds>180</max-backoff-seconds>
+     		<max-doublings>2</max-doublings>
+    	</retry-parameters>
 	</queue>
 	<queue>
 		<name>school</name>
-		<rate>2/s</rate>
+		<rate>10/s</rate>
+    	<bucket-size>20</bucket-size>
+		<max-concurrent-requests>3</max-concurrent-requests>
+		<retry-parameters>
+      		<task-retry-limit>5</task-retry-limit>
+      		<min-backoff-seconds>30</min-backoff-seconds>
+     	 	<max-backoff-seconds>180</max-backoff-seconds>
+     		<max-doublings>2</max-doublings>
+    	</retry-parameters>
 	</queue>
 	<queue>
 		<name>email</name>
+		<rate>20/s</rate>
+		<bucket-size>40</bucket-size>
+		<retry-parameters>
+      		<task-retry-limit>5</task-retry-limit>
+      		<min-backoff-seconds>10</min-backoff-seconds>
+     	 	<max-backoff-seconds>180</max-backoff-seconds>
+     		<max-doublings>0</max-doublings>
+    	</retry-parameters>
+	</queue>
+	<queue>
+		<name>catalog</name>
 		<rate>2/s</rate>
 	</queue>
 	<queue>
-		<name>batch</name>
+		<name>internal_feed</name>
 		<rate>2/s</rate>
 	</queue>
 </queue-entries>
+	
