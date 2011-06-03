@@ -37,6 +37,9 @@ public class MultilanguageInterceptor {
 		
 		
 	public void loadCollection(List retVal, Locale locale, Object clazz) throws Throwable {
+		if(locale == null) {
+			return;
+		}
 		LOGGER.info("*********** Load Collection....................");
 		if(retVal == null) {
 			return;
@@ -47,6 +50,9 @@ public class MultilanguageInterceptor {
 	
 	public void loadEntity(Object clazz, I18nBehaviour retVal, 
 			Locale locale) throws Throwable {
+		if(locale == null) {
+			return;
+		}
 		LOGGER.info("*********** Load entity....................");
 		if(retVal == null) {
 			return;
@@ -100,6 +106,9 @@ public class MultilanguageInterceptor {
 	
 	
 	public <T extends I18nBehaviour> void putMultilanguage(T entity, Locale locale) throws Throwable {
+		if(locale == null) {
+			return;
+		}
 		this.deleteTranslations(locale, entity);
 		this.locateMultiLanguageFields(locale, entity);
 	}

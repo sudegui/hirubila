@@ -38,7 +38,7 @@
 		<rate>2/s</rate>
 	</queue>
 	<queue>
-		<name>internal_feed</name>
+		<name>internalfeed</name>
 		<rate>2/s</rate>
 	</queue>
 </queue-entries>

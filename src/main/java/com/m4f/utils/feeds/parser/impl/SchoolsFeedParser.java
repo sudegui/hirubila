@@ -2,7 +2,6 @@ package com.m4f.utils.feeds.parser.impl;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,9 +19,8 @@ import com.m4f.business.domain.ContactInfo;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.feeds.events.model.Dump;
-import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
-import com.sun.org.apache.xerces.internal.impl.io.MalformedByteSequenceException;
+
 
 public class SchoolsFeedParser implements ISchoolsParser {
 	
