@@ -100,13 +100,16 @@ public class TaskController extends BaseController  {
 			for(Locale locale : this.getAvailableLanguages()) {
 				this.storeSchools(dump, provider, schools, locale);
 			}
+			
 			/**
-			 * Creación de una tarea por cada centro parseado para pasarla a ejecución
-			 * posteriormente.
-			 * TODO access to datastore to get all schools and generate the next task.
+			 * Creación de una tarea por cada centro almacenado para pasarla a ejecución
+			 * posteriormente. Para ello hay que recuperar todos los centros almacenados
+			 * de un determinado proveedor.
 			 */
+			List<School> storedSchools = 
+				this.serviceLocator.getSchoolService().getSchoolsByProvider(provider.getId(), null, null);
 			Queue queue = QueueFactory.getQueue(this.SCHOOL_QUEUE);
-			for(School school : schools) {
+			for(School school : storedSchools) {
 				if((school.getFeed()!=null) && (!"".equals(school.getFeed()))) {
 					TaskOptions options = TaskOptions.Builder.withUrl("/task/updatecourses");
 					options.param("schoolId", school.getId().toString());
