@@ -61,80 +61,6 @@ public class TaskController extends BaseController  {
 	private static final Logger LOGGER = Logger.getLogger(TaskController.class.getName());
 	private static final String EMAIL_DOMAIN_SUFFIX = "@hirubila.appspotmail.com";
 	
-	@RequestMapping(value="/updateschools", method=RequestMethod.POST)
-	public String updateSchools(@RequestParam(required=true) Long providerId, 
-			@RequestParam(required=true) Long dumpId) {
-		LOGGER.log(Level.INFO, "----- Starting the update schools from provider's queue...");
-		
-		Provider provider = null;
-		Dump dump = null;
-		try {
-			provider = this.serviceLocator.getProviderService().getProviderById(providerId, Locale.getDefault());
-			dump = this.serviceLocator.getDumpService().getDump(dumpId);
-			if(provider == null) {
-				LOGGER.severe("Provider with id " + providerId + " doesn's exist.");
-				return "common.error";
-			}			
-			if(dump == null) {
-				LOGGER.severe("Dump with id " + dumpId + " doesn's exist."); 
-				return "common.error";
-			}
-			/**
-			 * Proceso que realiza el parseo del feed del proveedor, el cual contiene
-			 * un conjunto de centros (schools). Existe un aspecto creado para registrar
-			 * posibles excepciones producidas dentro del proceso de parseo.
-			 * Este registro de errores se encuentra localizado en:
-			 * com.m4f.utils.feeds.aop.ParserHypervisor#registerProviderError
-			 * VALIDACI�N DE ESTRUCTURA DEL XML.
-			 */
-			List<School> schools = this.serviceLocator.getSchoolsParser().getSchools(dump, provider);
-			/**
-			 * Proceso que realiza el volcado de los centros parseados al modelo de 
-			 * persistencia. Existe un aspecto creado para registrar posibles problemas
-			 * de validación en el contenido de los centros a almacenar.
-			 * Este registro de problemas se encuentra localizado en:
-			 * com.m4f.utils.feeds.aop.DumperHypervisor#registerSchoolValidationError
-			 * 
-			 * VALIDACI�N DEL CONTENIDO DEL XML.
-			 */
-			for(Locale locale : this.getAvailableLanguages()) {
-				this.storeSchools(dump, provider, schools, locale);
-			}
-			
-			/**
-			 * Creación de una tarea por cada centro almacenado para pasarla a ejecución
-			 * posteriormente. Para ello hay que recuperar todos los centros almacenados
-			 * de un determinado proveedor.
-			 */
-			List<School> storedSchools = 
-				this.serviceLocator.getSchoolService().getSchoolsByProvider(provider.getId(), null, null);
-			Queue queue = QueueFactory.getQueue(this.SCHOOL_QUEUE);
-			for(School school : storedSchools) {
-				if((school.getFeed()!=null) && (!"".equals(school.getFeed()))) {
-					TaskOptions options = TaskOptions.Builder.withUrl("/task/updatecourses");
-					options.param("schoolId", school.getId().toString());
-					options.param("dumpId", "" + dump.getId());
-					options.method(Method.POST);
-					queue.add(options);		
-				}
-			}
-		} catch (ParserConfigurationException e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		} catch (SAXException e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		} catch (IOException e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		} catch (Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		LOGGER.info("--- Ending the update schools from provider's (" + 
-				providerId + ") queue...");
-		return "task.launched";
-	}
 	
 	@RequestMapping(value="/updatecourses", method=RequestMethod.POST)
 	public String updateCourses(@RequestParam(required=true) Long schoolId,
@@ -235,8 +161,10 @@ public class TaskController extends BaseController  {
 			 * posteriormente.
 			 * TODO access to datastore to get all schools and generate the next task.
 			 */
+			List<School> storedSchools = 
+				this.serviceLocator.getSchoolService().getSchoolsByProvider(provider.getId(), null, null);
 			Queue queue = QueueFactory.getQueue(this.SCHOOL_QUEUE);
-			for(School school : schools) {
+			for(School school : storedSchools) {
 				if((school.getFeed()!=null) && (!"".equals(school.getFeed()))) {
 					TaskOptions options = TaskOptions.Builder.withUrl("/task/updatecourses");
 					options.param("schoolId", school.getId().toString());

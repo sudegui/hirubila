@@ -5,9 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Ignore;
 
+@Ignore
 public class SchoolsFeedParserTest {
 	
-	private static final Logger LOGGER = Logger.getLogger(SchoolServiceTest.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(SchoolsFeedParserTest.class.getName());
 	
 	@Before
 	public void setUp() {
