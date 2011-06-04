@@ -58,7 +58,7 @@ public class LauncherController extends BaseController {
 			dump.setOwnerClass(Provider.class.getName());
 			this.serviceLocator.getDumpService().save(dump);
 			Queue queue = QueueFactory.getQueue(this.PROVIDER_QUEUE);
-			TaskOptions options = TaskOptions.Builder.withUrl("/task/updateschools");
+			TaskOptions options = TaskOptions.Builder.withUrl("/task/loadproviderfeed");
 			options.param("providerId", provider.getId().toString());
 			options.param("dumpId", "" + dump.getId());
 			options.method(Method.POST);
