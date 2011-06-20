@@ -1,28 +1,18 @@
 package com.m4f.business.service.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import com.google.appengine.api.datastore.Blob;
-import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
-import com.m4f.business.service.ifc.ICourseHtmlService;
+import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
 import com.m4f.utils.i18n.dao.ifc.DAOSupport;
-import java.net.SocketTimeoutException;
 
-public class CourseHtmlServiceImpl extends DAOBaseService implements ICourseHtmlService {
+public class GaeJdoCatalogService extends DAOBaseService implements ICatalogService {
 	
-	public CourseHtmlServiceImpl(DAOSupport dao) {
+	public GaeJdoCatalogService(DAOSupport dao) {
 		super(dao);
 	}
 

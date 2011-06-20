@@ -351,7 +351,7 @@ public class AdminController extends BaseController {
 	 * MANAGEMENT
 	 */
 	@RequestMapping(value="/management/delete/provider/{providerId}", method=RequestMethod.GET)
-	public String deleteProvider(@PathVariable Long providerId, Locale locale) {
+	public String deleteProvider(@PathVariable Long providerId, Locale locale) throws Exception {
 		try {
 			Provider provider = this.serviceLocator.getProviderService().getProviderById(providerId, locale);
 			if(provider != null) {
@@ -362,7 +362,7 @@ public class AdminController extends BaseController {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
 		}
-		Queue queue = QueueFactory.getQueue(this.PROVIDER_QUEUE);
+		Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE);
 		TaskOptions options = TaskOptions.Builder.withUrl("/task/management/delete/provider");
 		options.param("providerId", String.valueOf(providerId));
 		options.method(Method.POST);

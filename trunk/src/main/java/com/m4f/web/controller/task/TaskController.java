@@ -2,6 +2,7 @@ package com.m4f.web.controller.task;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public class TaskController extends BaseController  {
 		LOGGER.log(Level.INFO, "Starting the update courses from school's queue...");
 		School school = null;
 		try {
-			school = this.serviceLocator.getSchoolService().getSchool(schoolId, Locale.getDefault());
+			school = this.serviceLocator.getSchoolService().getSchool(schoolId, null);
 			if(school == null) {
 				LOGGER.severe("School with id " + schoolId + " doesn't exist.");
 				return "common.error";
@@ -79,8 +80,8 @@ public class TaskController extends BaseController  {
 				LOGGER.severe("Dump with id " + dumpId + " doesn's exist.");
 				return "common.error";
 			}
-			Map<String, List<Course>> courses = this.serviceLocator.getCoursesParser().getCourses(dump, school);
-			this.storeCourses(dump, school, courses);
+			Map<String, List<Course>> parsedCourses = this.serviceLocator.getCoursesParser().getCourses(dump, school);
+			this.storeCourses(dump, school, parsedCourses);
 		} catch (ParserConfigurationException e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -151,7 +152,7 @@ public class TaskController extends BaseController  {
 			 * Este registro de problemas se encuentra localizado en:
 			 * com.m4f.utils.feeds.aop.DumperHypervisor#registerSchoolValidationError
 			 * 
-			 * VALIDACI�N DEL CONTENIDO DEL XML.
+			 * VALIDACI�N DEL CONTENIDO DEL XML. 
 			 */
 			for(Locale locale : this.getAvailableLanguages()) {
 				this.storeSchools(dump, provider, schools, locale);
@@ -163,7 +164,8 @@ public class TaskController extends BaseController  {
 			 */
 			List<School> storedSchools = 
 				this.serviceLocator.getSchoolService().getSchoolsByProvider(provider.getId(), null, null);
-			Queue queue = QueueFactory.getQueue(this.SCHOOL_QUEUE);
+			Queue queue = 
+				QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE);
 			for(School school : storedSchools) {
 				if((school.getFeed()!=null) && (!"".equals(school.getFeed()))) {
 					TaskOptions options = TaskOptions.Builder.withUrl("/task/updatecourses");
@@ -216,29 +218,38 @@ public class TaskController extends BaseController  {
 		report.setType(CronTaskReport.TYPE.INTERNAL_FEED);
 		try {
 			// Start the process
-			Locale locale = this.getAvailableLanguages().get(0);
-			Provider provider = this.serviceLocator.getProviderService().getProviderByMediationService(mediationId, locale);
-			MediationService mediationService = this.serviceLocator.getMediatorService().getMediationService(mediationId, Locale.getDefault());
+			
+			
+			Provider provider = 
+				this.serviceLocator.getProviderService().getProviderByMediationService(mediationId, null);
+			
+			MediationService mediationService = this.serviceLocator.getMediatorService().getMediationService(mediationId, null);
 			//Set report description
 			report.setDescription(new StringBuffer("Servicio de mediación: ").append(mediationService.getName()).toString());
+			
 			if(!mediationService.getHasFeed()) { // All must be manual mediator, but it's another check.
 				FeedSchools feedSchools = this.serviceLocator.getInternalFeedService().createFeedSchools(host, provider, mediationService);
 				this.serviceLocator.getInternalFeedService().saveFeedSchools(feedSchools);
 				
+				
+				
+				
 				HashMap<Long, ExtendedSchool> schools = new HashMap<Long, ExtendedSchool>();
-				Collection<ExtendedCourse> courses = this.serviceLocator.getExtendedCourseService().getCoursesByOwner(mediationService.getId(), null, Locale.getDefault());
+				Collection<ExtendedCourse> courses = 
+					this.serviceLocator.getExtendedCourseService().getCoursesByOwner(mediationService.getId(), null, null);
 				for(ExtendedCourse course : courses) {
 					ExtendedSchool school = this.serviceLocator.getExtendedSchoolService().getSchool(course.getSchool(), Locale.getDefault());
 					if(school != null) schools.put(school.getId(), school);
 				}
 				for(ExtendedSchool school : schools.values()) {
 					FeedCourses feedCourse = this.serviceLocator.getInternalFeedService().
-						createFeedCourses(host, provider, mediationService, school ); 	
+						createFeedCourses(host, provider, mediationService, school, this.getAvailableLanguages()); 	
 					this.serviceLocator.getInternalFeedService().saveFeedCourses(feedCourse);
 				}
 				// Set result into report
 				report.setResult("OK");
 			}
+			
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
@@ -260,14 +271,16 @@ public class TaskController extends BaseController  {
 	 */
 	@RequestMapping(value="/catalog/createpaginated", method=RequestMethod.POST)
 	public String createCatalogPaginatedNew(@RequestHeader("host") String host, 
-			@RequestParam(required=true) Integer start, @RequestParam(required=true) Integer finish) throws Exception {
+			@RequestParam(required=true) Integer start, 
+			@RequestParam(required=true) Integer finish) throws Exception {
 		try {
-			Locale locale = this.getAvailableLanguages().size() > 0 ? this.getAvailableLanguages().get(0) : Locale.getDefault();
-			Collection<Course> courses = this.serviceLocator.getCourseService().getCourses("title", locale, start, finish);
+			Collection<Course> courses = 
+				this.serviceLocator.getCourseService().getCourses("title", null, start, finish);
 			for(Course course : courses) {
-				Queue queue = QueueFactory.getQueue(this.CATALOG_QUEUE);
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
 				String urlTask = new StringBuffer("/task/catalog/create").toString();
 				TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
+				options.taskName(""+ Calendar.getInstance().getTimeInMillis());
 				options.method(Method.POST);
 				options.param("courseId", course.getId().toString());
 				queue.add(options);
@@ -280,45 +293,57 @@ public class TaskController extends BaseController  {
 	}
 	
 	@RequestMapping(value="/catalog/create", method=RequestMethod.POST)
-	public String createCourseCatalogNew(@RequestHeader("host") String host, 
-			@RequestParam(required=true) Long courseId) throws Exception {
+	public String createCourseCatalog(@RequestHeader("host") String host, 
+			@RequestParam(required=true) Long courseId, 
+			@RequestParam(required=false) String language) throws Exception {
 		try {
-			List<Locale> locales = this.getAvailableLanguages();
+			
+			List<Locale> locales = new ArrayList<Locale>();
+			if(language != null) {
+				locales.add(new Locale(language));
+			} else {
+				locales.addAll(this.getAvailableLanguages());
+			}
+			
 			for(Locale locale : locales) {
-				LOGGER.log(Level.FINE, new StringBuffer("Tarea de generacion html del catalogo para el curso con id: ")
+				LOGGER.info(new StringBuffer("Generacion de instancia de catalogo del curso id: ")
 				.append(courseId).append(" y locale: ").append(locale).toString());
-				
-					Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
-					School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
-					Provider provider = this.serviceLocator.getProviderService().getProviderById(course.getProvider(), locale);
-					// Territorial data
-					String townName = school.getContactInfo() != null && 
-						school.getContactInfo().getCity() != null ? 
-						school.getContactInfo().getCity() : "";
-					List<Town> towns = this.serviceLocator.getTerritorialService().
-						findTownsByName(townName, locale);
-					Town town = new Town();
-					Province province = new Province();
-					Region region = new Region();
-					if(towns != null && towns.size() > 0) {
-						town = towns.get(0);
-						region = getRegionsMap().get(locale.getLanguage()).get(town.getRegion());
-						//region = this.serviceLocator.getTerritorialService().getRegion(town.getRegion(), locale);
-						province = getProvincesMap().get(locale.getLanguage()).get(town.getProvince());
-						//province = this.serviceLocator.getTerritorialService().getProvince(town.getProvince(), locale);
-					}
-					CourseCatalog catalog = new CourseCatalog(course, locale.getLanguage(), 
-							school, provider.getName(), province.getName(), region.getName(), town.getName());
-					CourseCatalog catalogOld = this.serviceLocator.getCourseHtmlService().getCourseCatalogByCourseId(courseId, locale);
-					if(catalogOld != null) {
-						catalog.setId(catalogOld.getId());
-					}
-					LOGGER.log(Level.FINE, new StringBuffer("Fin de la tarea html para el catalago del curso: ")
+				Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
+				School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
+				Provider provider = this.serviceLocator.getProviderService().getProviderById(course.getProvider(), locale);
+					
+					
+				// Territorial data
+				String townName = school.getContactInfo() != null && 
+					school.getContactInfo().getCity() != null ? 
+					school.getContactInfo().getCity() : "";
+				List<Town> towns = this.serviceLocator.getTerritorialService().
+					findTownsByName(townName, locale);
+				Town town = new Town();
+				Province province = new Province();
+				Region region = new Region();
+				if(towns != null && towns.size() > 0) {
+					town = towns.get(0);
+					region = getRegionsMap().get(locale.getLanguage()).get(town.getRegion());
+					province = getProvincesMap().get(locale.getLanguage()).get(town.getProvince());
+				}
+					
+					
+										
+				CourseCatalog catalog = new CourseCatalog(course, locale.getLanguage(), 
+					school, provider.getName(), province.getName(), region.getName(), town.getName());
+				CourseCatalog catalogOld = 
+					this.serviceLocator.getCatalogService().getCourseCatalogByCourseId(courseId, locale);
+				if(catalogOld != null) {
+					catalog.setId(catalogOld.getId());
+				}
+				LOGGER.info(new StringBuffer("Fin generacion instancia de catalago del curso: ")
 					.append(courseId).append(" y locale: ").append(locale).toString());
-					this.serviceLocator.getCourseHtmlService().save(catalog);
+				this.serviceLocator.getCatalogService().save(catalog);
+				
 			}
 		} catch(Exception e) {
-			this.viewHelper.errorManagement(e);
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			throw e;
 		}
 		return "task.launched";
@@ -330,22 +355,38 @@ public class TaskController extends BaseController  {
 	@RequestMapping(value="/catalog/deletepaginated", method=RequestMethod.POST)
 	public String deleteCatalogPaginatedNew(@RequestHeader("host") String host, 
 			@RequestParam(required=true) Integer start, 
-			@RequestParam(required=true) Integer finish) {
+			@RequestParam(required=true) Integer finish) throws Exception{
 		try {
-			for(Locale locale : this.getAvailableLanguages()) {
-				Collection<CourseCatalog> courses = 
-					this.serviceLocator.getCourseHtmlService().getCoursesCatalog(null, 
-							locale, start, finish);
-				for(CourseCatalog course : courses) {
-					this.serviceLocator.getCourseHtmlService().delete(course);
-				}
+			Collection<CourseCatalog> courses = 
+				this.serviceLocator.getCatalogService().getCoursesCatalog(null, 
+					null, start, finish);
+			for(CourseCatalog course : courses) {
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
+				String urlTask = new StringBuffer("/task/catalog/delete").toString();
+				TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
+				options.method(Method.POST);
+				options.param("courseId", course.getId().toString());
+				queue.add(options);
 			}			
 		} catch(Exception e) {
-			this.viewHelper.errorManagement(e);
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			throw e;
 		}
 		return "task.launched";
 	}
 	
+	@RequestMapping(value="/catalog/delete", method=RequestMethod.POST)
+	public String deleteCourseCatalog(@RequestHeader("host") String host, 
+			@RequestParam(required=true) Long courseId) throws Exception {
+		try {
+			CourseCatalog course = this.serviceLocator.getCatalogService().getCourseCatalogById(courseId);
+			this.serviceLocator.getCatalogService().delete(course);
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			throw e;
+		}
+		return "task.launched";
+	}
 	
 	/**
 	 * RESULT SEARCH EMAIL
@@ -469,31 +510,17 @@ public class TaskController extends BaseController  {
 			ArrayList<Course> lista = new ArrayList<Course>();
 			lista.addAll(courses.get(lang));
 			/*
-			 * Se consigue ahora la informacion de territorio, debido a que esta asociada a la escuela, y esta no va a variar para la colección de cursos.
-			 * De esta forma ahorramos procesamiento en las diferentes consultas, ya que sino habria que hacerlo en el método dumpCourse, sacando la información
-			 * por cada curso.
+			 * Se consigue ahora la informacion de territorio, debido a que esta asociada a la escuela, 
+			 * y esta no va a variar para la colección de cursos.
+			 * De esta forma ahorramos procesamiento en las diferentes consultas, ya que sino habria que 
+			 * hacerlo en el método dumpCourse, sacando la información por cada curso.
 			 * 
 			 */
-			// Territorial data
-			String townName = school.getContactInfo() != null && 
-				school.getContactInfo().getCity() != null ? 
-				school.getContactInfo().getCity() : "";
-			List<Town> towns = this.serviceLocator.getTerritorialService().
-				findTownsByName(townName, locale);
-			Town town = new Town();
-			Province province = new Province();
-			Region region = new Region();
-			if(towns != null && towns.size() > 0) {
-				town = towns.get(0);
-				region = getRegionsMap().get(locale.getLanguage()).get(town.getRegion());
-				province = getProvincesMap().get(locale.getLanguage()).get(town.getProvince());
-			}
+			
 			// Get provider data
 			Provider provider = this.serviceLocator.getProviderService().getProviderById(school.getProvider(), locale);
 			for(Course course : lista) {
-				course.setRegulated(provider.getRegulated());
-				this.serviceLocator.getDumperManager().dumpCourse(dump, course, locale, school, provider,
-						province.getName(), region.getName(), town.getName());
+				this.serviceLocator.getDumperManager().dumpCourse(dump, course, locale, school, provider);
 			}
 		}
 	}

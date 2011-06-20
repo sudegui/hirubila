@@ -13,7 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 @SuppressWarnings("serial")
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class GlobalConfiguration extends BaseEntity {
+	
 	public enum SEARCH_ENGINE {GSA};
+	public final String PROVIDER_QUEUE = "provider";
+	public final String SCHOOL_QUEUE = "school";
+	public final String CATALOG_QUEUE = "catalog";
+	public final String INTERNAL_FEED_QUEUE = "internalfeed";
+	public final String MAIL_QUEUE = "email";
 	
 	@PrimaryKey  
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)

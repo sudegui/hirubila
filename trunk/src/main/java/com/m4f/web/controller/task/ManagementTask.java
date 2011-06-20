@@ -59,7 +59,7 @@ public class ManagementTask extends BaseController {
 	
 	private void deleteCoursesCatalogByCourse(Course course, Locale locale) throws Exception {
 		try {
-			this.serviceLocator.getCourseHtmlService().deleteCourseCatalogByCourseId(course.getId());
+			this.serviceLocator.getCatalogService().deleteCourseCatalogByCourseId(course.getId());
 		} catch(Exception e) {
 			throw e;
 		}

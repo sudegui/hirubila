@@ -58,7 +58,7 @@ public class LoginController extends BaseController {
 		try {
 			InternalUser u = this.serviceLocator.getUserService().getUser(recovery.getEmail());
 			if(u != null) {
-				Queue queue = QueueFactory.getQueue(this.MAIL_QUEUE);
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().MAIL_QUEUE);
 				queue.add(TaskOptions.Builder.withUrl("/task/recovery")
 						.param("email", recovery.getEmail()).method(Method.POST));
 			} else {

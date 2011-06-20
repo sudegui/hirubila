@@ -57,7 +57,7 @@ public class LauncherController extends BaseController {
 			dump.setOwner(provider.getId());
 			dump.setOwnerClass(Provider.class.getName());
 			this.serviceLocator.getDumpService().save(dump);
-			Queue queue = QueueFactory.getQueue(this.PROVIDER_QUEUE);
+			Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE);
 			TaskOptions options = TaskOptions.Builder.withUrl("/task/loadproviderfeed");
 			options.param("providerId", provider.getId().toString());
 			options.param("dumpId", "" + dump.getId());
@@ -94,7 +94,7 @@ public class LauncherController extends BaseController {
 				dump.setOwner(school.getId());
 				dump.setOwnerClass(School.class.getName());
 				this.serviceLocator.getDumpService().save(dump);
-				Queue queue = QueueFactory.getQueue(this.SCHOOL_QUEUE);
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE);
 				TaskOptions options = TaskOptions.Builder.withUrl("/task/updatecourses");
 				options.param("schoolId", school.getId().toString());
 				options.param("dumpId", "" + dump.getId());
@@ -121,12 +121,12 @@ public class LauncherController extends BaseController {
 	 * 
 	 * @return tiles's registered view.
 	 */
-	@RequestMapping(value="/createHtmlCatalog", method=RequestMethod.GET)
+	@RequestMapping(value="/createCatalog", method=RequestMethod.GET)
 	public String createHtmlCatalog(Locale locale) {
 		final int RANGE = 200;
 		final int LIMIT = 100000;
 		try {
-			LOGGER.severe("#### Creating HTML Catalog for new Courses.............");
+			LOGGER.severe("#### Creating Catalog for all Courses.............");
 			
 			PageManager<Course> paginator = new PageManager<Course>();
 			paginator.setOffset(RANGE);
@@ -134,7 +134,7 @@ public class LauncherController extends BaseController {
 			paginator.setSize(this.serviceLocator.getCourseService().count());
 		
 			for(Integer page : paginator.getPagesIterator()) {
-				Queue queue = QueueFactory.getQueue(this.CATALOG_QUEUE);
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
 				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/createpaginated");
 				options.param("start", "" +(page-1)*RANGE);
 				options.param("finish", "" + (page)*RANGE);
@@ -155,20 +155,17 @@ public class LauncherController extends BaseController {
 	 * 
 	 * @return tiles's registered view.
 	 */
-	@RequestMapping(value="/deleteHtmlCatalog", method=RequestMethod.GET)
+	@RequestMapping(value="/deleteCatalog", method=RequestMethod.GET)
 	public String deleteHtmlCatalogNew(Locale locale) {
 		final int RANGE = 200;
-		final int LIMIT = 100000;
 		try {
-			LOGGER.severe("#### Deleting HTML Catalog for new Courses.............");
-			
+			LOGGER.severe("#### Deleting Catalog for all Courses.............");
 			PageManager<Course> paginator = new PageManager<Course>();
 			paginator.setOffset(RANGE);
 			paginator.setStart(0);
-			paginator.setSize(this.serviceLocator.getCourseHtmlService().countCourseCatalog(locale));
-		
+			paginator.setSize(this.serviceLocator.getCatalogService().countCourseCatalog(locale));
 			for(Integer page : paginator.getPagesIterator()) {
-				Queue queue = QueueFactory.getQueue(this.CATALOG_QUEUE);
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
 				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/deletepaginated");
 				options.param("start", "" +(page-1)*RANGE);
 				options.param("finish", "" + (page)*RANGE);
@@ -195,7 +192,7 @@ public class LauncherController extends BaseController {
 		try {
 			Collection<MediationService> mediationServices = this.serviceLocator.getMediatorService().getMediationServices(false, Locale.getDefault());
 			for(MediationService m : mediationServices) {
-				Queue queue = QueueFactory.getQueue(this.PROVIDER_QUEUE);
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE);
 				TaskOptions options = TaskOptions.Builder.withUrl("/task/createprovidersmanual");
 				options.param("mediationId", String.valueOf(m.getId()));
 				options.method(Method.POST);
@@ -238,7 +235,7 @@ public class LauncherController extends BaseController {
 				dump.setOwnerClass(Provider.class.getName());
 				this.serviceLocator.getDumpService().save(dump);
 				// Invoke the task with the id obtained
-				Queue queue = QueueFactory.getQueue(this.PROVIDER_QUEUE);
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE);
 				TaskOptions options = TaskOptions.Builder.withUrl("/task/loadproviderfeed");
 				options.param("providerId", String.valueOf(id));
 				options.param("dumpId", String.valueOf(dump.getId()));
@@ -271,7 +268,7 @@ public class LauncherController extends BaseController {
 				id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
 				if(id != null) {
 					// Invoke the task with the id obtained
-					Queue queue = QueueFactory.getQueue(this.INTERNAL_FEED_QUEUE);
+					Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE);
 					TaskOptions options = TaskOptions.Builder.withUrl("/task/internalFeeds/mediation");
 					options.param("mediationId", String.valueOf(id));
 					options.method(Method.POST);

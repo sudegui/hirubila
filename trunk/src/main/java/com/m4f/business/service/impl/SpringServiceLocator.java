@@ -14,7 +14,7 @@ import com.m4f.business.service.ifc.I18nProviderService;
 import com.m4f.business.service.ifc.I18nSchoolService;
 import com.m4f.business.service.ifc.I18nTerritorialService;
 import com.m4f.business.service.ifc.IAppConfigurationService;
-import com.m4f.business.service.ifc.ICourseHtmlService;
+import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.business.service.ifc.ICronTaskReportService;
 import com.m4f.business.service.ifc.IPhraseSearchService;
 import com.m4f.business.service.ifc.IServiceLocator;
@@ -138,8 +138,8 @@ public class SpringServiceLocator implements IServiceLocator, ApplicationContext
 	}
 	
 	@Override
-	public ICourseHtmlService getCourseHtmlService() throws ServiceNotFoundException, ContextNotActiveException {
-		return this.getService(ICourseHtmlService.class);
+	public ICatalogService getCatalogService() throws ServiceNotFoundException, ContextNotActiveException {
+		return this.getService(ICatalogService.class);
 	}
 	
 	@Override

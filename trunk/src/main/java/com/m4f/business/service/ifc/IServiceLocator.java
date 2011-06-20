@@ -42,7 +42,7 @@ public interface IServiceLocator {
 	ISchoolsParser getSchoolsParser() throws ServiceNotFoundException, ContextNotActiveException;
 	ICoursesParser getCoursesParser() throws ServiceNotFoundException, ContextNotActiveException;
 	DumperCapable getDumperManager() throws ServiceNotFoundException, ContextNotActiveException;
-	ICourseHtmlService getCourseHtmlService() throws ServiceNotFoundException, ContextNotActiveException;
+	ICatalogService getCatalogService() throws ServiceNotFoundException, ContextNotActiveException;
 	IAppConfigurationService getAppConfigurationService() throws ServiceNotFoundException, ContextNotActiveException;
 	ICronTaskReportService getCronTaskReportService() throws ServiceNotFoundException, ContextNotActiveException;
 }

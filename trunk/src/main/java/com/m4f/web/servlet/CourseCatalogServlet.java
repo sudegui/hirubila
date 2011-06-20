@@ -12,19 +12,19 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.m4f.business.domain.CourseCatalog;
-import com.m4f.business.service.ifc.ICourseHtmlService;
+import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.business.service.ifc.IServiceLocator;
-import com.m4f.business.service.impl.CourseHtmlServiceImpl;
+import com.m4f.business.service.impl.GaeJdoCatalogService;
 import com.m4f.utils.i18n.dao.impl.jdo.JdoDAO;
 
 @SuppressWarnings("serial")
 public class CourseCatalogServlet extends HttpServlet {
 	private static final Logger LOGGER = Logger.getLogger(CourseCatalogServlet.class.getName());
 	
-	private ICourseHtmlService courseHTMLService;
+	private ICatalogService courseHTMLService;
 	
 	public CourseCatalogServlet() {
-		this.courseHTMLService = new CourseHtmlServiceImpl(new JdoDAO());
+		this.courseHTMLService = new GaeJdoCatalogService(new JdoDAO());
 	}
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)

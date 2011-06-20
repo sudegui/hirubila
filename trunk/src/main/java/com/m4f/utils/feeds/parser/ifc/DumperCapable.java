@@ -11,6 +11,6 @@ import com.m4f.utils.feeds.events.model.Dump;
 public interface DumperCapable {
 	
 	List<FieldError> dumpSchool(Dump dump, School school, Locale locale, Provider provider) throws Exception;
-	List<FieldError> dumpCourse(Dump dump, Course course, Locale locale, School school, Provider provider,String province, String region, String town) throws Exception;
+	List<FieldError> dumpCourse(Dump dump, Course course, Locale locale, School school, Provider provider) throws Exception;
 	
 }

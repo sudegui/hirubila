@@ -82,7 +82,7 @@ public class SearchController extends BaseController {
 					paginator.setSize(0);
 				}
 			}
-			model.addAttribute("total", this.serviceLocator.getCourseHtmlService().countCourseCatalog(locale));
+			model.addAttribute("total", this.serviceLocator.getCatalogService().countCourseCatalog(locale));
 		} catch (Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";

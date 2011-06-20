@@ -43,38 +43,6 @@ import com.google.appengine.api.datastore.Category;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class CourseCatalog extends BaseEntity {
 	
-	public CourseCatalog() {
-		super();
-	}
-	
-	public CourseCatalog(Course course, String lang) {
-		this.courseId = course.getId();
-		this.externalCourseId = course.getExternalId();
-		this.title = course.getTitle();
-		this.start = course.getStart();
-		this.end = course.getEnd();
-		this.information = course.getInformation();
-		this.lang = lang;
-		this.regulated = course.getRegulated() != null ? course.getRegulated() : Boolean.FALSE;
-		this.url = course.getUrl();
-		// Metadata
-		StringBuffer keyWords = new StringBuffer();
-		for(Category tag : course.getTags()) {
-			keyWords.append(tag.getCategory()).append(",");
-		}
-		this.tags = keyWords.toString();
-	}
-	
-	public CourseCatalog(Course course, String lang, School school, String provider, String province, String region, String town) {
-		this(course, lang);
-		this.schoolName = school.getName();
-		this.schoolInfo = school.getContactInfo();
-		this.schoolGeoLocation = school.getGeoLocation();
-		this.providerName = provider;
-		this.province = province;
-		this.region = region;
-		this.town = town;
-	}
 	
 	@PrimaryKey  
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -131,6 +99,39 @@ public class CourseCatalog extends BaseEntity {
     
     @Persistent
     private Boolean regulated; 
+    
+    public CourseCatalog() {
+		super();
+	}
+	
+	public CourseCatalog(Course course, String lang) {
+		this.courseId = course.getId();
+		this.externalCourseId = course.getExternalId();
+		this.title = course.getTitle();
+		this.start = course.getStart();
+		this.end = course.getEnd();
+		this.information = course.getInformation();
+		this.lang = lang;
+		this.regulated = course.getRegulated() != null ? course.getRegulated() : Boolean.FALSE;
+		this.url = course.getUrl();
+		// Metadata
+		StringBuffer keyWords = new StringBuffer();
+		for(Category tag : course.getTags()) {
+			keyWords.append(tag.getCategory()).append(",");
+		}
+		this.tags = keyWords.toString();
+	}
+	
+	public CourseCatalog(Course course, String lang, School school, String provider, String province, String region, String town) {
+		this(course, lang);
+		this.schoolName = school.getName();
+		this.schoolInfo = school.getContactInfo();
+		this.schoolGeoLocation = school.getGeoLocation();
+		this.providerName = provider;
+		this.province = province;
+		this.region = region;
+		this.town = town;
+	}
     
 	public Long getId() {
 		return id;

@@ -33,8 +33,8 @@ public class CatalogController extends BaseController {
 			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/reglated/course/list");
 			paginator.setStart((page-1)*paginator.getOffset());
-			paginator.setSize(this.serviceLocator.getCourseHtmlService().countCourseCatalog(true, locale));
-			paginator.setCollection(this.serviceLocator.getCourseHtmlService().getCoursesCatalog(true, "title", locale, 
+			paginator.setSize(this.serviceLocator.getCatalogService().countCourseCatalog(true, locale));
+			paginator.setCollection(this.serviceLocator.getCatalogService().getCoursesCatalog(true, "title", locale, 
 					paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("type", "reglated");
@@ -54,8 +54,8 @@ public class CatalogController extends BaseController {
 			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/non-reglated/course/list");
 			paginator.setStart((page-1)*paginator.getOffset());
-			paginator.setSize(this.serviceLocator.getCourseHtmlService().countCourseCatalog(false, locale));
-			paginator.setCollection(this.serviceLocator.getCourseHtmlService().getCoursesCatalog(false, "title", locale, 
+			paginator.setSize(this.serviceLocator.getCatalogService().countCourseCatalog(false, locale));
+			paginator.setCollection(this.serviceLocator.getCatalogService().getCoursesCatalog(false, "title", locale, 
 					paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("type", "non-reglated");
@@ -84,7 +84,7 @@ public class CatalogController extends BaseController {
 	private String redirectToCourseDetail(Long courseId, Model model, Locale locale) {
 		try {
 			CourseCatalog courseCatalog = 
-				this.serviceLocator.getCourseHtmlService().getCourseCatalogByCourseId(courseId, locale);
+				this.serviceLocator.getCatalogService().getCourseCatalogByCourseId(courseId, locale);
 			model.addAttribute("course", courseCatalog);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
