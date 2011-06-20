@@ -3,9 +3,6 @@
        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
 <tiles-definitions>
-	
-	<definition name="cached.base" template="/WEB-INF/views/common/cached_layout.jsp">	
-   </definition>
   
 	<definition name="base.definition">
 		<put-attribute name="title" value=""/>
@@ -466,13 +463,7 @@
 	<definition name="catalog.course.detail" extends="gsa.base">
 		<put-attribute name="gsaMetadata" value="/WEB-INF/views/catalog/course/gsa_metadata.jsp"/>
 		<put-attribute name="body" value="/WEB-INF/views/catalog/course/course_detail.jsp"/>
-	</definition>
-	
-	<definition name="catalog.course.cached.detail" extends="cached.base">
-		<put-attribute name="body" value="/WEB-INF/views/catalog/course/cached.jsp"/>
-	</definition>
-	
-	
+	</definition>	
 
 	<!-- EXTENDED DEFINITIONS  -->
 	<definition name="extended.home" extends="base.1col.definition">

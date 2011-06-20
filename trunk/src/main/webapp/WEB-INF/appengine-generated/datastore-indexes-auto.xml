@@ -1,12 +1,11 @@
-<!-- Indices written at Mon, 20 Jun 2011 13:43:04 UTC -->
+<!-- Indices written at Mon, 20 Jun 2011 14:44:54 UTC -->
 
 <datastore-indexes>
 
-    <!-- Used 2 times in query history -->
-    <datastore-index kind="CourseCatalog" ancestor="false" source="auto">
-        <property name="lang" direction="asc"/>
-        <property name="regulated" direction="asc"/>
-        <property name="title" direction="asc"/>
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="MediationService" ancestor="false" source="auto">
+        <property name="province" direction="asc"/>
+        <property name="name" direction="asc"/>
     </datastore-index>
 
 </datastore-indexes>
