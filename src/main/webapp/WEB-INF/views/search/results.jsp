@@ -14,6 +14,7 @@
 	<link rel="image_src" href="<c:url value='/static/search/img/logo_hirubila_${rc.locale.language}.jpg'/>" />
 	<script type="text/javascript" src="<c:url value='/static/search/js/jquery-1.5.1.js'/>"></script>
 	<script type="text/javascript" src="<c:url value='/static/search/js/javascript.js'/>"></script>
+	<script type="text/javascript" src="<c:url value='/static/search/js/ga.js'/>"></script>
 	<script type="text/javascript" src="<c:url value='/static/search/js/shadowbox.js'/>"></script>
 	<script type="text/javascript">Shadowbox.init();</script>
 </head>
