@@ -87,6 +87,8 @@ public class MediationServiceImpl extends I18nDAOBaseService implements I18nMedi
 	
 	@Override
 	public List<Long> getAllMediationServiceManualIds() throws Exception {
-		return this.DAO.getAllIds(MediationService.class, "id","hasFeed == manualParam", "java.lang.Boolean manualParam",  new Object[]{ new Boolean(Boolean.FALSE)});
+		return this.DAO.getAllIds(MediationService.class, "id",
+				"hasFeed == manualParam", "java.lang.Boolean manualParam",  
+				new Object[]{ new Boolean(Boolean.FALSE)});
 	}
 }

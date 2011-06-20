@@ -160,7 +160,7 @@ private static final Logger LOGGER = Logger.getLogger(InboxController.class.getN
 				// Save
 				this.serviceLocator.getInboxService().save(inboxRes, locale);
 				// Create task to send an email response
-				Queue queue = QueueFactory.getQueue(this.MAIL_QUEUE);
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().MAIL_QUEUE);
 				queue.add(TaskOptions.Builder.withUrl("/task/sendInboxResponse")
 						.param("inboxId", inboxRes.getId().toString()).method(Method.POST));
 			}

@@ -29,11 +29,7 @@ import com.m4f.web.controller.helper.ViewHelper;
 @SessionAttributes(value={"provincesMap","langs","regionsMap"})
 public abstract class BaseController {
 	
-	protected final String PROVIDER_QUEUE = "provider";
-	protected final String SCHOOL_QUEUE = "school";
-	protected final String CATALOG_QUEUE = "catalog";
-	protected final String INTERNAL_FEED_QUEUE = "internalfeed";
-	protected final String MAIL_QUEUE = "email";
+	
 
 	
 	private static final Logger LOGGER = Logger.getLogger(BaseController.class.getName());

@@ -164,25 +164,19 @@ private static final Logger LOGGER = Logger.getLogger(InternalFeedServiceImpl.cl
 	}
 
 	@Override
-	public FeedCourses createFeedCourses(String contextPath, Provider provider, MediationService mediationService, ExtendedSchool school) throws Exception {
+	public FeedCourses createFeedCourses(String contextPath, Provider provider, 
+			MediationService mediationService, ExtendedSchool school, Collection<Locale> locales) throws Exception {
+				
 		FeedCourses feed = (FeedCourses) this.DAO.createInstance(FeedCourses.class);
-		
-		// TODO Get configuration object a load different languages
-		ArrayList<Locale> locales = new ArrayList<Locale>();
-		// TODO hard-coded languages
-		locales.add(new Locale("es"));
-		locales.add(new Locale("eu"));
 		
 		// Starting xml generation
 		Element root = new Element(COURSE_ROOT);
 		root.setAttribute(new Attribute("noNamespaceSchemaLocation","http://hirubila.appspot.com/schema/kurtsoak-1.0.xsd",
 				Namespace.getNamespace("xsi","http://www.w3.org/1999/XMLSchema-instance")));
-		// Fetch all schools
-		// First fetch all courses by schoolId and one locale. Then to do i18n each course is fetched using the other locales.
-		Locale defaultLocale = locales.get(0);
+
 		Collection<ExtendedCourse> courses = this.courseService.getCoursesBySchoolByMediation(school.getId(), 
-				mediationService.getId(), "title", defaultLocale);
-		locales.remove(0); // This locale just been used, so it is not needed more
+				mediationService.getId(), "title", null);
+
 		
 		// DATE format
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -190,7 +184,8 @@ private static final Logger LOGGER = Logger.getLogger(InternalFeedServiceImpl.cl
 		for(ExtendedCourse course : courses) {
 			// Make a map with languages and course with this language
 			HashMap<String, ExtendedCourse> i18nCourse = new HashMap<String, ExtendedCourse>();
-			i18nCourse.put(defaultLocale.getLanguage(), course);
+
+			
 			for(Locale locale : locales) {
 				i18nCourse.put(locale.getLanguage(), this.courseService.getCourse(course.getId(), locale));
 			}

@@ -11,6 +11,10 @@ import java.util.logging.Logger;
 import org.springframework.validation.FieldError;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
@@ -18,19 +22,22 @@ import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.events.model.StoreErrorEvent;
 import com.m4f.utils.feeds.events.model.StoreSuccessEvent;
 import com.m4f.utils.StackTraceUtil;
-import com.m4f.utils.feeds.events.service.ifc.EventService;
+import com.m4f.business.service.exception.ContextNotActiveException;
+import com.m4f.business.service.exception.ServiceNotFoundException;
+import com.m4f.business.service.ifc.IServiceLocator;
 
 public class DumperHypervisor {
 	
-	private EventService eventService;
+	private IServiceLocator serviceLocator;
 	private static final Logger LOGGER = Logger.getLogger(DumperHypervisor.class.getName());
 	
-	public DumperHypervisor(EventService eService) {
-		this.eventService = eService;
+	public DumperHypervisor(IServiceLocator sLocator) {
+		this.serviceLocator = sLocator;
 	}
 	
 	public void registerSchoolOperation(Dump dump, Provider provider, School school, 
-			Locale locale, List<FieldError> retVal) {
+			Locale locale, List<FieldError> retVal) throws ServiceNotFoundException, 
+			ContextNotActiveException {
 		/*Un centro que cumple esta condición ya existía en la base de datos.*/
 		if(school.getId() == null) {
 			return;
@@ -42,23 +49,25 @@ public class DumperHypervisor {
 		}
 	}
 	
-	private void registerSchoolSuccess(Dump dump, School school, Locale locale) {
-		StoreSuccessEvent dumperSuccess = this.eventService.createStoreSuccessEvent();
+	private void registerSchoolSuccess(Dump dump, School school, Locale locale) 
+		throws ServiceNotFoundException, ContextNotActiveException {
+		StoreSuccessEvent dumperSuccess = this.serviceLocator.getEventService().createStoreSuccessEvent();
 		dumperSuccess.setEntityClass(School.class.getName());
 		dumperSuccess.setEntityId(school.getId());
 		dumperSuccess.setWhen(Calendar.getInstance(new Locale("es")).getTime());
 		dumperSuccess.setDumpId(dump.getId());
 		dumperSuccess.setLanguage(locale.getLanguage());
 		try {
-			this.eventService.save(dumperSuccess);
+			this.serviceLocator.getEventService().save(dumperSuccess);
 		}catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}
 	}
 	
 	private void registerSchoolError(Dump dump, List<FieldError> errors, 
-			School school, Locale locale) {
-		StoreErrorEvent dumperError = this.eventService.createStoreErrorEvent();
+			School school, Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
+		StoreErrorEvent dumperError = 
+			this.serviceLocator.getEventService().createStoreErrorEvent();
 		StringBuffer sb = new StringBuffer();
 		for(FieldError error : errors) {
 			sb.append(error.getField() + ":" + error.getRejectedValue() + 
@@ -78,7 +87,7 @@ public class DumperHypervisor {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		} finally {
 			try {
-				this.eventService.save(dumperError);
+				this.serviceLocator.getEventService().save(dumperError);
 			} catch(Exception e) {
 				LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			}
@@ -86,7 +95,8 @@ public class DumperHypervisor {
 	}
 	
 	public void registerCourseOperation(Dump dump, Course course, 
-			Locale locale, List<FieldError> retVal) {
+			Locale locale, List<FieldError> retVal) throws ServiceNotFoundException,
+			ContextNotActiveException {
 		/*Un curso que cumple esta condición ya existía en la base de datos.*/
 		if(course.getId() == null) {
 			return;
@@ -95,12 +105,25 @@ public class DumperHypervisor {
 			this.registerCourseError(dump, retVal, course, locale);
 		} else {
 			this.registerCourseSuccess(dump, course, locale);
+			this.createCourseCatalog(course, locale);
 		}
 	}
 	
+	
+	private void createCourseCatalog(Course course, Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
+		Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
+		String urlTask = new StringBuffer("/task/catalog/create").toString();
+		TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
+		options.method(Method.POST);
+		options.param("courseId", course.getId().toString());
+		options.param("language", locale.getLanguage());
+		queue.add(options);
+	}
+	
+	
 	private void registerCourseError(Dump dump, List<FieldError> errors, 
-			Course course, Locale locale) {
-		StoreErrorEvent dumperError = this.eventService.createStoreErrorEvent();
+			Course course, Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
+		StoreErrorEvent dumperError = this.serviceLocator.getEventService().createStoreErrorEvent();
 		StringBuffer sb = new StringBuffer();
 		for(FieldError error : errors) {
 			sb.append(error.getField() + ":" + error.getRejectedValue() + 
@@ -120,22 +143,23 @@ public class DumperHypervisor {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		} finally {
 			try {
-				this.eventService.save(dumperError);
+				this.serviceLocator.getEventService().save(dumperError);
 			} catch(Exception e) {
 				LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			}
 		}
 	}
 	
-	private void registerCourseSuccess(Dump dump, Course course, Locale locale) {
-		StoreSuccessEvent dumperSuccess = this.eventService.createStoreSuccessEvent();
+	private void registerCourseSuccess(Dump dump, Course course, Locale locale) 
+		throws ServiceNotFoundException, ContextNotActiveException {
+		StoreSuccessEvent dumperSuccess = this.serviceLocator.getEventService().createStoreSuccessEvent();
 		dumperSuccess.setEntityClass(Course.class.getName());
 		dumperSuccess.setEntityId(course.getId());
 		dumperSuccess.setWhen(Calendar.getInstance(new Locale("es")).getTime());
 		dumperSuccess.setDumpId(dump.getId());
 		dumperSuccess.setLanguage(locale.getLanguage());
 		try {
-			this.eventService.save(dumperSuccess);
+			this.serviceLocator.getEventService().save(dumperSuccess);
 		}catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}

@@ -7,44 +7,36 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.springframework.validation.Validator;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
-
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Course;
-import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.domain.School;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.business.service.ifc.I18nSchoolService;
-import com.m4f.business.service.ifc.I18nTerritorialService;
-import com.m4f.business.service.ifc.ICourseHtmlService;
+import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.utils.beans.BeanManager;
 import com.m4f.utils.beans.exception.NotSameClassException;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.parser.ifc.DumperCapable;
-import com.m4f.web.controller.task.TaskController;
 import com.m4f.business.domain.Provider;
 
 public class DumperManager implements DumperCapable {
+	
 	private static final Logger LOGGER = Logger.getLogger(DumperManager.class.getName());
 	
 	private Validator validator;
 	private I18nSchoolService schoolService;
 	private I18nCourseService courseService;
-	private ICourseHtmlService courseCatalogService;
+	private ICatalogService catalogService;
 	private BeanManager beanManager;
 	
 	public DumperManager(Validator validator, I18nSchoolService schServce,
-			I18nCourseService courseService, ICourseHtmlService courseCatalogService, BeanManager bManager) {
+			I18nCourseService courseService, ICatalogService courseCatalogService, BeanManager bManager) {
 		this.validator = validator;
 		this.schoolService = schServce;
 		this.courseService = courseService;
-		this.courseCatalogService = courseCatalogService;
+		this.catalogService = courseCatalogService;
 		this.beanManager = bManager;
 	}
 	
@@ -64,25 +56,13 @@ public class DumperManager implements DumperCapable {
 	
 	@Override
 	public List<FieldError> dumpCourse(Dump dump, Course course, Locale locale, School school, 
-			Provider provider, String province, String region, String town) throws Exception {
+			Provider provider) throws Exception {
+		course.setRegulated(provider.getRegulated());
 		DataBinder dataBinder = new DataBinder(course);
 		dataBinder.setValidator(validator);
 		dataBinder.validate();
 		if(!dataBinder.getBindingResult().hasErrors()) {
-			if(this.selectiveCourseStore(course, locale)) {
-				CourseCatalog courseCatalog = new CourseCatalog(course, locale.getLanguage(), school, provider.getName(), province, region, town);
-				CourseCatalog oldCourseCatalog = this.courseCatalogService.getCourseCatalogByCourseId(course.getId(), locale);
-				if(oldCourseCatalog != null) courseCatalog.setId(oldCourseCatalog.getId());
-				this.courseCatalogService.save(courseCatalog);
-				LOGGER.log(Level.FINE, new StringBuffer("Se anyade el curso: ").append(course).toString());
-			} else {
-				LOGGER.log(Level.FINE, new StringBuffer("No se anyade el curso: ").append(course).toString());
-				CourseCatalog courseCatalog = new CourseCatalog(course, locale.getLanguage(), school, provider.getName(), province, region, town);
-				CourseCatalog oldCourseCatalog = this.courseCatalogService.getCourseCatalogByCourseId(course.getId(), locale);
-				if(oldCourseCatalog != null) courseCatalog.setId(oldCourseCatalog.getId());
-				this.courseCatalogService.save(courseCatalog);
-				LOGGER.log(Level.FINE, new StringBuffer("Se regenera su version del catalogo: ").append(course).toString());
-			}
+			this.selectiveCourseStore(course, locale);
 		}
 		return dataBinder.getBindingResult().getFieldErrors();
 	}
@@ -93,7 +73,6 @@ public class DumperManager implements DumperCapable {
 		Course oldCourse = this.courseService.getCourseByExternalId(newCourse.getExternalId(), locale);
 		if(oldCourse == null) {
 			newCourse.setCreated(Calendar.getInstance(new Locale("es")).getTime());
-			//newCourse.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
 			newCourse.setActive(true);
 			this.courseService.save(newCourse, locale);
 			stored = true;
@@ -106,7 +85,6 @@ public class DumperManager implements DumperCapable {
 			properties.add("end");
 			properties.add("information");
 			properties.add("active");
-
 			this.beanManager.mergeObjects(newCourse, oldCourse, properties);
 			if(oldCourse.isTranslated()) oldCourse.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
 			newCourse.setId(oldCourse.getId());
@@ -114,7 +92,7 @@ public class DumperManager implements DumperCapable {
 			stored = true;
 		} else {
 			LOGGER.log(Level.INFO, new StringBuffer("El curso: ").append(newCourse.toString())
-					.append(" no se actualiza ni modifica porque ya estaba en BD.").toString());
+					.append(" no se actualiza ni modifica porque ya estaba igual en BD.").toString());
 		}
 		return stored;
 	}

@@ -59,7 +59,7 @@
 		<constructor-arg index="0" ref="validator"/>
 		<constructor-arg index="1" ref="schoolService"/>
 		<constructor-arg index="2" ref="courseService"/>
-		<constructor-arg index="3" ref="courseHtmlService"/>
+		<constructor-arg index="3" ref="catalogService"/>
 		<constructor-arg index="4" ref="beanManager"/>
 	</bean>
 	
@@ -74,7 +74,7 @@
 	</bean>
 	
 	<!-- Creates the CourseHtml Service -->
-	<bean id="courseHtmlService" class="com.m4f.business.service.impl.CourseHtmlServiceImpl">
+	<bean id="catalogService" class="com.m4f.business.service.impl.GaeJdoCatalogService">
 		<constructor-arg index="0" ref="jdoDAO"/>
 	</bean>
 	
@@ -134,7 +134,7 @@
     
     <!-- Interceptor to control any entity dump process from a feed capture process. -->
     <bean id="dumperHypervisor" class="com.m4f.utils.feeds.aop.DumperHypervisor">
-    	<constructor-arg index="0" ref="eventService"/>
+    	<constructor-arg index="0" ref="serviceLocator"/>
     </bean>
     
     <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
