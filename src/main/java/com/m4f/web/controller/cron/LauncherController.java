@@ -121,18 +121,15 @@ public class LauncherController extends BaseController {
 	 * 
 	 * @return tiles's registered view.
 	 */
-	@RequestMapping(value="/createCatalog", method=RequestMethod.GET)
+	@RequestMapping(value="/catalog/create", method=RequestMethod.GET)
 	public String createHtmlCatalog(Locale locale) {
 		final int RANGE = 200;
-		final int LIMIT = 100000;
 		try {
 			LOGGER.severe("#### Creating Catalog for all Courses.............");
-			
 			PageManager<Course> paginator = new PageManager<Course>();
 			paginator.setOffset(RANGE);
 			paginator.setStart(0);
 			paginator.setSize(this.serviceLocator.getCourseService().count());
-		
 			for(Integer page : paginator.getPagesIterator()) {
 				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
 				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/createpaginated");
@@ -141,7 +138,6 @@ public class LauncherController extends BaseController {
 				options.method(Method.POST);
 				queue.add(options);		
 			}
-			
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -155,7 +151,7 @@ public class LauncherController extends BaseController {
 	 * 
 	 * @return tiles's registered view.
 	 */
-	@RequestMapping(value="/deleteCatalog", method=RequestMethod.GET)
+	@RequestMapping(value="/catalog/delete", method=RequestMethod.GET)
 	public String deleteHtmlCatalogNew(Locale locale) {
 		final int RANGE = 200;
 		try {
@@ -252,7 +248,7 @@ public class LauncherController extends BaseController {
 	/*
 	 * CRON TO EXECUTE IN ORDER AND IN ROUND-ROBIN METHOD THE INTERNAL FEED GENERATION
 	 */
-	@RequestMapping(value="/internalFeedGeneration", method=RequestMethod.GET)
+	@RequestMapping(value="/internalfeedgeneration", method=RequestMethod.GET)
 	public String internalFeedGeneration() throws Exception {
 		CronTaskReport report = null;
 		try {

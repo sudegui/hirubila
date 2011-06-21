@@ -137,7 +137,8 @@ public class ExtendedSchoolController extends BaseModelController {
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	public String list(Model model, Locale locale, 
-			@RequestParam(defaultValue="1", required=false) Integer page, @RequestParam(defaultValue="", required=false) String order) {
+			@RequestParam(defaultValue="1", required=false) Integer page, 
+			@RequestParam(defaultValue="", required=false) String order) {
 		try {
 			String ordering = order != null && !("").equals(order) ? order : "name";
 			PageManager<ExtendedSchool> paginator = new PageManager<ExtendedSchool>();

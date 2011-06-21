@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.m4f.business.domain.BaseEntity;
+import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.ifc.Taggeable;
 import com.m4f.business.persistence.PMF;
 import com.m4f.utils.i18n.annotations.DeleteMultilanguage;
@@ -270,16 +271,25 @@ public class JdoI18nDAO implements I18nDAOSupport {
 	public <T extends BaseEntity> Collection<T> findEntitiesByIds(Class<T> entityClass, Locale locale, 
 			String idField, List<Long> ids, int init, int end, String ordering) throws Exception {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		StringBuffer querySb = new StringBuffer("select from ").append(entityClass.getName()).append(" where ").append(":ids.contains(").append(idField).append(")");
-		Query query = pm.newQuery(querySb.toString());
+		
+		//StringBuffer querySb = 
+			new StringBuffer("select from ").append(entityClass.getName()).append(" where ").append(":ids.contains(").append(idField).append(")");
+		//Query query = pm.newQuery(querySb.toString());
 		//query.declareParameters(params);
+		
+		Collection<T> objs = new ArrayList<T>();
+		Query query = pm.newQuery(entityClass,":ids.contains(" + idField + ")");
+		if((ids!=null)&&(ids.size()>0)) {
+			 objs.addAll((Collection<T>)query.execute(ids));
+		}
+		 
 		this.setOrdering(query, ordering);
 		if((init<end) && (init>=0)) {
 			query.setRange(init, end);
 		}
 		// execute query
-		Collection<T> entities = (Collection<T>) query.execute(ids);
-		Collection<T> detached = pm.detachCopyAll(entities);
+		//Collection<T> entities = (Collection<T>) query.execute(ids);
+		Collection<T> detached = pm.detachCopyAll(objs);
 		pm.close();
 		return detached;
 	}
@@ -290,7 +300,7 @@ public class JdoI18nDAO implements I18nDAOSupport {
 		com.google.appengine.api.datastore.Query q = 
 			new com.google.appengine.api.datastore.Query(entityClass.getSimpleName());
 		q.addFilter(idField, com.google.appengine.api.datastore.Query.FilterOperator.IN, ids);
-		PreparedQuery pq = datastore.prepare(q);	
+		PreparedQuery pq = datastore.prepare(q);
 		return pq.countEntities(FetchOptions.Builder.withLimit(100000));
 	}
 	
