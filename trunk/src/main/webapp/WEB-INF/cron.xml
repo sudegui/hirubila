@@ -6,7 +6,7 @@
   	<schedule>every 80 minutes</schedule>
   </cron>
   <cron>
-  	<url>/launcher/internalFeedGeneration</url>
+  	<url>/launcher/internalfeedgeneration</url>
   	<description>Generate in a round-robin method all internal feeds.</description>
   	<schedule>every 90 minutes</schedule>
   </cron>
