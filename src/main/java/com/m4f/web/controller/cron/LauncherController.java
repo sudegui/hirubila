@@ -19,6 +19,8 @@ import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
+import com.m4f.business.service.exception.ContextNotActiveException;
+import com.m4f.business.service.exception.ServiceNotFoundException;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
@@ -116,43 +118,36 @@ public class LauncherController extends BaseController {
 	 */
 	
 	/**
-	 * Create HTML Catalog for new courses
+	 * Task for completed regeneration for SEO Catalog for courses.
 	 * 
 	 * 
 	 * @return tiles's registered view.
 	 */
-	@RequestMapping(value="/catalog/create", method=RequestMethod.GET)
-	public String createHtmlCatalog(Locale locale) {
-		final int RANGE = 200;
+	@RequestMapping(value="/catalog/regenerate", method=RequestMethod.GET)
+	public String generateCatalog(Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
 		try {
-			LOGGER.severe("#### Creating Catalog for all Courses.............");
-			PageManager<Course> paginator = new PageManager<Course>();
-			paginator.setOffset(RANGE);
-			paginator.setStart(0);
-			paginator.setSize(this.serviceLocator.getCourseService().count());
-			for(Integer page : paginator.getPagesIterator()) {
-				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
-				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/createpaginated");
-				options.param("start", "" +(page-1)*RANGE);
-				options.param("finish", "" + (page)*RANGE);
-				options.method(Method.POST);
-				queue.add(options);		
-			}
-		} catch(Exception e) {
+			Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
+			TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/regenerate");
+			options.method(Method.GET);
+			queue.add(options);		
+		} catch (ServiceNotFoundException e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		
+			throw e;
+		} catch (ContextNotActiveException e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			throw e;					
+		}		
 		return "cron.launched";
 	}
+	
 	/**
-	 * Delete HTML Catalog
+	 * Task for completed deletion for SEO Catalog for courses.
 	 * 
 	 * 
 	 * @return tiles's registered view.
 	 */
-	@RequestMapping(value="/catalog/delete", method=RequestMethod.GET)
-	public String deleteHtmlCatalogNew(Locale locale) {
+	@RequestMapping(value="/catalog/destroy", method=RequestMethod.GET)
+	public String destroyCatalog(Locale locale) {
 		final int RANGE = 200;
 		try {
 			LOGGER.severe("#### Deleting Catalog for all Courses.............");

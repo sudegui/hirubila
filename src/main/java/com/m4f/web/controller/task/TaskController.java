@@ -51,6 +51,7 @@ import com.m4f.business.domain.extended.Province;
 import com.m4f.business.domain.extended.Region;
 import com.m4f.business.domain.extended.Town;
 import com.m4f.business.service.extended.impl.InternalFeedServiceImpl;
+import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.web.controller.BaseController;
@@ -264,6 +265,35 @@ public class TaskController extends BaseController  {
 	 */
 	
 	
+	@RequestMapping(value="/catalog/regenerate", method=RequestMethod.GET)
+	public String generateCatalog(Locale locale) {
+		final int RANGE = 200;
+		try {
+			LOGGER.severe("#### Regenerating catalog for all Courses.............");
+			PageManager<Course> paginator = new PageManager<Course>();
+			paginator.setOffset(RANGE);
+			paginator.setStart(0);
+			long total = this.serviceLocator.getCourseService().count();
+			paginator.setSize(total);
+			LOGGER.severe("#### Total Courses............. " + total);
+			LOGGER.severe("#### End page.................." + paginator.getPagesMax());
+			for(Integer page : paginator.getTotalPagesIterator()) {
+				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
+				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/createpaginated");
+				int start = (page-1)*RANGE;
+				options.param("start", "" + start);
+				int end = (page)*RANGE;
+				options.param("finish", "" + end);
+				options.method(Method.POST);
+				queue.add(options);
+				LOGGER.severe("#### Batch: " + start + "-" + end);
+			}
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			return "common.error";
+		}
+		return "task.launched";
+	}
 	
 	
 	/**
@@ -276,13 +306,16 @@ public class TaskController extends BaseController  {
 		try {
 			Collection<Course> courses = 
 				this.serviceLocator.getCourseService().getCourses("title", null, start, finish);
+			LOGGER.severe("+++ Paginated total courses: " + courses.size());
 			for(Course course : courses) {
 				for(Locale locale : this.getAvailableLanguages()) {
 					CourseCatalog catalogCourse = 
 						this.serviceLocator.getCatalogService().getCourseCatalogByCourseId(course.getId(), locale);
 					if(catalogCourse == null) {
-						LOGGER.severe("Creating catalog entry for course " + course.getTitle() + " (" + course.getId() + ")");
-						Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
+						LOGGER.severe("+++ Creating catalog entry for course " + 
+								course.getTitle() + " (" + course.getId() + ")");
+						Queue queue = 
+							QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
 						String urlTask = new StringBuffer("/task/catalog/create").toString();
 						TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
 						options.method(Method.POST);
@@ -303,26 +336,28 @@ public class TaskController extends BaseController  {
 	public String createCourseCatalog(@RequestHeader("host") String host, 
 			@RequestParam(required=true) Long courseId, 
 			@RequestParam(required=false) String language) throws Exception {
-		try {
-			
+		try {		
 			List<Locale> locales = new ArrayList<Locale>();
 			if(language != null) {
 				locales.add(new Locale(language));
 			} else {
 				locales.addAll(this.getAvailableLanguages());
 			}
-			for(Locale locale : locales) {
+			for(Locale locale : locales) {	
 				LOGGER.info(new StringBuffer("Generacion de instancia de catalogo del curso id: ")
 				.append(courseId).append(" y locale: ").append(locale).toString());
 				Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
 				School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
 				Provider provider = this.serviceLocator.getProviderService().getProviderById(course.getProvider(), locale);
+				
 				// Territorial data
 				String townName = school.getContactInfo() != null && 
 					school.getContactInfo().getCity() != null ? 
 					school.getContactInfo().getCity() : "";
+				
 				List<Town> towns = this.serviceLocator.getTerritorialService().
 					findTownsByName(townName, locale);
+				
 				Town town = new Town();
 				Province province = new Province();
 				Region region = new Region();
@@ -333,13 +368,17 @@ public class TaskController extends BaseController  {
 				}						
 				CourseCatalog catalog = new CourseCatalog(course, locale.getLanguage(), 
 					school, provider.getName(), province.getName(), region.getName(), town.getName());
+				
 				CourseCatalog catalogOld = 
 					this.serviceLocator.getCatalogService().getCourseCatalogByCourseId(courseId, locale);
+				
 				if(catalogOld != null) {
 					catalog.setId(catalogOld.getId());
 				}
+				
 				LOGGER.info(new StringBuffer("Fin generacion instancia de catalago del curso: ")
 					.append(courseId).append(" y locale: ").append(locale).toString());
+				
 				this.serviceLocator.getCatalogService().save(catalog);
 			}
 		} catch(Exception e) {

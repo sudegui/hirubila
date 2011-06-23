@@ -72,11 +72,13 @@ public class DumperManager implements DumperCapable {
 		boolean stored = false;
 		Course oldCourse = this.courseService.getCourseByExternalId(newCourse.getExternalId(), locale);
 		if(oldCourse == null) {
+			/*Alta nueva: el curso no estaba registrado en la base de datos.*/
 			newCourse.setCreated(Calendar.getInstance(new Locale("es")).getTime());
 			newCourse.setActive(true);
 			this.courseService.save(newCourse, locale);
 			stored = true;
 		} else if(!oldCourse.equals(newCourse) || !oldCourse.isTranslated()) {
+			/*Modificacion: el curso estaba registrado en la base de datos, pero se modifica.*/
 			Set<String> properties = new HashSet<String>();
 			properties.add("externalId");
 			properties.add("title");
@@ -91,6 +93,7 @@ public class DumperManager implements DumperCapable {
 			this.courseService.save(oldCourse, locale);
 			stored = true;
 		} else {
+			/*Ignorar: el curso que existe en la base de datos es idéntico.*/
 			LOGGER.log(Level.INFO, new StringBuffer("El curso: ").append(newCourse.toString())
 					.append(" no se actualiza ni modifica porque ya estaba igual en BD.").toString());
 		}

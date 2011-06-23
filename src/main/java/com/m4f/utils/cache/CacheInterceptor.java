@@ -4,15 +4,12 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.cache.Cache;
 import javax.cache.CacheException;
 import javax.cache.CacheFactory;
 import javax.cache.CacheManager;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
@@ -38,32 +35,36 @@ public class CacheInterceptor {
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			cacheName = "default";
+		} finally {
+			
 		}
 				
 		Object key = this.getMethodKey(method.toGenericString(),pjp.getArgs());
 		Object result = null;
-		
 		InternalCache internalCache = this.getCache(cacheName);
 		if(internalCache == null) {
-			LOGGER.log(Level.INFO, "NO CACHE! with name -> " + cacheName);
-			LOGGER.log(Level.INFO, "NO CACHE! Creating cache with name -> " + cacheName);
+			LOGGER.info("NO CACHE! with name -> " + cacheName);
+			LOGGER.info("NO CACHE! Creating cache with name -> " + cacheName);
 			internalCache = new InternalCache();
 		} else {
 			result = internalCache.get(key);
 		}
 		
 		if(result != null) {
-			LOGGER.log(Level.INFO, "Returning value with key: " + key + " from cache.");
+			LOGGER.info("Returning value with key: " + key + " from cache.");
 			return result;
 		} else {
-			LOGGER.log(Level.INFO, "NO CACHE! Invoking the method!");
-			result =  pjp.proceed();
-			LOGGER.log(Level.INFO, "NO CACHE! Inserting result into internal cache with key: " + key);
-			internalCache.put(key, result);
-			LOGGER.log(Level.INFO, "NO CACHE! Adding to cache internal cache with name: " + cacheName);
-			this.addCache(cacheName, internalCache);
+			try {
+				LOGGER.info("NO CACHE! Invoking the method!");
+				result =  pjp.proceed();
+				LOGGER.info("NO CACHE! Inserting result into internal cache with key: " + key);
+				internalCache.put(key, result);
+				LOGGER.info("NO CACHE! Adding to cache internal cache with name: " + cacheName);
+				this.addCache(cacheName, internalCache);
+			} catch(Exception e) {
+				LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			}
 		}
-		
 		return result;
 	}
 	

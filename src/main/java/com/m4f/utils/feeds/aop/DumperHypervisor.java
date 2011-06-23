@@ -110,7 +110,8 @@ public class DumperHypervisor {
 	}
 	
 	
-	private void createCourseCatalog(Course course, Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
+	private void createCourseCatalog(Course course, Locale locale) 
+		throws ServiceNotFoundException, ContextNotActiveException {
 		Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
 		String urlTask = new StringBuffer("/task/catalog/create").toString();
 		TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
@@ -119,7 +120,6 @@ public class DumperHypervisor {
 		options.param("language", locale.getLanguage());
 		queue.add(options);
 	}
-	
 	
 	private void registerCourseError(Dump dump, List<FieldError> errors, 
 			Course course, Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
