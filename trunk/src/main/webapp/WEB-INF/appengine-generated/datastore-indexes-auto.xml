@@ -1,11 +1,4 @@
-<!-- Indices written at Tue, 21 Jun 2011 14:53:59 UTC -->
+<!-- Indices written at Thu, 23 Jun 2011 08:52:45 UTC -->
 
-<datastore-indexes>
+<datastore-indexes/>
 
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="ExtendedCourse" ancestor="false" source="auto">
-        <property name="mediationService" direction="asc"/>
-        <property name="title" direction="asc"/>
-    </datastore-index>
-
-</datastore-indexes>

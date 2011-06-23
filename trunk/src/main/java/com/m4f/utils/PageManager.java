@@ -140,6 +140,14 @@ public class PageManager<T> implements Iterable<T>{
 		return this.collection != null ? this.collection.iterator() : (new ArrayList<T>()).iterator();
 	}
 	
+	public List<Integer> getTotalPagesIterator() {
+		List<Integer> pagesIndex = new ArrayList<Integer>();
+		for(int i=this.getPageStart() ; i <= this.getPagesMax() ; i++) {
+			pagesIndex.add(i);
+		}
+		return pagesIndex;
+	}
+	
 	public List<Integer> getPagesIterator() {
 		List<Integer> pagesIndex = new ArrayList<Integer>();
 		for(int i=this.getPageStart() ; i <= this.getPageEnd() ; i++) {
