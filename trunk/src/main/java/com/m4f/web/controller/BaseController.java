@@ -35,6 +35,7 @@ public abstract class BaseController {
 	private static final Logger LOGGER = Logger.getLogger(BaseController.class.getName());
 	private Map<String,Locale> localesMap;
 	private List<Locale> avLocales;
+	protected static List<String> connectedClients = new ArrayList<String>();
 	
 	@Autowired
 	private ReloadableResourceBundleMessageSource messageSource;
