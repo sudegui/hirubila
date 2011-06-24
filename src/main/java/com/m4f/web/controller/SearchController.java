@@ -2,20 +2,18 @@ package com.m4f.web.controller;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.StringTokenizer;
+import com.google.appengine.api.channel.ChannelService;
+import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.datastore.Category;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
@@ -50,7 +50,8 @@ import com.m4f.web.bind.form.SearchForm;
 public class SearchController extends BaseController {
 	
 	private static final Logger LOGGER = Logger.getLogger(SearchController.class.getName());
-
+	
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public String getSearchForm(
 			@RequestParam(defaultValue = "", required = false) String q,
@@ -83,6 +84,15 @@ public class SearchController extends BaseController {
 				}
 			}
 			model.addAttribute("total", this.serviceLocator.getCatalogService().countCourseCatalog(locale));
+			 // Game creation, user sign-in, etc. omitted for brevity.
+			Random generator = new Random(Calendar.getInstance().getTimeInMillis());
+			String userId = "clientId-" + generator.nextInt();
+			// The 'Game' object exposes a method which creates a unique string based on the game's key
+		    // and the user's id.
+			ChannelService channelService = ChannelServiceFactory.getChannelService();
+			String token = channelService.createChannel(userId);
+			this.connectedClients.add(userId);
+			model.addAttribute("token", token);
 		} catch (Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -99,6 +109,7 @@ public class SearchController extends BaseController {
 
 	}
 
+	
 	@RequestMapping(method = RequestMethod.POST)
 	public String search(@ModelAttribute("form") SearchForm searchForm,
 			@RequestParam(defaultValue = "", required = false) String q,

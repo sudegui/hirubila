@@ -1,21 +1,30 @@
 package com.m4f.web.controller.cron;
 
+import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.logging.Logger;
+
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.google.appengine.api.channel.ChannelMessage;
+import com.google.appengine.api.channel.ChannelService;
+import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CronTaskReport;
+import com.m4f.business.domain.CustomChannelMessage;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
@@ -196,6 +205,8 @@ public class LauncherController extends BaseController {
 		return "cron.launched";
 	}
 	
+	
+	
 	/*
 	 * CRON TO EXECUTE IN ORDER AND IN ROUND-ROBIN METHOD THE SCHOOLS AND COURSES FROM THEIR PROVIDER
 	 */
@@ -271,6 +282,20 @@ public class LauncherController extends BaseController {
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			throw e;
+		}
+		return "cron.launched";
+	}
+	
+	@RequestMapping(value="/websocket", method=RequestMethod.GET)
+	public String websocket() throws Exception {
+		Random generator = new Random();
+		for(String clientId : this.connectedClients) {
+			 ChannelService channelService = ChannelServiceFactory.getChannelService();
+			 ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+			 StringWriter strWriter  = new StringWriter();
+			 CustomChannelMessage message = new CustomChannelMessage("v-" + generator.nextInt());
+			 mapper.writeValue(strWriter, message);
+		     channelService.sendMessage(new ChannelMessage(clientId, strWriter.toString()));
 		}
 		return "cron.launched";
 	}

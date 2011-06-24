@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="<c:url value='/static/search/js/javascript.js'/>"></script>
 	<script type="text/javascript" src="<c:url value='/static/search/js/ga.js'/>"></script>
 	<script type="text/javascript" src="<c:url value='/static/search/js/jquery-1.5.1.js'/>"></script>
+	<script type="text/javascript" src="<c:url value='/static/search/js/search.js'/>"></script>
 </head>
 
 
@@ -82,6 +83,11 @@
 				  }
 				}).render().start();
 				</script>
+    		</div>
+    		<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+    		<div id="channel_api_params" style="display:none;" chat_token="${token}"></div>
+    		<div id="total_courses">
+    			Numero total de cursos: 6333
     		</div>
 		</div>
 		
