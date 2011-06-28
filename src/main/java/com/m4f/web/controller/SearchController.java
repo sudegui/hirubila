@@ -85,13 +85,6 @@ public class SearchController extends BaseController {
 			}
 			model.addAttribute("total", this.serviceLocator.getCatalogService().countCourseCatalog(locale));
 			 // Game creation, user sign-in, etc. omitted for brevity.
-			Random generator = new Random(Calendar.getInstance().getTimeInMillis());
-			String userId = "clientId-" + generator.nextInt();
-			// The 'Game' object exposes a method which creates a unique string based on the game's key
-		    // and the user's id.
-			ChannelService channelService = ChannelServiceFactory.getChannelService();
-			String token = channelService.createChannel(userId);
-			this.connectedClients.add(userId);
 			model.addAttribute("token", token);
 		} catch (Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
@@ -393,4 +386,19 @@ public class SearchController extends BaseController {
 			return new ArrayList<PhraseSearch>();
 		}
 	}
+	
+	@ModelAttribute("token")
+	public String generateChannel() {
+		Random generator = new Random(Calendar.getInstance().getTimeInMillis());
+		String userId = "clientId-" + generator.nextInt();
+		// The 'Game' object exposes a method which creates a unique string based on the game's key
+	    // and the user's id.
+		ChannelService channelService = ChannelServiceFactory.getChannelService();
+		String token = channelService.createChannel(userId);
+		this.connectedClients.add(userId);
+		return token;
+	}
+	
+	
+	
 }
