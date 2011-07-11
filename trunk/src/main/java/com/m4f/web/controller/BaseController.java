@@ -29,9 +29,6 @@ import com.m4f.web.controller.helper.ViewHelper;
 @SessionAttributes(value={"provincesMap","langs","regionsMap"})
 public abstract class BaseController {
 	
-	
-
-	
 	private static final Logger LOGGER = Logger.getLogger(BaseController.class.getName());
 	private Map<String,Locale> localesMap;
 	private List<Locale> avLocales;
@@ -41,8 +38,6 @@ public abstract class BaseController {
 	private ReloadableResourceBundleMessageSource messageSource;
 	@Autowired
 	protected IServiceLocator serviceLocator;
-	@Autowired
-	protected ApplicationContext ctx;
 	@Autowired
 	protected Validator validator;
 	@Autowired
