@@ -86,7 +86,7 @@ public class LauncherController extends BaseController {
 	
 	
 	@RequestMapping(value="/updatecourses/{schoolId}", method=RequestMethod.GET)
-	public String updateAllCourses(@PathVariable Long schoolId, Model model) {
+	public String updateSchoolCourses(@PathVariable Long schoolId, Model model) {
 		School school = null;
 		try {
 			school = this.serviceLocator.getSchoolService().getSchool(schoolId, new Locale("es"));

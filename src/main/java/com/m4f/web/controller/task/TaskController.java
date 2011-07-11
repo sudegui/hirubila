@@ -51,6 +51,7 @@ import com.m4f.business.domain.extended.Province;
 import com.m4f.business.domain.extended.Region;
 import com.m4f.business.domain.extended.Town;
 import com.m4f.business.service.extended.impl.InternalFeedServiceImpl;
+import com.m4f.business.service.ifc.I18nSchoolService;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
@@ -265,6 +266,35 @@ public class TaskController extends BaseController  {
 	 */
 	
 	
+	/***************************************************************************************
+	 * 
+	 * 								SEO CATALOG OPERATIONS
+	 * 
+	 ***************************************************************************************/
+	
+	
+	@RequestMapping(value="/school/catalog/generate", method=RequestMethod.POST)
+	public String generateSchoolCatalog(@RequestParam(required=true) Long schoolId) {
+		final int RANGE = 200;
+		try {	
+			for (Course course : this.serviceLocator.getCourseService().getCoursesBySchool(schoolId, null, null)) {
+				for(Locale locale : this.getAvailableLanguages()) {
+					
+				}
+			}
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			return "common.error";
+		}
+		
+		return "task.launched";
+	}
+	
+	
+	
+	
+	
+	
 	@RequestMapping(value="/catalog/regenerate", method=RequestMethod.GET)
 	public String generateCatalog(Locale locale) {
 		final int RANGE = 200;
@@ -278,7 +308,8 @@ public class TaskController extends BaseController  {
 			LOGGER.severe("#### Total Courses............. " + total);
 			LOGGER.severe("#### End page.................." + paginator.getPagesMax());
 			for(Integer page : paginator.getTotalPagesIterator()) {
-				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
+				Queue queue = 
+					QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
 				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/createpaginated");
 				int start = (page-1)*RANGE;
 				options.param("start", "" + start);
@@ -331,6 +362,8 @@ public class TaskController extends BaseController  {
 		}
 		return "task.launched";
 	}
+	
+	
 	
 	@RequestMapping(value="/catalog/create", method=RequestMethod.POST)
 	public String createCourseCatalog(@RequestHeader("host") String host, 
