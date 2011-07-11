@@ -37,6 +37,8 @@ import com.m4f.business.domain.PhraseSearch;
 import com.m4f.business.domain.ResultSearchEmail;
 import com.m4f.business.domain.extended.Province;
 import com.m4f.business.domain.extended.Region;
+import com.m4f.business.service.exception.ContextNotActiveException;
+import com.m4f.business.service.exception.ServiceNotFoundException;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.search.ifc.ISearchResults;
@@ -83,9 +85,6 @@ public class SearchController extends BaseController {
 					paginator.setSize(0);
 				}
 			}
-			model.addAttribute("total", this.serviceLocator.getCatalogService().countCourseCatalog(locale));
-			 // Game creation, user sign-in, etc. omitted for brevity.
-			model.addAttribute("token", token);
 		} catch (Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -387,7 +386,7 @@ public class SearchController extends BaseController {
 		}
 	}
 	
-	@ModelAttribute("token")
+	//@ModelAttribute("token")
 	public String generateChannel() {
 		Random generator = new Random(Calendar.getInstance().getTimeInMillis());
 		String userId = "clientId-" + generator.nextInt();
@@ -397,6 +396,21 @@ public class SearchController extends BaseController {
 		String token = channelService.createChannel(userId);
 		this.connectedClients.add(userId);
 		return token;
+	}
+	
+	//@ModelAttribute("total")
+	public long totalCourses(Locale locale) {
+		long total = 0;
+		try {
+			total = this.serviceLocator.getCatalogService().countCourseCatalog(locale);
+		} catch (ServiceNotFoundException e) {
+			StackTraceUtil.getStackTrace(e);
+		} catch (ContextNotActiveException e) {
+			StackTraceUtil.getStackTrace(e);
+		} catch (Exception e) {
+			StackTraceUtil.getStackTrace(e);
+		}
+		return total;
 	}
 	
 	
