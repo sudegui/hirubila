@@ -119,8 +119,8 @@ public class RegionController extends BaseModelController {
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("order", ordering);
 			
-			model.addAttribute("provincesMap", this.getProvincesMap());
-			model.addAttribute("regionsMap", this.getRegionsMap());
+			model.addAttribute("provincesMap", this.serviceLocator.getTransversalService().getProvincesMap());
+			model.addAttribute("regionsMap", this.serviceLocator.getTransversalService().getRegionsMap());
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -144,8 +144,8 @@ public class RegionController extends BaseModelController {
 			paginator.setCollection(this.serviceLocator.getTerritorialService().getRegions(locale, ordering, paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("order", ordering);
-			
-			model.addAttribute("provincesMap", this.getProvincesMap());
+			model.addAttribute("provincesMap", 
+					this.serviceLocator.getTransversalService().getProvincesMap());
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			return "common.error";

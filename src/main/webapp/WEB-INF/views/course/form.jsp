@@ -28,7 +28,7 @@
 									var tagsText = '';
 									$('#tags').val('');
 									$.each($('#tags-dialog :checkbox:checked'), function(i, check){
-										var tag = $(check).val().trim().toLowerCase();;
+										var tag = $.trim($(check).val()).toLowerCase();;
 										tagsText = tagsText.concat(tag).concat(',');
 									});
 									$('#tags').val(tagsText);

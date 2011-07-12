@@ -48,7 +48,8 @@ private static final Logger LOGGER = Logger.getLogger(ExtendedCourseController.c
 			@RequestHeader(required=false,value="referer") String referer, 
 			HttpSession session) {
 		try {
-			MediationService mediationService = this.getMediationService(currentUser);
+			MediationService mediationService = 
+				this.serviceLocator.getTransversalService().getMediationServiceByUser(currentUser.getName()); 
 			ExtendedCourse course = this.serviceLocator.getExtendedCourseService().createCourse();
 			course.setMediationService(mediationService.getId());
 			model.addAttribute("course", course);

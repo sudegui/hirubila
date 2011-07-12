@@ -116,8 +116,9 @@ private static final Logger LOGGER = Logger.getLogger(TownController.class.getNa
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("order", ordering);
 			
-			model.addAttribute("provincesMap", this.getProvincesMap());
-			model.addAttribute("regionsMap", this.getRegionsMap());
+			model.addAttribute("provincesMap", 
+					this.serviceLocator.getTransversalService().getProvincesMap());
+			model.addAttribute("regionsMap", this.serviceLocator.getTransversalService().getRegionsMap());
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			return "common.error";

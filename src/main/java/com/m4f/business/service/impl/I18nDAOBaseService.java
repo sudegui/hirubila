@@ -1,9 +1,9 @@
 package com.m4f.business.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import com.m4f.utils.i18n.dao.ifc.I18nDAOSupport;
 
 public abstract class I18nDAOBaseService {
@@ -15,7 +15,7 @@ public abstract class I18nDAOBaseService {
 	}
 	
 	protected Object[] valuesArray(HashMap<String, Object> values) {
-		ArrayList list = new ArrayList();
+		List list = new ArrayList();
 		
 		if(values != null) {
 			Iterator<String> it = values.keySet().iterator();

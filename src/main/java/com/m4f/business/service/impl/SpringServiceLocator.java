@@ -1,12 +1,20 @@
 package com.m4f.business.service.impl;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.m4f.business.domain.InternalUser;
+import com.m4f.business.domain.MediationService;
+import com.m4f.business.domain.Provider;
+import com.m4f.business.domain.extended.Province;
+import com.m4f.business.domain.extended.Region;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.business.service.ifc.I18nInboxService;
 import com.m4f.business.service.ifc.I18nMediationService;
@@ -18,6 +26,7 @@ import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.business.service.ifc.ICronTaskReportService;
 import com.m4f.business.service.ifc.IPhraseSearchService;
 import com.m4f.business.service.ifc.IServiceLocator;
+import com.m4f.business.service.ifc.TransversalBusinessService;
 import com.m4f.business.service.ifc.UserService;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
@@ -26,6 +35,7 @@ import com.m4f.business.service.exception.ServiceNotFoundException;
 import com.m4f.business.service.extended.ifc.I18nExtendedCourseService;
 import com.m4f.business.service.extended.ifc.I18nExtendedSchoolService;
 import com.m4f.business.service.extended.ifc.I18nInternalFeedService;
+import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.service.ifc.DumpService;
 import com.m4f.utils.feeds.events.service.ifc.EventService;
 import com.m4f.utils.feeds.parser.ifc.DumperCapable;
@@ -34,7 +44,7 @@ import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
 import com.m4f.utils.i18n.service.ifc.I18nService;
 import com.m4f.utils.search.ifc.ISearchEngine;
 
-public class SpringServiceLocator implements IServiceLocator, ApplicationContextAware {
+public class SpringServiceLocator implements IServiceLocator, ApplicationContextAware, TransversalBusinessService {
 	
 	private static final Logger LOGGER = Logger.getLogger(SpringServiceLocator.class.getName());
 	private ApplicationContext ctx;
@@ -152,6 +162,12 @@ public class SpringServiceLocator implements IServiceLocator, ApplicationContext
 		return this.getService(ICronTaskReportService.class);
 	}
 	
+	@Override
+	public TransversalBusinessService getTransversalService()
+			throws ServiceNotFoundException, ContextNotActiveException {
+		return this;
+	}
+	
 	public void init() {
 		long init = Calendar.getInstance().getTimeInMillis();
 		LOGGER.severe("---Starting init Service Locator Bean " );
@@ -185,6 +201,52 @@ public class SpringServiceLocator implements IServiceLocator, ApplicationContext
 		return bean;
 	}
 
-	
+	@Override
+	public MediationService getMediationServiceByUser(String username) {
+		try {
+			InternalUser intUser = this.getUserService().getUser(username);
+			return this.getMediatorService().getMediationServiceByUser(intUser.getId(), null);
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			return null;
+		}
+	}
+
+	@Override
+	public Provider getProviderByUserName(String userName, Locale locale)
+			throws Exception {
+		MediationService mediator = 
+			this.getMediatorService().getMediationServiceByUser(
+					this.getUserService().getUser(userName).getId(), 
+					locale);
+		if(mediator == null) {
+			throw new Exception("The user " + userName + 
+					" doesn't have a mediator assigned.");
+		}
+		Provider provider = this.getProviderService().findProviderByMediator(mediator, null);
+		if(provider == null) {
+			throw new Exception("Mediator with id " + mediator.getId() + 
+					" hasn't provider.");
+		}
+		return provider;
+	}
+
+	@Override
+	public Map<String, Map<Long, Province>> getProvincesMap() throws Exception {
+		Map<String, Map<Long,Province>> provincesMap = new HashMap<String, Map<Long,Province>>();	
+		for(Locale locale : this.getAppConfigurationService().getLocales()) {
+			provincesMap.put(locale.getLanguage(), this.getTerritorialService().getProvincesMap(locale));
+		}
+		return provincesMap;
+	}
+
+	@Override
+	public Map<String, Map<Long, Region>> getRegionsMap() throws Exception {
+		Map<String, Map<Long,Region>> regionsMap = new HashMap<String, Map<Long,Region>>();
+		for(Locale locale : this.getAppConfigurationService().getLocales()) {
+			regionsMap.put(locale.getLanguage(), this.getTerritorialService().getRegionsMap(locale));
+		}
+		return regionsMap;
+	}
 
 }

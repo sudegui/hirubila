@@ -376,44 +376,7 @@ public class TaskController extends BaseController  {
 			} else {
 				locales.addAll(this.getAvailableLanguages());
 			}
-			for(Locale locale : locales) {	
-				LOGGER.info(new StringBuffer("Generacion de instancia de catalogo del curso id: ")
-				.append(courseId).append(" y locale: ").append(locale).toString());
-				Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
-				School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
-				Provider provider = this.serviceLocator.getProviderService().getProviderById(course.getProvider(), locale);
-				
-				// Territorial data
-				String townName = school.getContactInfo() != null && 
-					school.getContactInfo().getCity() != null ? 
-					school.getContactInfo().getCity() : "";
-				
-				List<Town> towns = this.serviceLocator.getTerritorialService().
-					findTownsByName(townName, locale);
-				
-				Town town = new Town();
-				Province province = new Province();
-				Region region = new Region();
-				if(towns != null && towns.size() > 0) {
-					town = towns.get(0);
-					region = getRegionsMap().get(locale.getLanguage()).get(town.getRegion());
-					province = getProvincesMap().get(locale.getLanguage()).get(town.getProvince());
-				}						
-				CourseCatalog catalog = new CourseCatalog(course, locale.getLanguage(), 
-					school, provider.getName(), province.getName(), region.getName(), town.getName());
-				
-				CourseCatalog catalogOld = 
-					this.serviceLocator.getCatalogService().getCourseCatalogByCourseId(courseId, locale);
-				
-				if(catalogOld != null) {
-					catalog.setId(catalogOld.getId());
-				}
-				
-				LOGGER.info(new StringBuffer("Fin generacion instancia de catalago del curso: ")
-					.append(courseId).append(" y locale: ").append(locale).toString());
-				
-				this.serviceLocator.getCatalogService().save(catalog);
-			}
+			this.catalogBuilder.buildSeoEntity(courseId, locales);	
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			throw e;

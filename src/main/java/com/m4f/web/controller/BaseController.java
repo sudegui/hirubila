@@ -1,37 +1,25 @@
 package com.m4f.web.controller;
 
-
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
-import com.m4f.business.domain.InternalUser;
-import com.m4f.business.domain.MediationService;
-import com.m4f.business.domain.Provider;
-import com.m4f.business.domain.extended.Province;
-import com.m4f.business.domain.extended.Region;
 import com.m4f.business.service.ifc.IServiceLocator;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.web.controller.helper.ViewHelper;
+import com.m4f.utils.seo.SeoCatalogBuilder;
 
-@SessionAttributes(value={"provincesMap","langs","regionsMap"})
+@SessionAttributes(value={"langs"})
 public abstract class BaseController {
 	
 	private static final Logger LOGGER = Logger.getLogger(BaseController.class.getName());
-	private Map<String,Locale> localesMap;
-	private List<Locale> avLocales;
 	protected static List<String> connectedClients = new ArrayList<String>();
 	
 	@Autowired
@@ -42,6 +30,8 @@ public abstract class BaseController {
 	protected Validator validator;
 	@Autowired
 	protected ViewHelper viewHelper;
+	@Autowired
+	protected SeoCatalogBuilder catalogBuilder;
 	
 	protected String getMessage(String msg, Object... args) {
 		List<Object> variableParts = new ArrayList<Object>();
@@ -73,19 +63,10 @@ public abstract class BaseController {
 	
 	protected List<Locale> getAvailableLanguages() {
 		try {
-			if(this.avLocales == null) {
-				this.avLocales = new ArrayList<Locale>();
-				String[] languages = this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().getLanguages().split("[,]");
-				for(String language : languages) {
-					Locale locale = new Locale(language);
-					if(locale!=null) this.avLocales.add(new Locale(language));
-				}
-			}
-			return this.avLocales;
+			return this.serviceLocator.getAppConfigurationService().getLocales();
 		} catch(Exception e) {
-			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
-			this.avLocales.add(Locale.getDefault());
-			return this.avLocales;
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			return new ArrayList<Locale>();
 		}
 		
 	}
@@ -93,55 +74,14 @@ public abstract class BaseController {
 	@ModelAttribute("langs")
 	public Map<String, Locale> getAvailableMapLanguages() {
 		try {
-			if(this.avLocales == null) {
-				this.localesMap = new HashMap<String,Locale>();
-				String[] languages = this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().getLanguages().split("[,]");
-				this.avLocales = new ArrayList<Locale>();
-				for(String language : languages) {
-					Locale locale = new Locale(language);
-					if(locale!=null) {
-						this.avLocales.add(new Locale(language));
-						this.localesMap.put(language, locale);
-					}
-				}
-			}
-			return this.localesMap;
+			return this.serviceLocator.getAppConfigurationService().getLocalesMap();
 		} catch(Exception e) {
-			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
-			this.localesMap.put(Locale.getDefault().getLanguage(), Locale.getDefault());
-			return this.localesMap;
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			return new HashMap<String, Locale>();
 		}
 	}
 	
-	//@ModelAttribute("provincesMap")
-	public Map<String, Map<Long,Province>> getProvincesMap() throws Exception {
-		Map<String, Map<Long,Province>> provincesMap = 
-			new HashMap<String, Map<Long,Province>>();
-		try {
-			for(Locale locale : this.getAvailableLanguages()) {
-				provincesMap.put(locale.getLanguage(), 
-						this.serviceLocator.getTerritorialService().getProvincesMap(locale));
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-		}
-		return provincesMap;
-	}
 	
-	//@ModelAttribute("regionsMap")
-	public Map<String, Map<Long,Region>> getRegionsMap() throws Exception {
-		Map<String, Map<Long,Region>> regionsMap = 
-			new HashMap<String, Map<Long,Region>>();
-		try {
-			for(Locale locale : this.getAvailableLanguages()) {
-				regionsMap.put(locale.getLanguage(), 
-						this.serviceLocator.getTerritorialService().getRegionsMap(locale));
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-		}
-		return regionsMap;
-	}
 	public void setPageSize(Integer pageSize) {
 		try {
 			this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().setPageSize(pageSize);
@@ -159,46 +99,6 @@ public abstract class BaseController {
 			return new Integer(10);
 		}
 	}
-	
-	protected MediationService getMediationService(Principal user) {
-		try {
-			InternalUser intUser = this.serviceLocator.getUserService().getUser(user.getName());
-			return this.serviceLocator.getMediatorService().
-				getMediationServiceByUser(intUser.getId(), Locale.getDefault());
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return null;
-		}
-	}
-	
-	protected Provider getProviderByUserName(String userName, 
-			Locale locale) throws Exception {
-		MediationService mediator = 
-			this.serviceLocator.getMediatorService().getMediationServiceByUser(
-					this.serviceLocator.getUserService().getUser(userName).getId(), 
-					locale);
-		if(mediator == null) {
-			throw new Exception("The user " + userName + 
-					" doesn't have a mediator assigned.");
-		}
-		Provider provider = this.serviceLocator.getProviderService().
-			findProviderByMediator(mediator, Locale.getDefault());
-		if(provider == null) {
-			throw new Exception("Mediator with id " + mediator.getId() + 
-					" hasn't provider.");
-		}
-		return provider;
-	}
-
-	/*@Override
-	public void setApplicationContext(ApplicationContext arg0)
-			throws BeansException {
-		this.ctx = arg0;
-		this.serviceLocator = (IServiceLocator) this.ctx.getBean(IServiceLocator.class);
-		this.messageSource = (ReloadableResourceBundleMessageSource) this.ctx.getBean(ReloadableResourceBundleMessageSource.class);
-		this.validator = (Validator) this.ctx.getBean("validator");
-		this.viewHelper = (ViewHelper) this.ctx.getBean(ViewHelper.class);
-	}*/
 		
 	
 }
