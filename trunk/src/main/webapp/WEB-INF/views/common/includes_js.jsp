@@ -10,8 +10,6 @@
 	<c:forEach items="${langs}" var="lang">
 		languages.push(new language('<fmt:message key="${lang.key}"/>', '${lang.key}'));
 	</c:forEach>
-
-	
 	
 	function language(desc, lang) {
 		this.desc = desc;
@@ -23,20 +21,20 @@
 		var url = '/${rc.locale.language}' + url;
 		$.getJSON(url, function(data){	
 			$.each(data, function(i, val){
-				var tagVal = val.category.trim().toLowerCase()
+				var tagVal = $.trim(val.category).toLowerCase();
 				var check = '<input type="checkbox" value=\'' + tagVal + '\'/> ' + tagVal + '<br>';
 				$('#tags-dialog').append(check);
 				if(data.length-1 == i) {
 					<%-- TODO same code than markTags. Try to unify --%>
 					var tags = [];
-					var tagsText = $('#tags').val().trim();
+					var tagsText = $.trim($('#tags').val());
 					if(tagsText != null) tags = tagsText.split(',');
 					$('#tags-dialog input:checkbox').removeAttr('checked');
 					$.each(tags, function(i, tag){
 						var checks = $('#tags-dialog input:checkbox');
 						$.each(checks, function(j, check){
 							var checkTag = $(check);
-							if(tag.trim().toLowerCase() == checkTag.val()) checkTag.attr('checked', 'checked');
+							if($.trim(tag).toLowerCase() == checkTag.val()) checkTag.attr('checked', 'checked');
 						});
 					});
 				}
@@ -48,14 +46,14 @@
 	
 	function markTags() {
 		var tags = [];
-		var tagsText = $('#tags').val().trim();
+		var tagsText = $.trim($('#tags').val());
 		if(tagsText != null) tags = tagsText.split(',');
 		$('#tags-dialog input:checkbox').removeAttr('checked');
 		$.each(tags, function(i, tag){
 			var checks = $('#tags-dialog input:checkbox');
 			$.each(checks, function(j, check){
 				var checkTag = $(check);
-				if(tag.trim().toLowerCase() == checkTag.val()) checkTag.attr('checked', 'checked');
+				if($.trim(tag).toLowerCase() == checkTag.val()) checkTag.attr('checked', 'checked');
 			});
 		});
 	}

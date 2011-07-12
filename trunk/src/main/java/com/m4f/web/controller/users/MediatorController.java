@@ -66,7 +66,8 @@ public class MediatorController extends BaseController {
 			@RequestParam(defaultValue="1", required=false) Integer page, @RequestParam(defaultValue="", required=false) String order) {
 		try {
 			String ordering = order != null && !("").equals(order) ? order : "name";
-			Provider provider = this.getProviderByUserName(currentUser.getName(), locale);
+			Provider provider = 
+				this.serviceLocator.getTransversalService().getProviderByUserName(currentUser.getName(), locale);
 			model.addAttribute("provider", provider);
 			PageManager<School> paginator = new PageManager<School>();
 			paginator.setUrlBase("/" + locale.getLanguage() + "/dashboard/mediator/catalog/schools");
@@ -91,15 +92,17 @@ public class MediatorController extends BaseController {
 			@RequestParam(defaultValue="", required=false) String order) {
 		try {
 			String ordering = order != null && !("").equals(order) ? order : "title";
-			Provider provider = this.getProviderByUserName(currentUser.getName(), locale);
+			Provider provider = 
+				this.serviceLocator.getTransversalService().getProviderByUserName(currentUser.getName(), locale);
 			model.addAttribute("provider", provider);
 			PageManager<Course> paginator = new PageManager<Course>();
 			paginator.setOffset(this.getPageSize());
-			paginator.setUrlBase("/" + locale.getLanguage() + "/dashboard/mediator/catalog/courses");
+			paginator.setUrlBase("/" + locale.getLanguage() + 
+					"/dashboard/mediator/catalog/courses");
 			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setSize(this.serviceLocator.getCourseService().countCoursesByProvider(provider.getId()));
-			paginator.setCollection(this.serviceLocator.getCourseService().getCoursesByProvider(provider.getId(), ordering, locale, 
-					paginator.getStart(), paginator.getEnd()));
+			paginator.setCollection(this.serviceLocator.getCourseService().getCoursesByProvider(provider.getId(), 
+					ordering, locale, paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("order", ordering);
 		} catch(Exception e) {
@@ -179,7 +182,8 @@ public class MediatorController extends BaseController {
 			@RequestParam(defaultValue="1", required=false) Integer page, @RequestParam(defaultValue="", required=false) String order) {
 		try {
 			String ordering = order != null && !("").equals(order) ? order : "title";
-			MediationService mediationService = this.getMediationService(currentUser);
+			MediationService mediationService = 
+				this.serviceLocator.getTransversalService().getMediationServiceByUser(currentUser.getName()); 
 			PageManager<ExtendedCourse> paginator = new PageManager<ExtendedCourse>();
 			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/dashboard/mediator/catalog/extended/courses");

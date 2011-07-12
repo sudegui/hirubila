@@ -35,7 +35,7 @@ public class TodayController extends BaseController {
 	@RequestMapping(method=RequestMethod.GET)
 	public String getSummary(Principal principal, Model model, Locale locale) {
 		try {
-			Provider provider = this.getProviderByUserName(principal.getName(), locale);
+			Provider provider = this.serviceLocator.getTransversalService().getProviderByUserName(principal.getName(), locale);
 			/* List of Longs for representing the number of xml error, validation errors, and successful operation */
 			List<Long> stats = new ArrayList<Long>(3);
 			Dump dump = this.serviceLocator.getDumpService().getLastDumpByOwner(provider.getId());

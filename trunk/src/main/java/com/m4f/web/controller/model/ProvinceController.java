@@ -107,8 +107,7 @@ public class ProvinceController extends BaseModelController {
 					locale, ordering, paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("order", ordering);
-			
-			model.addAttribute("provincesMap", this.getProvincesMap());
+			model.addAttribute("provincesMap", this.serviceLocator.getTransversalService().getProvincesMap());
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 			return "common.error";

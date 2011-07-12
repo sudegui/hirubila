@@ -45,4 +45,6 @@ public interface IServiceLocator {
 	ICatalogService getCatalogService() throws ServiceNotFoundException, ContextNotActiveException;
 	IAppConfigurationService getAppConfigurationService() throws ServiceNotFoundException, ContextNotActiveException;
 	ICronTaskReportService getCronTaskReportService() throws ServiceNotFoundException, ContextNotActiveException;
+	TransversalBusinessService getTransversalService() throws ServiceNotFoundException, ContextNotActiveException;
+	
 }

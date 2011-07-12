@@ -24,6 +24,9 @@
 	<!-- View Helper Bean  -->
 	<bean id="viewHelper" class="com.m4f.web.controller.helper.ViewHelper"/>
 	
+	<!-- SEO catalog Helper Bean  -->
+	<bean id="seoCatalogBuilder" class="com.m4f.web.controller.helper.impl.HirubilaSeoCatalogBuilder"/>
+	
 	<bean id="urlShortener" class="com.m4f.utils.link.impl.GoogleURLShortener"/>
 	
 	<bean id="urlShortenerService" class="com.m4f.business.service.impl.CachedURLShortenerService">
