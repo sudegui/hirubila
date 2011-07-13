@@ -12,6 +12,8 @@ public interface DumpService {
 	void deleteAllDumps() throws Exception;
 	Dump getDump(Long id) throws Exception;
 	List<Dump> getAllDumps() throws Exception;
+	List<Dump> getAllDumps(int init, int end, String ordering) throws Exception;
+	
 	Long countDumps();
 	Long countDumpsByOwner(Long ownerId);
 	
