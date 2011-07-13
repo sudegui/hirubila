@@ -213,8 +213,8 @@ public class JdoEventServiceImpl extends JdoBaseService implements EventService 
 			int end, String ordering, Locale locale) throws Exception {
 		String filter = "dumpId == dumpIdParam && language == langParam";
 		String params = "java.lang.Long dumpIdParam,java.lang.String langParam";
-		return (List<StoreSuccessEvent>) this.DAO.findEntities(StoreSuccessEvent.class, 
-				filter, params, new Object[] {dump.getId(),locale.getLanguage()}, null);
+		return (List<StoreSuccessEvent>) this.DAO.findEntitiesByRange(StoreSuccessEvent.class, 
+				filter, params, new Object[] {dump.getId(),locale.getLanguage()}, null, init, end);
 	}
 	
 	@Override

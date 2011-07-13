@@ -29,10 +29,11 @@ public class DumpController extends BaseController {
 			@RequestParam(defaultValue="1", required=false) Integer page) {
 		try {		
 			PageManager<Dump> paginator = new PageManager<Dump>();
+			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage() + "/dump/");
 			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setSize(this.serviceLocator.getDumpService().countDumps());
-			paginator.setCollection(this.serviceLocator.getDumpService().getAllDumps());
+			paginator.setCollection(this.serviceLocator.getDumpService().getAllDumps(paginator.getStart(), paginator.getEnd(), ""));
 			model.addAttribute("paginator", paginator);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
@@ -65,6 +66,7 @@ public class DumpController extends BaseController {
 				return "common/error";
 			}
 			PageManager<ParserErrorEvent> paginator = new PageManager<ParserErrorEvent>();
+			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage() + "/dump/" + dumpId + "/events/parser-error");
 			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setSize(this.serviceLocator.getEventService().countParserErrorEventsByDump(dump));
@@ -89,6 +91,7 @@ public class DumpController extends BaseController {
 			}
 			model.addAttribute("errors",this.serviceLocator.getEventService().getStoreErrorEventsByDump(dump));
 			PageManager<StoreErrorEvent> paginator = new PageManager<StoreErrorEvent>();
+			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage() + "/dump/" + dump.getId() + 
 					"/events/store-error");
 			paginator.setStart((page-1)*paginator.getOffset());
@@ -115,6 +118,7 @@ public class DumpController extends BaseController {
 			}
 			model.addAttribute("dump", dump);
 			PageManager<StoreSuccessEvent> paginator = new PageManager<StoreSuccessEvent>();
+			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage() + "/dump/" + dump.getId() + 
 					"/events/store-success");
 			paginator.setStart((page-1)*paginator.getOffset());

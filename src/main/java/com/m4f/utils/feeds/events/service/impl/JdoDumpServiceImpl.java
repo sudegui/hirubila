@@ -44,6 +44,15 @@ public class JdoDumpServiceImpl extends JdoBaseService implements DumpService {
 	}
 	
 	@Override
+	public List<Dump> getAllDumps(int init, int end, String ordering) throws Exception {
+		ArrayList<Dump> dumps = new ArrayList<Dump>();
+		
+		dumps.addAll(this.DAO.findEntitiesByRange(Dump.class, ordering, init, end));
+		
+		return dumps;
+	}
+	
+	@Override
 	public List<Dump> getDumpsByOwner(Long ownerId, int init, 
 			int end, String ordering) {
 		List<Dump> dumps = new ArrayList<Dump>();
