@@ -3,6 +3,7 @@
 	<queue>
 		<name>provider</name>
 		<rate>2/s</rate>
+		<max-concurrent-requests>1</max-concurrent-requests>
 		<retry-parameters>
       		<task-retry-limit>5</task-retry-limit>
       		<min-backoff-seconds>30</min-backoff-seconds>

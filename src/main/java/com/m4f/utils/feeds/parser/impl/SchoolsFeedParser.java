@@ -1,6 +1,8 @@
 package com.m4f.utils.feeds.parser.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -20,42 +22,27 @@ import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
-
+import com.m4f.utils.content.ifc.IAcquirer;
 
 public class SchoolsFeedParser implements ISchoolsParser {
 	
-	private static final Logger LOGGER = Logger.getLogger(SchoolsFeedParser.class.getName());
-	
+	private IAcquirer contentAcquirer;
 	private List<School> schools = new ArrayList<School>();
-	private static final int TIMEOUT = 1000 * 10; // In milliseconds
+	
 
-	public SchoolsFeedParser() {
+	public SchoolsFeedParser(IAcquirer cAcquirer) {
 		super();
+		this.contentAcquirer =  cAcquirer;
 	}
 
 	@Override
 	public List<School> getSchools(Dump dump, Provider provider) throws ParserConfigurationException, 
-		SAXException, IOException {
-		
-		Date now = Calendar.getInstance().getTime();
-		HttpURLConnection connection = null;
-		String uriFeed = provider.getFeed();
-		URL urlFeed = new URL(uriFeed);
-		connection = (HttpURLConnection) urlFeed.openConnection();
-		connection.setConnectTimeout(TIMEOUT); //10 seg.
-		connection.setReadTimeout(TIMEOUT); //10 seg.
-		connection.connect();
-		if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-			LOGGER.info("++++Received response from " + urlFeed.toString() + 
-					" " + connection.getResponseCode());
-			InputSource inputFeed = new InputSource(connection.getInputStream());
-			SAXParserFactory spf = SAXParserFactory.newInstance();
-			SAXParser sp = spf.newSAXParser();
-			sp.parse(inputFeed, new SchoolsFeedReader(provider));		
-		} else {
-			LOGGER.severe("------Received response from " + urlFeed.toString() + 
-						" " + connection.getResponseCode());
-		}
+		SAXException, IOException, Exception {
+		byte[] content = this.contentAcquirer.getContent(new URI(provider.getFeed()));
+		InputSource inputFeed = new InputSource(new ByteArrayInputStream(content));
+		SAXParserFactory spf = SAXParserFactory.newInstance();
+		SAXParser sp = spf.newSAXParser();
+		sp.parse(inputFeed, new SchoolsFeedReader(provider));
 		return this.schools;
 	}
 	
