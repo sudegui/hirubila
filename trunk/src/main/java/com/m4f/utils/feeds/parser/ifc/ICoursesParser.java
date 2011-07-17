@@ -10,5 +10,5 @@ import com.m4f.business.domain.School;
 import com.m4f.utils.feeds.events.model.Dump;
 
 public interface ICoursesParser {
-	public Map<String, List<Course>> getCourses(Dump dump, School school) throws ParserConfigurationException, SAXException, IOException;
+	Map<String, List<Course>> getCourses(Dump dump, School school) throws ParserConfigurationException, SAXException, IOException;
 }
