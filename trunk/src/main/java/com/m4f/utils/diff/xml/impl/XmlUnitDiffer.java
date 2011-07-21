@@ -13,10 +13,10 @@ import java.util.List;
 public class XmlUnitDiffer implements Differ {
 	
 	public XmlUnitDiffer() {
-		XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-		XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-		XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
-		XMLUnit.setTransformerFactory("org.apache.xalan.processor.TransformerFactoryImpl");
+		//XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+		//XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+		//XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
+		//XMLUnit.setTransformerFactory("org.apache.xalan.processor.TransformerFactoryImpl");
 		XMLUnit.setIgnoreComments(true);
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
