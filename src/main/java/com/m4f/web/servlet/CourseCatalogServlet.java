@@ -15,7 +15,7 @@ import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.business.service.ifc.IServiceLocator;
 import com.m4f.business.service.impl.GaeJdoCatalogService;
-import com.m4f.utils.i18n.dao.impl.jdo.JdoDAO;
+import com.m4f.utils.dao.impl.JdoDAO;
 
 @SuppressWarnings("serial")
 public class CourseCatalogServlet extends HttpServlet {

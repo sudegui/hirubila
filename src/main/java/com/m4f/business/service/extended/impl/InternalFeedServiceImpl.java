@@ -30,7 +30,7 @@ import com.m4f.business.service.extended.ifc.I18nInternalFeedService;
 import com.m4f.business.service.ifc.I18nMediationService;
 import com.m4f.business.service.ifc.I18nProviderService;
 import com.m4f.business.service.impl.DAOBaseService;
-import com.m4f.utils.i18n.dao.ifc.DAOSupport;
+import com.m4f.utils.dao.ifc.DAOSupport;
 
 public class InternalFeedServiceImpl extends DAOBaseService implements I18nInternalFeedService {
 	

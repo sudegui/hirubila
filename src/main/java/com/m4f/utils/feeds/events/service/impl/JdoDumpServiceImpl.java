@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.m4f.business.domain.School;
+import com.m4f.utils.dao.ifc.DAOSupport;
 import com.m4f.utils.feeds.events.service.ifc.EventService;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.events.service.ifc.DumpService;
-import com.m4f.utils.i18n.dao.ifc.DAOSupport;
 
 public class JdoDumpServiceImpl extends JdoBaseService implements DumpService {
 	

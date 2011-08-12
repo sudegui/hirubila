@@ -8,7 +8,7 @@ import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
-import com.m4f.utils.i18n.dao.ifc.DAOSupport;
+import com.m4f.utils.dao.ifc.DAOSupport;
 
 public class GaeJdoCatalogService extends DAOBaseService implements ICatalogService {
 	

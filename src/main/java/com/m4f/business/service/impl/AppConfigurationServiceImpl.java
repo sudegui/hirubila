@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import com.m4f.business.domain.GlobalConfiguration;
 import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.utils.StackTraceUtil;
-import com.m4f.utils.i18n.dao.ifc.DAOSupport;
+import com.m4f.utils.dao.ifc.DAOSupport;
 
 public class AppConfigurationServiceImpl extends DAOBaseService implements IAppConfigurationService {
 	

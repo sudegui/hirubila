@@ -8,7 +8,7 @@ import com.google.appengine.api.datastore.Category;
 import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.service.ifc.UserService;
-import com.m4f.utils.i18n.dao.ifc.DAOSupport;
+import com.m4f.utils.dao.ifc.DAOSupport;
 
 public class UserServiceImpl extends DAOBaseService implements UserService {
 	
