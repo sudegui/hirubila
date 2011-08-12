@@ -7,7 +7,7 @@ import java.util.Map;
 import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.CronTaskReport.TYPE;
 import com.m4f.business.service.ifc.ICronTaskReportService;
-import com.m4f.utils.i18n.dao.ifc.DAOSupport;
+import com.m4f.utils.dao.ifc.DAOSupport;
 
 public class CronTaskReportServiceImpl extends DAOBaseService implements ICronTaskReportService {
 		

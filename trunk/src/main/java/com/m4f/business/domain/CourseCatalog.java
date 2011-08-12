@@ -6,15 +6,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.Persistent;
-import com.m4f.business.domain.ifc.Taggeable;
-import com.m4f.utils.i18n.annotations.Multilanguage;
-import com.m4f.utils.i18n.annotations.MultilanguageCollection;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import javax.validation.constraints.NotNull;
-
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Category;

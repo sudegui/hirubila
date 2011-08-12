@@ -1,4 +1,4 @@
-package com.m4f.utils.i18n.dao.impl.jdo;
+package com.m4f.utils.dao.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,10 +12,12 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.m4f.business.domain.InternalUser;
 import com.m4f.business.persistence.PMF;
-import com.m4f.utils.i18n.dao.ifc.DAOSupport;
+import com.m4f.utils.dao.ifc.DAOSupport;
 
 public class JdoDAO implements DAOSupport {
 	
@@ -135,6 +137,20 @@ public class JdoDAO implements DAOSupport {
 		return obj;
 	}
 	
+	@Override
+	 public <T> T findByKey(Class<T> clazz, String key) throws Exception {
+		 PersistenceManager pm = PMF.get().getPersistenceManager(); 
+		 T obj = null;
+		 try {
+			 Key k = KeyFactory.createKey(clazz.getSimpleName(), key);
+			 obj = pm.getObjectById(clazz, k);
+		 } catch(Exception e) {
+			 throw e;
+		 } finally {
+			 pm.close();
+		} 
+	    return obj;
+	}
 	
 	@Override
 	@SuppressWarnings("unchecked")

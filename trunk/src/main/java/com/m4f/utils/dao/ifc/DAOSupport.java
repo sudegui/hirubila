@@ -1,9 +1,10 @@
-package com.m4f.utils.i18n.dao.ifc;
+package com.m4f.utils.dao.ifc;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.google.appengine.api.datastore.Key;
 import com.m4f.business.domain.BaseEntity;
 
 public interface DAOSupport {
@@ -29,6 +30,8 @@ public interface DAOSupport {
     <T> List<T> findAll(Class<T> clazz, String ordering) throws Exception;
     
     <T> T findById(Class<T> clazz, Long id) throws Exception;
+    
+    <T> T findByKey(Class<T> clazz, String key) throws Exception;
     
     <T> Collection<T> findCollectionById(Class<T> clazz, Collection<Long> ids) throws Exception;
 	

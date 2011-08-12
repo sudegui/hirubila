@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import com.m4f.business.domain.PhraseSearch;
 import com.m4f.business.service.ifc.IPhraseSearchService;
-import com.m4f.utils.i18n.dao.ifc.DAOSupport;
+import com.m4f.utils.dao.ifc.DAOSupport;
 
 public class PhraseSearchServiceImpl extends DAOBaseService implements IPhraseSearchService {
 	

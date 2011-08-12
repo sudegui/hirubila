@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.m4f.utils.dao.ifc.DAOSupport;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.events.model.StoreErrorEvent;
 import com.m4f.utils.feeds.events.model.StoreSuccessEvent;
 import com.m4f.utils.feeds.events.model.ParserErrorEvent;
 import com.m4f.utils.feeds.events.model.SystemEvent;
 import com.m4f.utils.feeds.events.service.ifc.EventService;
-import com.m4f.utils.i18n.dao.ifc.DAOSupport;
 
 public class JdoEventServiceImpl extends JdoBaseService implements EventService {
 	
