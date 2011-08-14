@@ -1,6 +1,8 @@
 package com.m4f.utils.feeds.parser.aspect;
 
 import java.net.URI;
+
+import com.google.appengine.api.datastore.Text;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.dao.ifc.DAOSupport;
 import com.m4f.utils.diff.xml.ifc.Differ;
@@ -31,6 +33,8 @@ public class FeedContentOptimizer {
 			} else {
 				persistContent = this.DAO.createInstance(FeedContent.class);
 				persistContent.setKey(source.toASCIIString());
+				Text content = new Text(newContent);
+				persistContent.setContent(content);
 				this.DAO.saveOrUpdate(persistContent);
 			}
 		} catch(Exception e) {
