@@ -15,14 +15,16 @@
 		<downloadSources>false</downloadSources>
 	    	<spring.version>3.0.5.RELEASE</spring.version>
     		<version.aspectj>1.6.5</version.aspectj>
-		<slf4j.version>1.5.10</slf4j.version>
-		<datanucleus.version>1.1.5</datanucleus.version>
-		<jsr269.generated.dir>src/main/webapp/WEB-INF/appengine-generated</jsr269.generated.dir>
-		<tiles.version>2.2.1</tiles.version>
-		<googleapi.version>1.3.2-alpha</googleapi.version>
+			<slf4j.version>1.5.10</slf4j.version>
+			<datanucleus.version>1.1.5</datanucleus.version>
+			<jsr269.generated.dir>src/main/webapp/WEB-INF/appengine-generated</jsr269.generated.dir>
+			<tiles.version>2.2.1</tiles.version>
+			<googleapi.version>1.3.2-alpha</googleapi.version>
+			<gae.version>1.5.2</gae.version>
 	</properties>
 	
 	<repositories>
+	
 		<repository>
   			<id>nammok-mvn</id>
   			<url>http://championship-framework.googlecode.com/svn/trunk/maven2/repository/</url>
@@ -50,6 +52,22 @@
   
   	<dependencies>
   		
+  		<!-- Appengine testing libs -->
+  		
+  		<dependency>
+    		<groupId>com.google.appengine</groupId>
+    		<artifactId>appengine-testing</artifactId>
+    		<version>${gae.version}</version>
+    		<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+    		<groupId>com.google.appengine</groupId>
+    		<artifactId>appengine-api-stubs</artifactId>
+    		<version>1.5.2</version>
+    		<scope>test</scope>
+		</dependency>
+		
   		<!-- Google's data API's -->
         
         <dependency>
