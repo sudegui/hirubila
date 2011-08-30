@@ -1,6 +1,5 @@
 $(document).ready(function(){
-
-	var chat_token = $('#channel_api_params').attr('chat_token');
+	/*var chat_token = $('#channel_api_params').attr('chat_token');
 	alert(chat_token);
 	var channel = new goog.appengine.Channel(chat_token);
 	var socket = channel.open();
@@ -19,7 +18,5 @@ $(document).ready(function(){
     
     socket.onclose = function(){
     		alert("channel closed");
-    };
-
-    
+    };*/
 });

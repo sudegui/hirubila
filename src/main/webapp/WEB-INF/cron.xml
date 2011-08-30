@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
+<!--  
   <cron>
   	<url>/launcher/loadprovider</url>
   	<description>Generate in a round-robin method the of a provider school feed.</description>
@@ -10,4 +11,5 @@
   	<description>Generate in a round-robin method all internal feeds.</description>
   	<schedule>every 90 minutes</schedule>
   </cron>
+ -->
 </cronentries>

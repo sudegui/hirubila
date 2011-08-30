@@ -64,7 +64,7 @@
 	</bean>
 	
 	<!-- NO multi-language DAO -->
-	<bean id="jdoDAO" class="com.m4f.utils.i18n.dao.impl.jdo.JdoDAO"/>
+	<bean id="jdoDAO" class="com.m4f.utils.dao.impl.JdoDAO"/>
 	
 	<!-- NO multilanguage services definitions.-->
 	
