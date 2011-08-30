@@ -8,7 +8,8 @@
   <sessions-enabled>true</sessions-enabled>
   <threadsafe>true</threadsafe>
   <precompilation-enabled>true</precompilation-enabled>
+  <warmup-requests-enabled>false</warmup-requests-enabled>
   <static-files>
   	<include path="/static/**" />
-   </static-files>
+ </static-files>
 </appengine-web-app>

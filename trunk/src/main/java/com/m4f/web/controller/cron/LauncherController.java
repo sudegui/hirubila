@@ -251,6 +251,7 @@ public class LauncherController extends BaseController {
 		return "cron.launched";
 	}
 	
+	
 	/*
 	 * CRON TO EXECUTE IN ORDER AND IN ROUND-ROBIN METHOD THE INTERNAL FEED GENERATION
 	 */
