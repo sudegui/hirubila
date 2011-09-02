@@ -9,6 +9,7 @@
   <threadsafe>true</threadsafe>
   <precompilation-enabled>true</precompilation-enabled>
   <warmup-requests-enabled>false</warmup-requests-enabled>
+  <async-session-persistence enabled="true"/>
   <static-files>
   	<include path="/static/**" />
  </static-files>
