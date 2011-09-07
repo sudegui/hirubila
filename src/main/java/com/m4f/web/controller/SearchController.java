@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Random;
@@ -27,10 +28,6 @@ import java.util.StringTokenizer;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.datastore.Category;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Inbox;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.domain.PhraseSearch;
@@ -191,9 +188,11 @@ public class SearchController extends BaseController {
 			
 			// Create a task to send the email
 			if(form.getId() != null) {
-				Queue queue = QueueFactory.getQueue("email");
-				queue.add(TaskOptions.Builder.withUrl("/task/sendSearchResult")
-						.param("resultSearchEmailId", form.getId().toString()).method(Method.POST));
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("resultSearchEmailId",  form.getId().toString());
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().MAIL_QUEUE, 
+						"/task/sendSearchResult", params);
 			}
 		} catch(Exception e) {
 			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));

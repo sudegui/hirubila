@@ -9,8 +9,8 @@
 		<to>/scripts/$1</to>
 	</rule>
 	<rule>
-		<from>/styles/**</from>
-		<to>/styles/$1</to>
+		<from>/static/**</from>
+		<to>/static/$1</to>
 	</rule>
 	
 	

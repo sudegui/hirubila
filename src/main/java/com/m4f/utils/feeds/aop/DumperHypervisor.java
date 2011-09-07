@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.springframework.validation.FieldError;
 import com.google.appengine.api.datastore.Blob;
@@ -21,6 +23,7 @@ import com.m4f.business.domain.School;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.events.model.StoreErrorEvent;
 import com.m4f.utils.feeds.events.model.StoreSuccessEvent;
+import com.m4f.utils.seo.SeoCatalogBuilder;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.business.service.exception.ContextNotActiveException;
 import com.m4f.business.service.exception.ServiceNotFoundException;
@@ -30,9 +33,11 @@ public class DumperHypervisor {
 	
 	private IServiceLocator serviceLocator;
 	private static final Logger LOGGER = Logger.getLogger(DumperHypervisor.class.getName());
+	private SeoCatalogBuilder catalogBuilder;
 	
-	public DumperHypervisor(IServiceLocator sLocator) {
+	public DumperHypervisor(IServiceLocator sLocator, SeoCatalogBuilder cBuilder) {
 		this.serviceLocator = sLocator;
+		this.catalogBuilder = cBuilder;
 	}
 	
 	public void registerSchoolOperation(Dump dump, Provider provider, School school, 
@@ -96,7 +101,7 @@ public class DumperHypervisor {
 	
 	public void registerCourseOperation(Dump dump, Course course, 
 			Locale locale, List<FieldError> retVal) throws ServiceNotFoundException,
-			ContextNotActiveException {
+			ContextNotActiveException, Exception {
 		/*Un curso que cumple esta condición ya existía en la base de datos.*/
 		if(course.getId() == null) {
 			return;
@@ -104,21 +109,30 @@ public class DumperHypervisor {
 		if(!retVal.isEmpty()) {
 			this.registerCourseError(dump, retVal, course, locale);
 		} else {
-			this.registerCourseSuccess(dump, course, locale);
 			this.createCourseCatalog(course, locale);
+			try {
+				this.registerCourseSuccess(dump, course, locale);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	
-	
 	private void createCourseCatalog(Course course, Locale locale) 
+		throws Exception {
+		this.catalogBuilder.buildSeoEntity(course, locale);
+	}
+	
+	private void _createCourseCatalog(Course course, Locale locale) 
 		throws ServiceNotFoundException, ContextNotActiveException {
-		Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
-		String urlTask = new StringBuffer("/task/catalog/create").toString();
-		TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
-		options.method(Method.POST);
-		options.param("courseId", course.getId().toString());
-		options.param("language", locale.getLanguage());
-		queue.add(options);
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("courseId", course.getId().toString());
+		params.put("language", locale.getLanguage());
+		this.serviceLocator.getWorkerFactory().createWorker().addWork(
+				this.serviceLocator.getAppConfigurationService().
+				getGlobalConfiguration().CATALOG_QUEUE, 
+				"/task/catalog/create", params);
 	}
 	
 	private void registerCourseError(Dump dump, List<FieldError> errors, 

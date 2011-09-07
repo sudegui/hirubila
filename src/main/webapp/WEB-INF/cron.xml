@@ -12,4 +12,10 @@
   	<schedule>every 90 minutes</schedule>
   </cron>
  -->
+ <cron>
+  	<url>/ping</url>
+  	<description>to keep alive dynamic instance</description>
+  	<schedule>every 5 minutes</schedule>
+ </cron>
+ 
 </cronentries>
