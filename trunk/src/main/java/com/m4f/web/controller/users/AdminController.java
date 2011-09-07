@@ -2,11 +2,11 @@ package com.m4f.web.controller.users;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.validation.Valid;
-
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,11 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.GlobalConfiguration;
 import com.m4f.business.domain.Inbox;
@@ -362,12 +357,11 @@ public class AdminController extends BaseController {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
 		}
-		Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE);
-		TaskOptions options = TaskOptions.Builder.withUrl("/task/management/delete/provider");
-		options.param("providerId", String.valueOf(providerId));
-		options.method(Method.POST);
-		queue.add(options);	
 		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("providerId", String.valueOf(providerId));
+		this.serviceLocator.getWorkerFactory().createWorker().addWork(
+				this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, "/task/management/delete/provider", params);
 		return new StringBuffer("redirect:/").append(locale.getLanguage()).append("/dashboard/admin/catalog/providers").toString();
 	}
 	

@@ -2,13 +2,13 @@ package com.m4f.web.controller.model;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,17 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Inbox;
 import com.m4f.business.domain.Inbox.ORIGIN;
 import com.m4f.business.domain.Inbox.USER;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.web.bind.form.InboxForm;
-import com.m4f.web.controller.BaseController;
 
 @Controller
 @RequestMapping("/suggestion")
@@ -160,9 +154,11 @@ private static final Logger LOGGER = Logger.getLogger(InboxController.class.getN
 				// Save
 				this.serviceLocator.getInboxService().save(inboxRes, locale);
 				// Create task to send an email response
-				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().MAIL_QUEUE);
-				queue.add(TaskOptions.Builder.withUrl("/task/sendInboxResponse")
-						.param("inboxId", inboxRes.getId().toString()).method(Method.POST));
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("inboxId", inboxRes.getId().toString());
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().MAIL_QUEUE, 
+						"/task/sendInboxResponse", params);
 			}
 			
 			
@@ -171,7 +167,8 @@ private static final Logger LOGGER = Logger.getLogger(InboxController.class.getN
 			return "common.error";
 		}
 		
-		String returnURL = this.buildReturnURL(host, "/" + locale.getLanguage() + "/dashboard/admin/suggestions", locale);
+		String returnURL = this.buildReturnURL(host, "/" + 
+				locale.getLanguage() + "/dashboard/admin/suggestions", locale);
 		return new StringBuffer("redirect:").append(returnURL).toString();
 	}
 	

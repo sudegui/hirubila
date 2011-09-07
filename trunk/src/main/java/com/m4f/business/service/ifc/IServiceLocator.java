@@ -20,10 +20,12 @@ import com.m4f.business.service.ifc.IPhraseSearchService;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
 import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
 import com.m4f.utils.feeds.parser.ifc.DumperCapable;
+import com.m4f.utils.worker.WorkerFactory;
 
 public interface IServiceLocator {
 	
 	void init();
+	WorkerFactory getWorkerFactory() throws ServiceNotFoundException, ContextNotActiveException;
 	I18nSchoolService getSchoolService() throws ServiceNotFoundException, ContextNotActiveException;
 	I18nCourseService getCourseService() throws ServiceNotFoundException, ContextNotActiveException;
 	UserService getUserService() throws ServiceNotFoundException, ContextNotActiveException;

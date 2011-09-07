@@ -9,7 +9,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.domain.Provider;
@@ -43,6 +42,7 @@ import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
 import com.m4f.utils.i18n.service.ifc.I18nService;
 import com.m4f.utils.search.ifc.ISearchEngine;
+import com.m4f.utils.worker.WorkerFactory;
 
 public class SpringServiceLocator implements IServiceLocator, ApplicationContextAware, TransversalBusinessService {
 	
@@ -56,7 +56,13 @@ public class SpringServiceLocator implements IServiceLocator, ApplicationContext
 		this.ctx = appCtx;
 		this.servicesCtx = (ClassPathXmlApplicationContext) this.ctx.getBean("servicesContext");
 	}
-
+	
+	@Override
+	public WorkerFactory getWorkerFactory() throws ServiceNotFoundException,
+			ContextNotActiveException {
+		return this.getService(WorkerFactory.class);
+	}
+	
 	@Override
 	public I18nSchoolService getSchoolService() throws ServiceNotFoundException, ContextNotActiveException {
 		return this.getService(I18nSchoolService.class);
@@ -248,5 +254,6 @@ public class SpringServiceLocator implements IServiceLocator, ApplicationContext
 		}
 		return regionsMap;
 	}
+
 
 }

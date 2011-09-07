@@ -3,18 +3,18 @@ package com.m4f.web.controller.cron;
 import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.logging.Logger;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
@@ -68,12 +68,13 @@ public class LauncherController extends BaseController {
 			dump.setOwner(provider.getId());
 			dump.setOwnerClass(Provider.class.getName());
 			this.serviceLocator.getDumpService().save(dump);
-			Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE);
-			TaskOptions options = TaskOptions.Builder.withUrl("/task/loadproviderfeed");
-			options.param("providerId", provider.getId().toString());
-			options.param("dumpId", "" + dump.getId());
-			options.method(Method.POST);
-			queue.add(options);
+			
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("providerId", provider.getId().toString());
+			params.put("dumpId", "" + dump.getId());
+			this.serviceLocator.getWorkerFactory().createWorker().addWork(
+					this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
+					"/task/loadproviderfeed", params);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			model.addAttribute("message", "Error updating schools from " + 
@@ -105,12 +106,12 @@ public class LauncherController extends BaseController {
 				dump.setOwner(school.getId());
 				dump.setOwnerClass(School.class.getName());
 				this.serviceLocator.getDumpService().save(dump);
-				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE);
-				TaskOptions options = TaskOptions.Builder.withUrl("/task/updatecourses");
-				options.param("schoolId", school.getId().toString());
-				options.param("dumpId", "" + dump.getId());
-				options.method(Method.POST);
-				queue.add(options);
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("schoolId", school.getId().toString());
+				params.put("dumpId", "" + dump.getId());
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE, 
+						"/task/updatecourses", params);
 			}
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
@@ -138,7 +139,7 @@ public class LauncherController extends BaseController {
 			Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
 			TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/regenerate");
 			options.method(Method.GET);
-			queue.add(options);		
+			queue.add(options);
 		} catch (ServiceNotFoundException e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			throw e;
@@ -165,14 +166,13 @@ public class LauncherController extends BaseController {
 			paginator.setStart(0);
 			paginator.setSize(this.serviceLocator.getCatalogService().countCourseCatalog(locale));
 			for(Integer page : paginator.getPagesIterator()) {
-				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
-				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/deletepaginated");
-				options.param("start", "" +(page-1)*RANGE);
-				options.param("finish", "" + (page)*RANGE);
-				options.method(Method.POST);
-				queue.add(options);		
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("start", "" +(page-1)*RANGE);
+				params.put("finish", "" + (page)*RANGE);
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE, 
+						"/task/catalog/deletepaginated", params);		
 			}
-			
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -190,13 +190,14 @@ public class LauncherController extends BaseController {
 	@RequestMapping(value="/createprovidermanual", method=RequestMethod.GET)
 	public String createProvidersManual() {
 		try {
-			Collection<MediationService> mediationServices = this.serviceLocator.getMediatorService().getMediationServices(false, Locale.getDefault());
+			Collection<MediationService> mediationServices = 
+				this.serviceLocator.getMediatorService().getMediationServices(false, Locale.getDefault());
 			for(MediationService m : mediationServices) {
-				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE);
-				TaskOptions options = TaskOptions.Builder.withUrl("/task/createprovidersmanual");
-				options.param("mediationId", String.valueOf(m.getId()));
-				options.method(Method.POST);
-				queue.add(options);
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("mediationId", String.valueOf(m.getId()));
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
+						"/task/createprovidersmanual", params);
 			}
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
@@ -237,12 +238,12 @@ public class LauncherController extends BaseController {
 				dump.setOwnerClass(Provider.class.getName());
 				this.serviceLocator.getDumpService().save(dump);
 				// Invoke the task with the id obtained
-				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE);
-				TaskOptions options = TaskOptions.Builder.withUrl("/task/loadproviderfeed");
-				options.param("providerId", String.valueOf(id));
-				options.param("dumpId", String.valueOf(dump.getId()));
-				options.method(Method.POST);
-				queue.add(options);
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("providerId", String.valueOf(id));
+				params.put("dumpId", String.valueOf(dump.getId()));
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
+						"/task/loadproviderfeed", params);
 			}
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
@@ -271,11 +272,11 @@ public class LauncherController extends BaseController {
 				id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
 				if(id != null) {
 					// Invoke the task with the id obtained
-					Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE);
-					TaskOptions options = TaskOptions.Builder.withUrl("/task/internalFeeds/mediation");
-					options.param("mediationId", String.valueOf(id));
-					options.method(Method.POST);
-					queue.add(options);
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("mediationId", String.valueOf(id));
+					this.serviceLocator.getWorkerFactory().createWorker().addWork(
+							this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
+							"/task/internalFeeds/mediation", params);
 				}
 			} else {
 				LOGGER.severe("No se encontro ningun mediation service!!! NO SE HACE NADA!!");

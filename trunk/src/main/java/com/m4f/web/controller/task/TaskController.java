@@ -27,10 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.xml.sax.SAXException;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.domain.CronTaskReport;
@@ -43,11 +39,7 @@ import com.m4f.business.domain.extended.ExtendedCourse;
 import com.m4f.business.domain.extended.ExtendedSchool;
 import com.m4f.business.domain.extended.FeedCourses;
 import com.m4f.business.domain.extended.FeedSchools;
-import com.m4f.business.domain.extended.Province;
-import com.m4f.business.domain.extended.Region;
-import com.m4f.business.domain.extended.Town;
 import com.m4f.business.service.extended.impl.InternalFeedServiceImpl;
-import com.m4f.business.service.ifc.I18nSchoolService;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
@@ -105,8 +97,6 @@ public class TaskController extends BaseController  {
 	}
 	
 	
-	
-	
 	/*
 	 * This task creates/updates schools and courses information from one provider feed
 	 */
@@ -162,15 +152,15 @@ public class TaskController extends BaseController  {
 			 */
 			List<School> storedSchools = 
 				this.serviceLocator.getSchoolService().getSchoolsByProvider(provider.getId(), null, null);
-			Queue queue = 
-				QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE);
 			for(School school : storedSchools) {
 				if((school.getFeed()!=null) && (!"".equals(school.getFeed()))) {
-					TaskOptions options = TaskOptions.Builder.withUrl("/task/updatecourses");
-					options.param("schoolId", school.getId().toString());
-					options.param("dumpId", "" + dump.getId());
-					options.method(Method.POST);
-					queue.add(options);		
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("schoolId", school.getId().toString());
+					params.put("dumpId", "" + dump.getId());
+					this.serviceLocator.getWorkerFactory().createWorker().addWork(
+							this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE, 
+							"/task/updatecourses", params);
+					
 				}
 			}
 			
@@ -228,10 +218,6 @@ public class TaskController extends BaseController  {
 			if(!mediationService.getHasFeed()) { // All must be manual mediator, but it's another check.
 				FeedSchools feedSchools = this.serviceLocator.getInternalFeedService().createFeedSchools(host, provider, mediationService);
 				this.serviceLocator.getInternalFeedService().saveFeedSchools(feedSchools);
-				
-				
-				
-				
 				HashMap<Long, ExtendedSchool> schools = new HashMap<Long, ExtendedSchool>();
 				Collection<ExtendedCourse> courses = 
 					this.serviceLocator.getExtendedCourseService().getCoursesByOwner(mediationService.getId(), null, null);
@@ -304,15 +290,14 @@ public class TaskController extends BaseController  {
 			LOGGER.severe("#### Total Courses............. " + total);
 			LOGGER.severe("#### End page.................." + paginator.getPagesMax());
 			for(Integer page : paginator.getTotalPagesIterator()) {
-				Queue queue = 
-					QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
-				TaskOptions options = TaskOptions.Builder.withUrl("/task/catalog/createpaginated");
+				Map<String, String> params = new HashMap<String, String>();
 				int start = (page-1)*RANGE;
-				options.param("start", "" + start);
+				params.put("start", "" + start);
 				int end = (page)*RANGE;
-				options.param("finish", "" + end);
-				options.method(Method.POST);
-				queue.add(options);
+				params.put("finish", "" + end);
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE, 
+						"/task/catalog/createpaginated", params);
 				LOGGER.severe("#### Batch: " + start + "-" + end);
 			}
 		} catch(Exception e) {
@@ -341,14 +326,12 @@ public class TaskController extends BaseController  {
 					if(catalogCourse == null) {
 						LOGGER.severe("+++ Creating catalog entry for course " + 
 								course.getTitle() + " (" + course.getId() + ")");
-						Queue queue = 
-							QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
-						String urlTask = new StringBuffer("/task/catalog/create").toString();
-						TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
-						options.method(Method.POST);
-						options.param("courseId", course.getId().toString());
-						options.param("language", locale.getLanguage());
-						queue.add(options);
+						Map<String, String> params = new HashMap<String, String>();
+						params.put("courseId", course.getId().toString());
+						params.put("language", locale.getLanguage());
+						this.serviceLocator.getWorkerFactory().createWorker().addWork(
+								this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE, 
+								"/task/catalog/create", params);
 					}
 				}
 			}
@@ -392,12 +375,11 @@ public class TaskController extends BaseController  {
 				this.serviceLocator.getCatalogService().getCoursesCatalog(null, 
 					null, start, finish);
 			for(CourseCatalog course : courses) {
-				Queue queue = QueueFactory.getQueue(this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE);
-				String urlTask = new StringBuffer("/task/catalog/delete").toString();
-				TaskOptions options = TaskOptions.Builder.withUrl(urlTask);
-				options.method(Method.POST);
-				options.param("courseId", course.getId().toString());
-				queue.add(options);
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("courseId", course.getId().toString());
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE, 
+						"/task/catalog/delete", params);
 			}			
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));

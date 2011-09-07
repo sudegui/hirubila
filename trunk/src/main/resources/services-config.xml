@@ -68,6 +68,13 @@
 	
 	<!-- NO multilanguage services definitions.-->
 	
+	<bean id="worker" class="com.m4f.utils.worker.impl.AppEngineBackendWorker"/>
+	
+	<!-- Creates worker factory -->
+	<bean id="workerFactory" class="com.m4f.utils.worker.WorkerFactory">
+		<constructor-arg index="0" ref="worker"/>
+	</bean>
+	
 	<!-- Creates the User Service -->
 	<bean id="userService" class="com.m4f.business.service.impl.UserServiceImpl">
 		<constructor-arg index="0" ref="jdoDAO"/>
@@ -142,6 +149,7 @@
     <!-- Interceptor to control any entity dump process from a feed capture process. -->
     <bean id="dumperHypervisor" class="com.m4f.utils.feeds.aop.DumperHypervisor">
     	<constructor-arg index="0" ref="serviceLocator"/>
+    	<constructor-arg index="1" ref="seoCatalogBuilder"/>
     </bean>
     
     <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->

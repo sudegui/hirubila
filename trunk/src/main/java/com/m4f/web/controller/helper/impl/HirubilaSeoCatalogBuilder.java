@@ -19,13 +19,10 @@ import com.m4f.utils.seo.SeoCatalogBuilder;
 
 public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 
-	
 	private static final Logger LOGGER = Logger.getLogger(HirubilaSeoCatalogBuilder.class.getName());
 	
 	@Autowired
 	protected IServiceLocator serviceLocator;
-	
-	
 	
 	@Override
 	public void buildSeoEntity(Long courseId, List<Locale> locales) 
@@ -33,42 +30,51 @@ public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 		for(Locale locale : locales) {	
 				LOGGER.info(new StringBuffer("Generacion de instancia de catalogo del curso id: ")
 					.append(courseId).append(" y locale: ").append(locale).toString());
-				
 				Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
-				School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
-				Provider provider = this.serviceLocator.getProviderService().getProviderById(course.getProvider(), locale);
-				
-				// Territorial data
-				String townName = school.getContactInfo() != null && 
-					school.getContactInfo().getCity() != null ? 
-					school.getContactInfo().getCity() : "";
-				
-				List<Town> towns = this.serviceLocator.getTerritorialService().
-					findTownsByName(townName, locale);
-				
-				Town town = new Town();
-				Province province = new Province();
-				Region region = new Region();
-				if(towns != null && towns.size() > 0) {
-					town = towns.get(0);
-					region = this.serviceLocator.getTransversalService().getRegionsMap().get(locale.getLanguage()).get(town.getRegion());
-					province = this.serviceLocator.getTransversalService().getProvincesMap().get(locale.getLanguage()).get(town.getProvince());
-				}						
-				CourseCatalog catalog = new CourseCatalog(course, locale.getLanguage(), 
-					school, provider.getName(), province.getName(), region.getName(), town.getName());
-				
-				CourseCatalog catalogOld = 
-					this.serviceLocator.getCatalogService().getCourseCatalogByCourseId(courseId, locale);
-				
-				if(catalogOld != null) {
-					catalog.setId(catalogOld.getId());
-				}
-				
-				LOGGER.info(new StringBuffer("Fin generacion instancia de catalago del curso: ")
-					.append(courseId).append(" y locale: ").append(locale).toString());
-				
-				this.serviceLocator.getCatalogService().save(catalog);
-			}
+				this.buildSeoEntity(course, locale);
+		}
 	}
+	
+	@Override
+	public void buildSeoEntity(Course course, Locale locale) 
+		throws ServiceNotFoundException, ContextNotActiveException, Exception {
+		School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
+		Provider provider = this.serviceLocator.getProviderService().getProviderById(course.getProvider(), locale);
+		
+		// Territorial data
+		String townName = school.getContactInfo() != null && 
+			school.getContactInfo().getCity() != null ? 
+			school.getContactInfo().getCity() : "";
+		
+		List<Town> towns = this.serviceLocator.getTerritorialService().
+			findTownsByName(townName, locale);
+		
+		Town town = new Town();
+		Province province = new Province();
+		Region region = new Region();
+		if(towns != null && towns.size() > 0) {
+			town = towns.get(0);
+			region = this.serviceLocator.getTransversalService().getRegionsMap().get(locale.getLanguage()).get(town.getRegion());
+			province = this.serviceLocator.getTransversalService().getProvincesMap().get(locale.getLanguage()).get(town.getProvince());
+		}						
+		CourseCatalog catalog = new CourseCatalog(course, locale.getLanguage(), 
+			school, provider.getName(), province.getName(), region.getName(), town.getName());
+		
+		CourseCatalog catalogOld = 
+			this.serviceLocator.getCatalogService().getCourseCatalogByCourseId(course.getId(), locale);
+		
+		if(catalogOld != null) {
+			catalog.setId(catalogOld.getId());
+		}
+		
+		LOGGER.info(new StringBuffer("Fin generacion instancia de catalago del curso: ")
+			.append(course.getId()).append(" y locale: ").append(locale).toString());
+		this.serviceLocator.getCatalogService().save(catalog);
+
+	}
+	
+	
+	
+	
 
 }
