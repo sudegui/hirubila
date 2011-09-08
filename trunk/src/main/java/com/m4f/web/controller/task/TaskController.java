@@ -96,14 +96,19 @@ public class TaskController extends BaseController  {
 		return "task.launched";
 	}
 	
+	@RequestMapping(value="/__loadproviderfeed", method=RequestMethod.GET)
+	public String loadProviderFeed3(@RequestParam Long providerId, 
+			@RequestParam Long dumpId){
+		return "task.launched";
+	}
 	
 	/*
 	 * This task creates/updates schools and courses information from one provider feed
 	 */
 	@RequestMapping(value="/loadproviderfeed", method=RequestMethod.POST)
-	public String loadProviderFeed(@RequestParam(required=true) Long providerId, 
-			@RequestParam(required=true) Long dumpId) throws Exception {
-		LOGGER.log(Level.INFO, "----- Starting the update schools from provider's queue...");
+	public String loadProviderFeed(@RequestParam Long providerId, 
+			@RequestParam Long dumpId) throws Exception {
+		LOGGER.log(Level.SEVERE, "----- Starting the update schools from provider");
 		// Create a new CronTaskReport
 		CronTaskReport report = this.serviceLocator.getCronTaskReportService().create();
 		report.setObject_id(providerId);
@@ -113,6 +118,7 @@ public class TaskController extends BaseController  {
 		Dump dump = null;
 		try {
 			provider = this.serviceLocator.getProviderService().getProviderById(providerId, null);
+			LOGGER.log(Level.SEVERE, "----- name: " + provider.getName());
 			//Set report description
 			report.setDescription(new StringBuffer("Proveedor de feeds: ").append(provider.getName()).toString());
 			dump = this.serviceLocator.getDumpService().getDump(dumpId);
