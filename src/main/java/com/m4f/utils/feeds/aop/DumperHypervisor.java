@@ -125,7 +125,7 @@ public class DumperHypervisor {
 	}
 	
 	private void _createCourseCatalog(Course course, Locale locale) 
-		throws ServiceNotFoundException, ContextNotActiveException {
+		throws ServiceNotFoundException, ContextNotActiveException, Exception {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("courseId", course.getId().toString());
 		params.put("language", locale.getLanguage());

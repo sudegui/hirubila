@@ -2,7 +2,7 @@
 <backends>
  <backend name="worker">
    <class>B1</class>
-   <instances>3</instances>
+   <instances>1</instances>
    <max-concurrent-requests>20</max-concurrent-requests>
    <options>
      <dynamic>true</dynamic>

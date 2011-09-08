@@ -9,7 +9,7 @@
   <precompilation-enabled>true</precompilation-enabled>
   <warmup-requests-enabled>false</warmup-requests-enabled>  
   <sessions-enabled>true</sessions-enabled>
-  <async-session-persistence enabled="true"/>
+  <async-session-persistence enabled="true" queue-name="default"/>
   <static-files>
   	<include path="/static/**" />
  </static-files>
