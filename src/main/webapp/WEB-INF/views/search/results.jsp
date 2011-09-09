@@ -17,6 +17,7 @@
 	<script type="text/javascript" src="<c:url value='/static/search/js/ga.js'/>"></script>
 	<script type="text/javascript" src="<c:url value='/static/search/js/shadowbox.js'/>"></script>
 	<script type="text/javascript">Shadowbox.init();</script>
+	<script type="text/javascript" src="http://apis.google.com/js/plusone.js"></script>
 </head>
 
 
@@ -160,16 +161,31 @@ new TWTR.Widget({
 		                   <a href="<c:url value='/${rc.locale.language}/search/results/error'/>" rel="shadowbox;height=350;width=450" ><fmt:message key="search.result.send.error"/></a>
               			</p>
               			<div class="caja_compartir" id="caja_compartir_${status.count}" style="display:none">
-              				<p><fmt:message key="search.result.shareIn"/>: 
-                    		<%-- LINKEDIN--%>
-                    		<script type="text/javascript" src="http://platform.linkedin.com/in.js"></script><script type="in/share" data-url="${result.link}" data-counter="right"></script>
-                    		
-                    		<%-- FACEBOOK--%>
-                    		<iframe src="http://www.facebook.com/plugins/like.php?href=${result.link}&amp;layout=button_count&amp;show_faces=true&amp;width=650&amp;action=recommend&amp;font=arial&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;margin-bottom:-7px;" allowTransparency="true"></iframe>
-                    		
-							<%-- TWITTER --%>
-                    		<a href="http://twitter.com/share" class="twitter-share-button"  data-url="${result.link}" data-text="<fmt:message key="search.results.share.twitter.message1"/>: ${result.title} <fmt:message key="search.results.share.twitter.message2"/> #Hirubila" data-count="horizontal"><fmt:message key="search.results.share.twitter.shareMessage"/></a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-                    		</p>
+              				
+              				<%-- SHARE --%>
+           
+            				<table cellspacing="10" cellpadding="3">
+            					<tr>
+            						<td valign="top">
+            		<%-- LINKEDIN--%>
+					<script type="text/javascript" src="http://platform.linkedin.com/in.js"></script><script type="in/share" data-url="${result.link}" data-counter="right"></script>
+            	</td>
+				<td valign="top">
+					<%-- FACEBOOK--%>
+				<iframe src="http://www.facebook.com/plugins/like.php?href=${result.link}&amp;layout=button_count&amp;show_faces=true&amp;width=650&amp;action=recommend&amp;font=arial&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;margin-bottom:-7px;" allowTransparency="true"></iframe>
+				</td>
+				<td valign="top">
+					<%-- TWITTER --%>
+				<a href="http://twitter.com/share" class="twitter-share-button"  data-url="${result.link}" data-text="<fmt:message key="search.results.share.twitter.message1"/>: ${result.title} <fmt:message key="search.results.share.twitter.message2"/> #Hirubila" data-count="horizontal"><fmt:message key="search.results.share.twitter.shareMessage"/></a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>				
+				</td>
+				<td valign="top">
+					<%-- GOOGLE+ --%>
+					<g:plusone size="medium"></g:plusone>
+				</td>
+				</tr>
+				</table>
+              				
+              				
                     	</div>
               		</div>
             	</li>

@@ -43,11 +43,7 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 		return course;
 	}
 
-	@Override
-	@Cacheflush(cacheName="coursesCatalog")
-	public void save(CourseCatalog courseCatalog) throws Exception {
-		this.DAO.saveOrUpdate(courseCatalog);
-	}
+	
 	
 	@Override
 	@Cacheable(cacheName="coursesCatalog")
@@ -69,6 +65,7 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 	}
 	
 	@Override
+	@Cacheable(cacheName="coursesCatalog")
 	public long countCourseCatalog(boolean reglated, Locale locale)
 			throws Exception {
 		Map<String, Object> filter = new HashMap<String, Object>();
@@ -78,6 +75,7 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 	}
 
 	@Override
+	@Cacheable(cacheName="coursesCatalog")
 	public Collection<CourseCatalog> getCoursesCatalog(boolean reglated,
 			String ordering, Locale locale, int init, int end) {
 		String filter = "lang == langParam && regulated == reglatedParam"; 
@@ -87,6 +85,13 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 	}
 	
 	@Override
+	@Cacheflush(cacheName="coursesCatalog")
+	public void save(CourseCatalog courseCatalog) throws Exception {
+		this.DAO.saveOrUpdate(courseCatalog);
+	}
+	
+	@Override
+	@Cacheflush(cacheName="coursesCatalog")
 	public void deleteCourseCatalogByCourseId(Long courseId)
 			throws Exception {
 		Collection<CourseCatalog> coursesCatalog = this.getAllByCourseId(courseId);
@@ -95,6 +100,7 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 		}
 	}
 	
+	@Cacheable(cacheName="coursesCatalog")
 	private Collection<CourseCatalog> getAllByCourseId(Long courseId) {
 		String filter = "courseId == courseIdParam";
 		String params = "java.lang.Long courseIdParam";
