@@ -87,7 +87,7 @@
     		<script type="text/javascript" src="/_ah/channel/jsapi"></script>
     		<div id="channel_api_params" style="display:none;" chat_token="${token}"></div>
     		<div id="total_courses">
-    			Numero total de cursos: 6333
+    			
     		</div>
 		</div>
 		
