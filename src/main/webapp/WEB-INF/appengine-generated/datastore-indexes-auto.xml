@@ -1,12 +1,4 @@
-<!-- Indices written at Mon, 12 Sep 2011 10:09:06 UTC -->
+<!-- Indices written at Mon, 12 Sep 2011 11:38:51 UTC -->
 
-<datastore-indexes>
+<datastore-indexes/>
 
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="CourseCatalog" ancestor="false" source="auto">
-        <property name="lang" direction="asc"/>
-        <property name="regulated" direction="asc"/>
-        <property name="title" direction="asc"/>
-    </datastore-index>
-
-</datastore-indexes>
