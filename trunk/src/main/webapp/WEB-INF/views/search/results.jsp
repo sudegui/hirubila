@@ -11,6 +11,7 @@
 	<link href="<c:url value='/static/search/css/reset.css'/>" rel="stylesheet" type="text/css" />
 	<link href="<c:url value='/static/search/css/estilo.css'/>" rel="stylesheet" type="text/css" />
 	<link href="<c:url value='/static/search/css/shadowbox.css'/>" rel="stylesheet" type="text/css" />
+	<link href="<c:url value='/static/style/smoothness/jquery-ui-1.8.10.custom.css'/>" rel="stylesheet" type="text/css" />
 	<link rel="image_src" href="<c:url value='/static/search/img/logo_hirubila_${rc.locale.language}.jpg'/>" />
 	<script type="text/javascript" src="<c:url value='/static/search/js/jquery-1.5.1.js'/>"></script>
 	<script type="text/javascript" src="<c:url value='/static/search/js/javascript.js'/>"></script>
@@ -18,10 +19,112 @@
 	<script type="text/javascript" src="<c:url value='/static/search/js/shadowbox.js'/>"></script>
 	<script type="text/javascript">Shadowbox.init();</script>
 	<script type="text/javascript" src="http://apis.google.com/js/plusone.js"></script>
+	<script type="text/javascript" src="<c:url value='/static/js/jquery-ui-1.8.10.custom.min.js'/>"></script>
+		<style type="text/css">
+		
+		ui-dialog-titlebar {
+			background-color:blue;
+		}
+		
+		#dialog ul{
+			list-style-type: square;
+			font-family:"Arial", Helvetica, sans-serif;
+			font-size:medium;
+			margin-top:5px; 
+			padding-left:2%;
+		}
+		
+		#dialog li {
+			margin-bottom:5px;
+		}
+	
+		
+		.button, .button:visited { /* botones genéricos */
+  			background: #222 url(<c:url value='/static/search/img/overlay.png'/>) repeat-x;
+  			display: inline-block;
+  			padding: 5px 10px 6px;
+  			color: #FFF;
+  			text-decoration: none;
+  			-moz-border-radius: 6px;
+  			-webkit-border-radius: 6px;
+  			-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  			-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  			text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+  			border-bottom: 1px solid rgba(0,0,0,0.25);
+  			position: relative;
+  			cursor:pointer
+		}
+
+		.button:hover { /* el efecto hover */
+  			background-color: #111
+  			color: #FFF;
+		}
+		
+		
+		.button:active{  /* el efecto click */
+  			top: 1px;
+		}
+
+ 		/* botones pequeños */
+		.small.button, .small.button:visited {
+  			font-size: 11px ;
+		}
+
+ 		/* botones medianos */
+		.button, .button:visited,.medium.button, .medium.button:visited {
+  			font-size: 13px;
+  			font-weight: bold;
+  			line-height: 1;
+  			text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+		}
+
+ 		/* botones grandes */
+		.large.button, .large.button:visited {
+  			font-size:14px;
+  			padding: 8px 14px 9px;
+		}
+
+ 		/* botones extra grandes */
+		.super.button, .super.button:visited {
+  			font-size: 34px;
+  			padding: 8px 14px 9px;
+		}
+		
+		.yellow.button, .yellow.button:visited { background-color: #ccc902; }
+		.yellow.button:hover{ background-color: #FC9200; }
+
+	</style>
 </head>
 
 
 <script type="text/javascript">
+	
+$.fx.speeds._default = 400;
+$(function() {
+	$( "#dialog" ).dialog({
+		autoOpen: false,
+		height: 250,
+		width: 400,
+		show: "blind",
+		hide: "explode",
+		position: ['right','bottom'],
+		resizable: false,
+		closeOnEscape: true,
+		buttons: {
+			"<fmt:message key='search.field.examples.close'/>": function() {
+				$( this ).dialog( "close" );
+			}
+		},
+		open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+		modal: false
+	});
+
+	$( "#opener" ).click(function() {
+		$( "#dialog" ).dialog( "open" );
+		return false;
+	});
+});
+
 	$(document).ready(function() {
 		var type = '${search.collection}';
 		if(type == 'hirubila-reglated-') {
@@ -75,12 +178,13 @@
 			<label for="caja_buscador"><fmt:message key="search.searchBox.label"/></label>
 			<form:hidden path="collection"/>
             <input type="text" id="caja_buscador" name="query" placeholder="<fmt:message key='search.field.search.message'/>" value="${search.query}"/>
-            <input type="submit" value='<fmt:message key="search.action.search"/>' title='<fmt:message key="search.action.search"/>'/> 
-      	</form:form>
-      	
+            <input type="submit" value='<fmt:message key="search.action.search"/>' title='<fmt:message key="search.action.search"/>'/>
+      	</form:form>      	
 		<span class="fin_caja">&nbsp;</span>
+		
 		<p class="resulta_mini">${paginator.collection.totalResults} <fmt:message key="search.results.total"/></p>
-		<p class="txt_ejemplo"><fmt:message key="search.field.search.example"/></p>
+		
+		<div style="float: right;padding: 10px;"><a href="#" class="medium button yellow" id="opener"><fmt:message key="search.field.search.example"/></a></div>
   	</div>
   	
 <div id="conten_izq">
@@ -235,5 +339,16 @@ new TWTR.Widget({
       <p class="txt_mediador"><fmt:message key="search.footer.message.part1"/> <a href="<c:url value='/${rc.locale.language}/search/mediators'/>"><fmt:message key="search.footer.message.part2"/></a>.</p>
     </div>
 </div>
+
+<div id="dialog" title='<fmt:message key="search.field.search.example"/>' >
+		<ul>
+			<li><fmt:message key="search.field.example.1"/></li>
+			<li><fmt:message key="search.field.example.2"/></li>
+			<li><fmt:message key="search.field.example.3"/></li>
+			<li><fmt:message key="search.field.example.4"/></li>
+			<li><span style="font-size:small;font-style: italic;"><fmt:message key="search.field.example.5"/></span></li>
+		</ul>
+
+	</div>
 </body>
 </html>

@@ -89,18 +89,7 @@ public class TaskController extends BaseController  {
 		return "task.launched";
 	}
 	
-	@RequestMapping(value="/recovery", method=RequestMethod.POST)
-	public @ResponseBody String recovery(@RequestParam(required=true) String email) {
-		//TODO send an email to the user
-		LOGGER.info("SENDING EMAIL WITH PASSWORD TO -> " + email);
-		return "task.launched";
-	}
 	
-	@RequestMapping(value="/__loadproviderfeed", method=RequestMethod.GET)
-	public String loadProviderFeed3(@RequestParam Long providerId, 
-			@RequestParam Long dumpId){
-		return "task.launched";
-	}
 	
 	/*
 	 * This task creates/updates schools and courses information from one provider feed
@@ -280,9 +269,6 @@ public class TaskController extends BaseController  {
 	
 	
 	
-	
-	
-	
 	@RequestMapping(value="/catalog/regenerate", method=RequestMethod.GET)
 	public String generateCatalog(Locale locale) {
 		final int RANGE = 200;
@@ -404,6 +390,14 @@ public class TaskController extends BaseController  {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			throw e;
 		}
+		return "task.launched";
+	}
+	
+	
+	@RequestMapping(value="/recovery", method=RequestMethod.POST)
+	public @ResponseBody String recovery(@RequestParam(required=true) String email) {
+		//TODO send an email to the user
+		LOGGER.info("SENDING EMAIL WITH PASSWORD TO -> " + email);
 		return "task.launched";
 	}
 	
