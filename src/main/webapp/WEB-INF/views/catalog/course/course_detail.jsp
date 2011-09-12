@@ -104,12 +104,21 @@
 
     <h1>${course.title}</h1>
      <div class="content_red_texto">
-     
-     
+    
         <div class="red_texto" style="width:100%">
-            
-            <h2><fmt:message key="catalog.course.detail.message.provider"/>: ${course.providerName}</h2>
-            
+    
+            <table>
+            	<tr>
+            	<td width="80%">
+            		<h2><fmt:message key="catalog.course.detail.message.provider"/>: ${course.providerName}</h2>
+            	</td>
+            	<td align="right">
+            		<a href="<c:url value='/${rc.locale.language}/search/'/>">
+            			<img border="0" src="<c:url value='/static/search/img/hirubila_${rc.locale.language}.jpg'/>" alt="Logo Hirubila" />
+            		</a>
+            	</td>
+            	</tr>
+            </table>
             
             <c:if test="${not empty course.information.value}">
             	<p><strong><fmt:message key="course.fields.information"/>:&nbsp;</strong>${course.information.value}</p>
@@ -202,7 +211,7 @@
 			   	</c:if>
 			<br/>
             <br/>
-			
+			<p><a href="<c:url value='/${rc.locale.language}/search/'/>"><img border="0" src="<c:url value='/static/search/img/hirubila_${rc.locale.language}.jpg'/>" alt="Logo Hirubila" /></a></p>
         </div> 
      </div>
     
