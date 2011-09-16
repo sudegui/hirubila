@@ -38,6 +38,7 @@ public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 	@Override
 	public void buildSeoEntity(Course course, Locale locale) 
 		throws ServiceNotFoundException, ContextNotActiveException, Exception {
+		
 		School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
 		Provider provider = this.serviceLocator.getProviderService().getProviderById(course.getProvider(), locale);
 		

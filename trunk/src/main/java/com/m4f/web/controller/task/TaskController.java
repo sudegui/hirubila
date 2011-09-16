@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,6 +40,8 @@ import com.m4f.business.domain.extended.ExtendedCourse;
 import com.m4f.business.domain.extended.ExtendedSchool;
 import com.m4f.business.domain.extended.FeedCourses;
 import com.m4f.business.domain.extended.FeedSchools;
+import com.m4f.business.service.exception.ContextNotActiveException;
+import com.m4f.business.service.exception.ServiceNotFoundException;
 import com.m4f.business.service.extended.impl.InternalFeedServiceImpl;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
@@ -268,6 +271,20 @@ public class TaskController extends BaseController  {
 	}
 	
 	
+	@RequestMapping(value="/provider/catalog/create", method=RequestMethod.POST)
+	public String createCatalogByProvider(@RequestParam(required=true) Long providerId) 
+		throws Exception {
+		for(Locale locale : this.getAvailableLanguages()) {
+			Collection<Course> courses = 
+				this.serviceLocator.getCourseService().getCoursesByProvider(providerId, null, locale);
+			for (Iterator<Course> it = courses.iterator(); it.hasNext(); ) {
+				Course course = it.next();
+				this.catalogBuilder.buildSeoEntity(course, locale);
+			}
+		}
+		return "task.launched";
+	}
+
 	
 	@RequestMapping(value="/catalog/regenerate", method=RequestMethod.GET)
 	public String generateCatalog(Locale locale) {

@@ -114,16 +114,17 @@
 		<servlet-name>courseCatalogJsp</servlet-name>
 		<url-pattern>/catalog2/course_detail.jsp</url-pattern>
 	</servlet-mapping>
-
+	
+	
 	<servlet>
  		<servlet-name>_ah_warmup</servlet-name>
  		<servlet-class>com.m4f.web.servlet.WarmUpServlet</servlet-class>
  	</servlet>
  	
- 	<!--   -->
+ 	   
  	<servlet>
  		<servlet-name>_ah_start</servlet-name>
- 		<servlet-class>com.m4f.web.servlet.WarmUpServlet</servlet-class>
+ 		<servlet-class>com.m4f.web.servlet.BackendUpServlet</servlet-class>
  	</servlet>
  	
  	<servlet-mapping>

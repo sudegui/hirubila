@@ -1,7 +1,11 @@
 package com.m4f.web.controller.model;
 
+import java.net.MalformedURLException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
@@ -23,6 +27,8 @@ import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
+import com.m4f.business.service.exception.ContextNotActiveException;
+import com.m4f.business.service.exception.ServiceNotFoundException;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
@@ -184,6 +190,20 @@ public class ProviderController extends BaseModelController {
 			return "common.error";
 		}
 		return "course.list";
+	}
+	
+	@RequestMapping(value="/{providerId}/catalog/create", method=RequestMethod.GET)
+	public @ResponseBody String createCatalog(@PathVariable Long providerId) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("providerId", "" + providerId);
+		try {
+			this.serviceLocator.getWorkerFactory().createWorker().addWork(
+					this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE, 
+					"/task/provider/catalog/create", params);
+		} catch(Exception e) {
+			return "nook";
+		}
+		return "ok";
 	}
 	
 	@RequestMapping(value="/{providerId}/dumps", method=RequestMethod.GET)
