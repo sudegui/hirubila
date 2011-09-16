@@ -5,6 +5,24 @@
 <%@ include file="/WEB-INF/views/common/options_menu.jsp"%>
 
 <script type="text/javascript">
+
+
+	/*$(document).ready(function(){
+		$('#createCatalog').click(function(){
+				alert('Creating catalog ' + $(this).attr("providerId"));
+		});
+	});*/
+
+	function createCatalog(providerId) {
+		var url = "<c:url value='/${rc.locale.language}/provider/" + providerId+ "/catalog/create'/>";
+		alert(url);
+		if(confirm("Esta seguro que...")) {
+			$.get(url, function(data){
+				alert("Data Loaded: " + data);
+			});
+		}
+	}
+	
 	function deleteProvider(providerId) {
 		if(confirm('<fmt:message key="provider.actions.delete.warning"/>')) {
 			var url = '<c:url value='/${rc.locale.language}/dashboard/admin/management/delete/provider/'/>' + providerId;
@@ -63,6 +81,11 @@
 	        			<li>
 	        				<a href="<c:url value='/${rc.locale.language}/launcher/updateschools/${provider.id}/'/>" title="${provider.name} dump feed">
 								<fmt:message key="action.dumpFeed"/>
+							</a>
+						</li>
+						<li>
+	        				<a href="#" title="${provider.name} create catalog" onclick="javascript:createCatalog('${provider.id}');">
+								Creacion catalogo SEO
 							</a>
 						</li>
 						<li>

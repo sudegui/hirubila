@@ -24,9 +24,8 @@ public class BackendUpServlet extends HttpServlet {
 		int currentInstance = backendsApi.getCurrentInstance();
 		String backend = backendsApi.getCurrentBackend();
 		String address = backendsApi.getBackendAddress(backend);
-		System.out.println("Current BackednName: " + backend + 
+		LOGGER.severe("--- Current BackednName: " + backend + 
 				" instance: " + currentInstance + " address: " + address);
-		LOGGER.severe("BackendUpServlet");
 	}
 	
 }

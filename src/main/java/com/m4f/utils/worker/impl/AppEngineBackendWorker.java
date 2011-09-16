@@ -21,7 +21,7 @@ public class AppEngineBackendWorker implements IWorker {
 		for(String name : params.keySet()) {
 			options.param(name, params.get(name));
 		}
-		options.header("Host", BackendServiceFactory.getBackendService().getBackendAddress("worker",0));
+		options.header("Host", BackendServiceFactory.getBackendService().getBackendAddress("worker"));
 		queue.add(options);    	 
 	}
 	
