@@ -3,11 +3,11 @@
   <!-- The Basics -->
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.m4f</groupId>
-  <artifactId>hirubila</artifactId>
+  <artifactId>hirubila-frontend</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
-  <name>hirubila</name>
-  <description>hirubila</description>
+  <name>hirubila-frontend</name>
+  <description>hirubila-frontend</description>
   
   	<!-- Specify hard-coded project properties here -->
 	<properties>
