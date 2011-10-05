@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- definition of simple elements -->
+	<xs:simpleType name="httpURI">
+		<xs:annotation>
+			<xs:documentation>Tipo simple para urls http y https.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:anyURI">
+			<xs:pattern value="http://.*"/>
+			<xs:pattern value="https://.*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="unique_id" type="xs:token">
+		<xs:annotation>
+			<xs:documentation>Identificador unico del centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="izena" type="xs:token">
+		<xs:annotation>
+			<xs:documentation>Nombre del centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="telefonoa" type="xs:token">
+		<xs:annotation>
+			<xs:documentation>Numeros de telefono del centro, separados por coma.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="faxa" type="xs:token">
+		<xs:annotation>
+			<xs:documentation>Numero de Fax del centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="postae" type="xs:token">
+		<xs:annotation>
+			<xs:documentation>Buzon o correo electronico del centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="helbidea" type="xs:token">
+		<xs:annotation>
+			<xs:documentation>Direccion del centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="pk" type="xs:token">
+		<xs:annotation>
+			<xs:documentation>Codigo postal del municipio donde se ubica el centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="web_orria" type="xs:anyURI">
+		<xs:annotation>
+			<xs:documentation>URL del website del centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="herria" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Municipio donde se ubica el centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="moderatua" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Elemento no significativo, ya que no se tiene en cuenta para ningun proceso.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="feed" type="xs:anyURI">
+		<xs:annotation>
+			<xs:documentation>Feed a traves del cual se pueden recuperar los cursos del centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="zentroa">
+		<xs:annotation>
+			<xs:documentation>Elemento que contiene todos los campos relativos a un centro.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="unique_id" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="izena" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="telefonoa" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="faxa" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="postae" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="helbidea" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="pk" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="web_orria" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="herria" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="moderatua" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="feed" minOccurs="0" maxOccurs="1"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="zentroak">
+		<xs:annotation>
+			<xs:documentation>Elemento que va a contener un listado de centros.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="zentroa" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
