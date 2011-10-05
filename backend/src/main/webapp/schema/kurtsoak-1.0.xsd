@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	
+<!-- definition of simple elements -->
+	<xs:simpleType name="httpURI">
+		<xs:annotation>
+			<xs:documentation>Tipo simple para urls http y https.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:anyURI">
+			<xs:pattern value="http://.*"/>
+			<xs:pattern value="https://.*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="tokenText">
+		<xs:annotation>
+			<xs:documentation>Tipo simple para cualquier campo de texto del curso.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="url">
+		<xs:annotation>
+			<xs:documentation>Tipo simple para contener la url del curso.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:anyURI"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="date">
+		<xs:annotation>
+			<xs:documentation>Tipo simple para contener la url del curso.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:pattern value=""/>
+			<xs:pattern value="\d{4}/\d{2}/\d{2}"/>	
+			<xs:pattern value="\d{4}-\d{2}-\d{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:element name="unique_id" type="xs:token">
+		<xs:annotation>
+			<xs:documentation>Identificador unico del centro.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	
+	<!-- Complex types definitions-->
+	<xs:element name="gaia">
+		<xs:annotation>
+			<xs:documentation>Elemento que representa la tematica de la que puede tratar un curso.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all minOccurs="1" maxOccurs="1">
+				<xs:element name="gaia_id" type="xs:token" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Elemento opcional que contiene el identificador unico de la tematica.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="gaia_izena" type="xs:token">
+					<xs:annotation>
+						<xs:documentation>Nombre de la tematica.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+		
+	<xs:element name="gaiak">
+		<xs:annotation>
+			<xs:documentation>Elemento que va contiene una lista con las tematicas del curso.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="gaia" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="kurtsoa">
+		<xs:annotation>
+			<xs:documentation>Elemento que contiene todos los campos relativos a un curso.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="unique_id" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="izenburua_es" type="tokenText" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="izenburua_eu" type="tokenText" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="url_es" type="url" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="url_eu" type="url" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="hasi" type="date" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="bukatu" type="date" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="info_es" type="tokenText" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="info_eu" type="tokenText" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="gaiak" minOccurs="0" maxOccurs="1"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>	
+	
+	<xs:element name="kurtsoak">
+		<xs:annotation>
+			<xs:documentation>Elemento que va a contener un listado de cursos.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="kurtsoa" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
