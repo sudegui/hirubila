@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd" default-lazy-init="false">
+	
+	<util:properties id="settings" location="/WEB-INF/application.properties"/>
+		
+	<!-- Application Message Bundle -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/messages/messages" />
+		<property name="cacheSeconds" value="0" />
+		<property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+	
+	<!-- Configuration Bean -->
+	<bean id="defaultConfiguration" class="com.m4f.business.domain.GlobalConfiguration"/>
+	
+	<!-- View Helper Bean  -->
+	<bean id="viewHelper" class="com.m4f.web.controller.helper.ViewHelper"/>
+	
+	<!-- SEO catalog Helper Bean  -->
+	<bean id="seoCatalogBuilder" class="com.m4f.web.controller.helper.impl.HirubilaSeoCatalogBuilder"/>
+	
+	<bean id="urlShortener" class="com.m4f.utils.link.impl.GoogleURLShortener"/>
+	
+	<bean id="urlShortenerService" class="com.m4f.business.service.impl.CachedURLShortenerService">
+		<constructor-arg index="0" ref="urlShortener"/>
+	</bean>
+	
+	<bean id="searchResults" class="com.m4f.utils.search.impl.SearchResultsImpl"/>
+	
+	 <!-- GSA Search Engine -->
+	<bean id="gsaSearchEngine" class="com.m4f.utils.search.impl.GSASearchEngine">
+		<constructor-arg index="0" ref="searchResults"/>
+		<constructor-arg index="1" ref="urlShortenerService"/>
+	</bean>
+	
+	<bean id="servicesContext" class="org.springframework.context.support.ClassPathXmlApplicationContext"/>
+	
+	<bean id="serviceLocator" class="com.m4f.business.service.impl.SpringServiceLocator"/>
+	
+	
+	<!-- Configures Spring MVC -->
+	<import resource="mvc-config.xml" />
+	<!-- Configures Spring Security -->
+	<import resource="security-config.xml" />
+	 
+</beans>

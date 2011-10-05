@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<display-name>New Project Template</display-name>
+	
+	<!-- The master configuration file for this Spring web application -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/app-config.xml</param-value>
+	</context-param>
+	
+	<!-- Reads request input using UTF-8 encoding -->
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- Enables Spring Security --> 
+	<filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+      <filter-name>springSecurityFilterChain</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+   	
+   <!-- Enables clean URLs with JSP views e.g. /welcome instead of /app/welcome -->
+	<filter>
+		<filter-name>UrlRewriteFilter</filter-name>
+		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>UrlRewriteFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+    <filter>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	
+	<!-- Loads the Spring web application context -->
+        <listener>
+                <listener-class>com.m4f.web.context.LazyContextLoaderListener</listener-class>
+        </listener>
+	
+	
+	<!-- Handles all requests into the application -->
+	<servlet>
+		<servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value></param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+		<url-pattern>/app/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Custom servlets -->
+	<servlet>
+		<servlet-name>Ping Custom Servlet</servlet-name>
+		<servlet-class>com.m4f.web.servlet.PingServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>	
+	
+	<servlet-mapping>
+		<servlet-name>Ping Custom Servlet</servlet-name>
+		<url-pattern>/ping/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+		<servlet-name>Course Catalog Custom Servlet</servlet-name>
+		<servlet-class>com.m4f.web.servlet.CourseCatalogServlet</servlet-class>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>Course Catalog Custom Servlet</servlet-name>
+		<url-pattern>/courseCatalog/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>courseCatalogJsp</servlet-name>
+		<jsp-file>/WEB-INF/views/catalog2/course/course_detail.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>courseCatalogJsp</servlet-name>
+		<url-pattern>/catalog2/course_detail.jsp</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+ 		<servlet-name>_ah_warmup</servlet-name>
+ 		<servlet-class>com.m4f.web.servlet.WarmUpServlet</servlet-class>
+ 	</servlet>
+ 	
+ 	   
+ 	<servlet>
+ 		<servlet-name>_ah_start</servlet-name>
+ 		<servlet-class>com.m4f.web.servlet.BackendUpServlet</servlet-class>
+ 	</servlet>
+ 	
+ 	<servlet-mapping>
+		<servlet-name>_ah_start</servlet-name>
+		<url-pattern>/_ah/start</url-pattern>
+	</servlet-mapping>
+
+ 
+	<error-page>
+		<error-code>404</error-code>
+		<location>/app/error/404</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>403</error-code>
+		<location>/app/error/403</location>
+	</error-page>
+	
+	<error-page>
+        <exception-type>org.springframework.web.multipart.MultipartException</exception-type>
+        <location>/app/error/upload-error</location>
+    </error-page>
+    
+	<error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error.html</location>
+    </error-page>
+	
+</web-app>

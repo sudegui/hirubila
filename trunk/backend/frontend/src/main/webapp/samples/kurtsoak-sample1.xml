@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kurtsoak xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://hirubila.appspot.com/schema/kurtsoak-1.0.xsd">
+	<kurtsoa>
+		<unique_id><![CDATA[010012270]]></unique_id>
+		<izenburua_es><![CDATA[BACHILLERATO]]></izenburua_es>
+		<izenburua_eu><![CDATA[BATXILERGOA]]></izenburua_eu>
+		<info_es><![CDATA[]]></info_es>
+		<info_eu><![CDATA[]]></info_eu>
+		<hasi><![CDATA[2010/09/31]]></hasi>
+		<bukatu><![CDATA[2011/07/01]]></bukatu>
+		<url_es><![CDATA[http://www.ikasgida.net/kurtsoa/es/2]]></url_es>
+		<url_eu><![CDATA[http://www.ikasgida.net/kurtsoa/eu/2]]></url_eu>
+		<gaiak>
+			<gaia>
+				<gaia_id><![CDATA[1]]></gaia_id>
+				<gaia_izena><![CDATA[Automoción]]></gaia_izena>
+			</gaia>	
+		</gaiak>
+	</kurtsoa>
+	<kurtsoa>
+		<unique_id><![CDATA[010012141]]></unique_id>
+		<izenburua_es><![CDATA[EDUCACION ESPECIAL 1 ENSEÑANZAS INICIALES]]></izenburua_es>
+		<izenburua_eu><![CDATA[HEZKUNTZA BEREZIA 1 HASIERAKO IRAKASKUNTZA]]></izenburua_eu>
+		<info_es><![CDATA[]]></info_es>
+		<info_eu><![CDATA[]]></info_eu>
+		<hasi><![CDATA[2010-09-01]]></hasi>
+		<bukatu><![CDATA[2011-07-01]]></bukatu>
+		<url_es><![CDATA[http://www.ikasgida.net/kurtsoa/es/1]]></url_es>
+		<url_eu><![CDATA[http://www.ikasgida.net/kurtsoa/eu/1]]></url_eu>
+		<gaiak/>
+	</kurtsoa>
+	<kurtsoa>
+		<unique_id><![CDATA[010012145]]></unique_id>
+		<izenburua_es><![CDATA[EDUCACION ESPECIAL 2 ENSEÑANZAS INICIALES]]></izenburua_es>
+		<izenburua_eu><![CDATA[HEZKUNTZA BEREZIA 2 HASIERAKO IRAKASKUNTZA]]></izenburua_eu>
+		<info_es><![CDATA[]]></info_es>
+		<info_eu><![CDATA[]]></info_eu>
+		<hasi><![CDATA[2010/09/01]]></hasi>
+		<bukatu><![CDATA[2011/07/01]]></bukatu>
+		<url_es><![CDATA[http://www.ikasgida.net/kurtsoa/es/3]]></url_es>
+		<url_eu><![CDATA[http://www.ikasgida.net/kurtsoa/eu/3]]></url_eu>
+	</kurtsoa>
+</kurtsoak>
