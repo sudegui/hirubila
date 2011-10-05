@@ -274,14 +274,17 @@ public class TaskController extends BaseController  {
 	@RequestMapping(value="/provider/catalog/create", method=RequestMethod.POST)
 	public String createCatalogByProvider(@RequestParam(required=true) Long providerId) 
 		throws Exception {
+		LOGGER.severe("#### Start - Generation catalog for provider " + providerId);
 		for(Locale locale : this.getAvailableLanguages()) {
 			Collection<Course> courses = 
 				this.serviceLocator.getCourseService().getCoursesByProvider(providerId, null, locale);
+			LOGGER.severe("#### Total courses " + courses.size());
 			for (Iterator<Course> it = courses.iterator(); it.hasNext(); ) {
 				Course course = it.next();
 				this.catalogBuilder.buildSeoEntity(course, locale);
 			}
 		}
+		LOGGER.severe("#### End - Generation catalog for provider " + providerId);
 		return "task.launched";
 	}
 
