@@ -16,42 +16,7 @@
 	<!-- CONTROLLERS -->
 	<!-- Configures the @Controller programming model -->
 	<context:component-scan base-package="com.m4f.web.controller"/>
-	<!--   -->
-	<!-- <bean id="baseController" class="com.m4f.web.controller.BaseController" ></bean>  
-	<bean id="adminController" class="com.m4f.web.controller.users.AdminController" ></bean>
-	<bean id="catalogController" class="com.m4f.web.controller.CatalogController" ></bean>
-	<bean id="dumpController" class="com.m4f.web.controller.DumpController" ></bean>
-	<bean id="errorController" class="com.m4f.web.controller.ErrorController" ></bean>
-	<bean id="homeController" class="com.m4f.web.controller.HomeController" ></bean>
-	<bean id="i18nController" class="com.m4f.web.controller.I18nController" ></bean>
-	<bean id="loginController" class="com.m4f.web.controller.LoginController" ></bean>
-	<bean id="searchController" class="com.m4f.web.controller.SearchController" ></bean>
 	
-	<bean id="launcherController" class="com.m4f.web.controller.cron.LauncherController" ></bean>
-	
-	<bean id="extendedHomeController" class="com.m4f.web.controller.extended.ExtendedHomeControler" ></bean>
-	
-	<bean id="providerController" class="com.m4f.web.controller.model.ProviderController" ></bean>
-	<bean id="mediationServiceController" class="com.m4f.web.controller.model.MediationServiceController" ></bean>
-	<bean id="inboxController" class="com.m4f.web.controller.model.InboxController" ></bean>
-	<bean id="extendedSchoolController" class="com.m4f.web.controller.model.ExtendedSchoolController" ></bean>
-	<bean id="extendedCourseController" class="com.m4f.web.controller.model.ExtendedCourseController" ></bean>
-	<bean id="courseController" class="com.m4f.web.controller.model.CourseController" ></bean>
-	<bean id="provinceController" class="com.m4f.web.controller.model.ProvinceController" ></bean>
-	<bean id="regionController" class="com.m4f.web.controller.model.RegionController" ></bean>
-	<bean id="schoolController" class="com.m4f.web.controller.model.SchoolController" ></bean>
-	<bean id="townController" class="com.m4f.web.controller.model.TownController" ></bean>
-	<bean id="tutorialController" class="com.m4f.web.controller.model.TutorialController" ></bean>
-	<bean id="userController" class="com.m4f.web.controller.model.UserController" ></bean>
-	
-	<bean id="todayController" class="com.m4f.web.controller.summary.TodayController" ></bean>
-	
-	<bean id="publisherController" class="com.m4f.web.controller.task.PublisherController" ></bean>
-	<bean id="taskController" class="com.m4f.web.controller.task.TaskController" ></bean>
-	
-	<bean id="mediatorController" class="com.m4f.web.controller.users.MediatorController" ></bean>-->
-	<!-- <bean id="schoolCatalogController" class="com.m4f.web.controller.task.batch.SchoolCatalogTask" ></bean>  -->
-	<!-- FIN CONTROLLERS -->
 	
 	<!-- Creates the JSR-303 Validator -->
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
@@ -91,14 +56,6 @@
 		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" >
 			<property name="paramName" value="lang" />
 		</bean>
-		
-		<!--  
-		<mvc:interceptor>
-        	<mvc:mapping path="/catalog/course/detail/*"/>
-        	<bean class="com.m4f.web.request.CourseDetailInterceptor"/>
-    	</mvc:interceptor>
-		-->
-		
 	</mvc:interceptors>
 
 	<!-- Saves a locale change using a session -->

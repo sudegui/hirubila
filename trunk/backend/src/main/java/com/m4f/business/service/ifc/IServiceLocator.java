@@ -15,7 +15,6 @@ import com.m4f.utils.feeds.events.service.ifc.DumpService;
 import com.m4f.utils.feeds.events.service.ifc.EventService;
 import com.m4f.business.service.extended.ifc.I18nInternalFeedService;
 import com.m4f.utils.i18n.service.ifc.I18nService;
-import com.m4f.utils.search.ifc.ISearchEngine;
 import com.m4f.business.service.ifc.IPhraseSearchService;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
 import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
@@ -39,7 +38,6 @@ public interface IServiceLocator {
 	EventService getEventService() throws ServiceNotFoundException, ContextNotActiveException;
 	I18nInternalFeedService getInternalFeedService() throws ServiceNotFoundException, ContextNotActiveException;
 	I18nService getI18nService() throws ServiceNotFoundException, ContextNotActiveException;
-	ISearchEngine getSearchEngine() throws ServiceNotFoundException, ContextNotActiveException;
 	IPhraseSearchService getPhraseSearchService() throws ServiceNotFoundException, ContextNotActiveException;
 	ISchoolsParser getSchoolsParser() throws ServiceNotFoundException, ContextNotActiveException;
 	ICoursesParser getCoursesParser() throws ServiceNotFoundException, ContextNotActiveException;
