@@ -23,69 +23,17 @@ import java.util.Map;
 public class HomeController extends BaseController {
 
 	private static final Logger LOGGER = Logger.getLogger(HomeController.class.getName());
-	
 		
 	public HomeController() {
 		super();
 	}
 	
+	
 	@RequestMapping(method=RequestMethod.GET)
-	public String getView(Principal currentUser, Model model, 
-			Locale locale)
-			throws IOException, ClassNotFoundException {		
-		if(currentUser ==null) {
-			return "home";
-		}
-		String customHome = "";
-		try {
-			InternalUser user = this.serviceLocator.getUserService().getUser(currentUser.getName());
-			//The root user isn't into datastore.
-			if(user==null) {
-				customHome = "redirect:/" + locale.getLanguage() + "/dashboard/admin/";
-			} else {
-				if(user.isAdmin()) {
-					customHome = "redirect:/" + locale.getLanguage() + "/dashboard/admin/";
-				} else {
-					customHome = "redirect:/" + locale.getLanguage() + "/dashboard/mediator/";
-				}
-			}	
-		}catch(Exception e) {
-			this.viewHelper.errorManagement(e);
-		}
-		return customHome;
-	}
-	
-	@RequestMapping(value="/contact", method=RequestMethod.GET)
-	public String getContact(Principal currentUser, Model model, 
-			@RequestParam(required=false, defaultValue="en") String lang)
-			throws IOException, ClassNotFoundException {
-		return "contact";
-	}
-	
-	@RequestMapping(value="/home", method=RequestMethod.GET)
 	public String getHome(Principal currentUser, Model model, 
 			Locale locale)
 			throws IOException, ClassNotFoundException {
-		return "redirect:/" + locale.getLanguage() + "/";
-	}
-	
-	@RequestMapping(value="/postlogout", method=RequestMethod.GET)
-	public String getPostLogout(Principal currentUser, Model model, 
-			Locale locale)
-			throws IOException, ClassNotFoundException {
-		return "redirect:/" + locale.getLanguage() + "/";
-	}
-	
-	@RequestMapping(value="/postlogin", method=RequestMethod.GET)
-	public String getPostLogin(Principal currentUser, Model model, 
-			Locale locale)
-			throws IOException, ClassNotFoundException {
-		return "redirect:/" + locale.getLanguage() + "/";
-	}
-	
-	@RequestMapping(value="/ping", method=RequestMethod.GET)
-	public String doPing() throws IOException, ClassNotFoundException {
-		return "common.ping";
+		return "home";
 	}
 	
 }
