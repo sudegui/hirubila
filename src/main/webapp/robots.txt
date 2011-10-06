@@ -1,5 +1,0 @@
-User-agent: gsa-crawler
-Allow: /*/catalog
-
-User-agent: *
-Disallow : /
