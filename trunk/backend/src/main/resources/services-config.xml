@@ -14,16 +14,10 @@
 	
 	<!-- MultiLanguage DAO -->
 	<bean id="i18nDAO" class="com.m4f.utils.i18n.dao.impl.jdo.JdoI18nDAO"/>
-	
-	
-	
+
 	<!-- Mulilanguage services definitions. -->
 	
 	<bean id="mediatorService" class="com.m4f.business.service.impl.MediationServiceImpl" scope="prototype">
-		<constructor-arg index="0" ref="i18nDAO"/>
-	</bean>
-	
-	<bean id="inboxService" class="com.m4f.business.service.impl.InboxServiceImpl" scope="prototype">
 		<constructor-arg index="0" ref="i18nDAO"/>
 	</bean>
 	
@@ -75,10 +69,7 @@
 		<constructor-arg index="0" ref="worker"/>
 	</bean>
 	
-	<!-- Creates the User Service -->
-	<bean id="userService" class="com.m4f.business.service.impl.UserServiceImpl">
-		<constructor-arg index="0" ref="jdoDAO"/>
-	</bean>
+	
 	
 	<!-- Creates the CourseHtml Service -->
 	<bean id="catalogService" class="com.m4f.business.service.impl.GaeJdoCatalogService">
@@ -155,11 +146,7 @@
     <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
     <bean id="cacheInterceptor" class="com.m4f.utils.cache.CacheInterceptor"/>
     
-    <!-- CronTaskReport Service -->
-	<bean id="cronTaskReport" class="com.m4f.business.service.impl.CronTaskReportServiceImpl">
-		<constructor-arg index="0" ref="jdoDAO"/>
-	</bean>
-	
+    
   
     
    	<aop:aspectj-autoproxy/>
