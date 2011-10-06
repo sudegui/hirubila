@@ -348,7 +348,6 @@ public class TaskController extends BaseController  {
 				}
 			}
 		} catch(Exception e) {
-			this.viewHelper.errorManagement(e);
 			throw e;
 		}
 		return "task.launched";

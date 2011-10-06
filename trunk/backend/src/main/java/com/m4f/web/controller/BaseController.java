@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import com.m4f.business.service.ifc.IServiceLocator;
 import com.m4f.utils.StackTraceUtil;
-import com.m4f.web.controller.helper.ViewHelper;
 import com.m4f.utils.seo.SeoCatalogBuilder;
 
 @SessionAttributes(value={"langs"})
@@ -28,8 +27,6 @@ public abstract class BaseController {
 	protected IServiceLocator serviceLocator;
 	@Autowired
 	protected Validator validator;
-	@Autowired
-	protected ViewHelper viewHelper;
 	@Autowired
 	protected SeoCatalogBuilder catalogBuilder;
 	
