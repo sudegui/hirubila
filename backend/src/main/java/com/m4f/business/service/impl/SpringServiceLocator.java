@@ -41,7 +41,6 @@ import com.m4f.utils.feeds.parser.ifc.DumperCapable;
 import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
 import com.m4f.utils.i18n.service.ifc.I18nService;
-import com.m4f.utils.search.ifc.ISearchEngine;
 import com.m4f.utils.worker.WorkerFactory;
 
 public class SpringServiceLocator implements IServiceLocator, ApplicationContextAware, TransversalBusinessService {
@@ -128,10 +127,7 @@ public class SpringServiceLocator implements IServiceLocator, ApplicationContext
 		return this.getService(I18nService.class);
 	}
 	
-	@Override
-	public ISearchEngine getSearchEngine() throws ServiceNotFoundException, ContextNotActiveException {
-		return this.getService(ISearchEngine.class);
-	}
+	
 	
 	@Override
 	public IPhraseSearchService getPhraseSearchService() throws ServiceNotFoundException, ContextNotActiveException {

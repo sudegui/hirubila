@@ -15,12 +15,10 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.m4f.business.domain.BaseEntity;
-import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.ifc.Taggeable;
 import com.m4f.business.persistence.PMF;
 import com.m4f.utils.i18n.annotations.DeleteMultilanguage;
 import com.m4f.utils.i18n.dao.ifc.I18nDAOSupport;
-import com.m4f.web.controller.CatalogController;
 
 public class JdoI18nDAO implements I18nDAOSupport {
 	

@@ -160,15 +160,7 @@
 		<constructor-arg index="0" ref="jdoDAO"/>
 	</bean>
 	
-    <!--  
-    <bean id="phraseSearchService" class="com.m4f.business.service.impl.PhraseSearchServiceImpl">
-    	<constructor-arg index="0" ref="jdoDAO"/>
-    </bean>
-    
-    <bean id="searchInterceptor" class="com.m4f.utils.search.aop.SearchInterceptor">
-    	<constructor-arg index="0" ref="phraseSearchService"/>
-    </bean>
-    -->
+  
     
    	<aop:aspectj-autoproxy/>
    
@@ -219,12 +211,7 @@
             <aop:around pointcut-ref="cacheFlush" method="cacheFlush"/>
          </aop:aspect> 
           
-        <!--  
-         <aop:aspect ref="searchInterceptor">
-         	<aop:pointcut id="searchSave" expression="execution(* com.m4f.utils.search.ifc.ISearchEngine.search(..)) and args(params)" />
-            <aop:before pointcut-ref="searchSave" method="saveSearchedPhrase" arg-names="params"/>
-         </aop:aspect>
-        -->
+       
          
     </aop:config>
 	
