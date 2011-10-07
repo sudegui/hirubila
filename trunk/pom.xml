@@ -23,7 +23,7 @@
 	
 		<repository>
   			<id>nammok-mvn</id>
-  			<url>http://championship-framework.googlecode.com/svn/trunk/maven2/repository/</url>
+  			<url>http://nammok.com/repository/maven2/</url>
 		</repository>
 		<!-- Google Data APIs -->
     		<repository>
@@ -50,6 +50,52 @@
   </pluginRepositories>
   
   
+  
+ <dependencies>
+    
+    <!-- Appengine testing libs -->
+  	<dependency>
+    		<groupId>com.google.appengine</groupId>
+    		<artifactId>appengine-testing</artifactId>
+    		<version>${gae.version}</version>
+    		<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+    		<groupId>com.google.appengine</groupId>
+    		<artifactId>appengine-api-stubs</artifactId>
+    		<version>${gae.version}</version>
+    		<scope>test</scope>
+		</dependency>
+		
+		<!-- General dependencies for standard applications -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.5</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+	 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+    </dependency>
+    
+    <dependency>
+			<groupId>commons-logging</groupId>
+  			<artifactId>commons-logging</artifactId>
+  			<version>1.1</version>
+		</dependency>
+		
+ </dependencies>
+  
   <build>
 
   	<plugins>
@@ -64,6 +110,32 @@
 			 </configuration>
 		  </plugin>
 	 </plugins>
+	 
+	 <extensions>
+      <!-- Enabling the use of SSH -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-ssh-external</artifactId>
+         <version>1.0-beta-6</version>
+      </extension>
+      
+       <!-- Enabling the use of FTP -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-ftp</artifactId>
+         <version>1.0-beta-6</version>
+      </extension>
+      
+    </extensions>
 	
   </build>
+  
+  <distributionManagement>
+    	<repository>
+      		<id>ftp-nammok-repository</id>
+      		<name>Nammok Repository</name>
+      		<url>ftp://nammok.com/repository/maven2</url>
+    	</repository>
+  </distributionManagement>
+  
 </project>
