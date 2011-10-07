@@ -14,7 +14,6 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import com.google.appengine.api.taskqueue.DeferredTask;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
-import com.m4f.business.service.ifc.IServiceLocator;
 
 @SuppressWarnings("serial")
 public class LazyContextLoaderListener extends ContextLoaderListener implements Serializable {
@@ -31,8 +30,6 @@ public class LazyContextLoaderListener extends ContextLoaderListener implements 
 		rootCtx.setAllowBeanDefinitionOverriding(true);
 		long end = Calendar.getInstance().getTimeInMillis();
 		LOGGER.severe("++ Ending load context, elapsed time " + ((end-init)/1000) + " seconds");
-		ClassPathXmlApplicationContext servicesContext = (ClassPathXmlApplicationContext) rootCtx.getBean("servicesContext");
-		servicesContext.setParent(rootCtx);
 	 }
  
 	/* Application Shutdown Event */

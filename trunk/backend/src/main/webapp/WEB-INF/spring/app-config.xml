@@ -24,15 +24,10 @@
 	<!-- SEO catalog Helper Bean  -->
 	<bean id="seoCatalogBuilder" class="com.m4f.web.controller.helper.impl.HirubilaSeoCatalogBuilder"/>
 	
-	<bean id="servicesContext" class="org.springframework.context.support.ClassPathXmlApplicationContext"/>
-	
-	<bean id="serviceLocator" class="com.m4f.business.service.impl.SpringServiceLocator"/>
-	
-	
 	<!-- Configures Spring MVC -->
 	<import resource="mvc-config.xml" />
 	
-	<!-- Configures Spring Security 
-	<import resource="security-config.xml" />
-	 -->
+	<!-- Configures Application Services -->
+	<import resource="services-config.xml" />
+	 
 </beans>

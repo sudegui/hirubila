@@ -28,7 +28,7 @@ public class HomeController extends BaseController {
 	public String getHome(Principal currentUser, Model model, 
 			Locale locale)
 			throws ServiceNotFoundException, ContextNotActiveException, Exception {
-		List<Provider> providers = this.serviceLocator.getProviderService().getAllProviders(locale);
+		List<Provider> providers = providerService.getAllProviders(locale);
 		LOGGER.severe("Number of providers: " + providers.size());
 		return "home";
 	}
