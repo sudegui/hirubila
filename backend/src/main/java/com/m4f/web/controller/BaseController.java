@@ -11,9 +11,26 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import com.m4f.business.service.ifc.IServiceLocator;
+import com.m4f.business.service.ifc.I18nProviderService;
+import com.m4f.business.service.ifc.I18nMediationService;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.seo.SeoCatalogBuilder;
+import com.m4f.utils.worker.WorkerFactory;
+import com.m4f.business.service.ifc.IAppConfigurationService;
+import com.m4f.business.service.ifc.I18nSchoolService;
+import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
+import com.m4f.utils.feeds.events.service.ifc.DumpService;
+import com.m4f.utils.feeds.events.service.ifc.EventService;
+import com.m4f.business.service.ifc.ICronTaskReportService;
+import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
+import com.m4f.business.service.ifc.I18nMediationService;
+import com.m4f.business.service.extended.ifc.I18nExtendedCourseService;
+import com.m4f.business.service.extended.ifc.I18nExtendedSchoolService;
+import com.m4f.business.service.extended.ifc.I18nInternalFeedService;
+import com.m4f.business.service.ifc.I18nCourseService;
+import com.m4f.business.service.ifc.ICatalogService;
+import com.m4f.business.service.ifc.I18nInboxService;
+import com.m4f.utils.feeds.parser.ifc.DumperCapable;
 
 @SessionAttributes(value={"langs"})
 public abstract class BaseController {
@@ -23,8 +40,45 @@ public abstract class BaseController {
 	
 	@Autowired
 	private ReloadableResourceBundleMessageSource messageSource;
+	/*@Autowired
+	protected IServiceLocator serviceLocator;*/
+	
 	@Autowired
-	protected IServiceLocator serviceLocator;
+	protected DumperCapable dumperManager;
+	@Autowired
+	protected I18nInboxService inboxService;
+	@Autowired
+	protected ICatalogService catalogService;
+	@Autowired
+	protected I18nCourseService courseService;
+	@Autowired
+	protected I18nExtendedCourseService extendedCourseService;
+	@Autowired
+	protected I18nExtendedSchoolService extendedSchoolService;
+	@Autowired
+	protected I18nInternalFeedService internalFeedService;
+	@Autowired
+	protected I18nMediationService mediatorService;
+	@Autowired
+	protected ICoursesParser coursesParser;
+	@Autowired
+	protected ICronTaskReportService cronTaskReportService;
+	@Autowired
+	protected DumpService dumpService;
+	@Autowired
+	protected EventService eventService;
+	@Autowired
+	protected ISchoolsParser schoolsParser;
+	@Autowired
+	protected IAppConfigurationService configurationService;
+	@Autowired
+	protected I18nSchoolService schoolService;
+	@Autowired
+	protected WorkerFactory workerFactory;
+	@Autowired
+	protected I18nProviderService providerService;
+	@Autowired
+	protected I18nMediationService mediationService;
 	@Autowired
 	protected Validator validator;
 	@Autowired
@@ -60,7 +114,7 @@ public abstract class BaseController {
 	
 	protected List<Locale> getAvailableLanguages() {
 		try {
-			return this.serviceLocator.getAppConfigurationService().getLocales();
+			return configurationService.getLocales();
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return new ArrayList<Locale>();
@@ -71,7 +125,7 @@ public abstract class BaseController {
 	@ModelAttribute("langs")
 	public Map<String, Locale> getAvailableMapLanguages() {
 		try {
-			return this.serviceLocator.getAppConfigurationService().getLocalesMap();
+			return configurationService.getLocalesMap();
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return new HashMap<String, Locale>();
@@ -81,7 +135,7 @@ public abstract class BaseController {
 	
 	public void setPageSize(Integer pageSize) {
 		try {
-			this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().setPageSize(pageSize);
+			configurationService.getGlobalConfiguration().setPageSize(pageSize);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}
@@ -89,7 +143,7 @@ public abstract class BaseController {
 
 	public Integer getPageSize() {
 		try {
-			return this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().getPageSize();
+			return configurationService.getGlobalConfiguration().getPageSize();
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			LOGGER.severe("Returning pageSize value: 10");

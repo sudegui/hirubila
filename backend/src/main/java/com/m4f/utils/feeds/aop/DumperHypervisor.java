@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.FieldError;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.Text;
@@ -24,21 +26,26 @@ import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.events.model.StoreErrorEvent;
 import com.m4f.utils.feeds.events.model.StoreSuccessEvent;
 import com.m4f.utils.seo.SeoCatalogBuilder;
+import com.m4f.utils.worker.WorkerFactory;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.business.service.exception.ContextNotActiveException;
 import com.m4f.business.service.exception.ServiceNotFoundException;
-import com.m4f.business.service.ifc.IServiceLocator;
+import com.m4f.business.service.ifc.IAppConfigurationService;
+import com.m4f.utils.feeds.events.service.ifc.EventService;
 
 public class DumperHypervisor {
 	
-	private IServiceLocator serviceLocator;
-	private static final Logger LOGGER = Logger.getLogger(DumperHypervisor.class.getName());
-	private SeoCatalogBuilder catalogBuilder;
 	
-	public DumperHypervisor(IServiceLocator sLocator, SeoCatalogBuilder cBuilder) {
-		this.serviceLocator = sLocator;
-		this.catalogBuilder = cBuilder;
-	}
+	private static final Logger LOGGER = Logger.getLogger(DumperHypervisor.class.getName());
+	
+	@Autowired
+	private SeoCatalogBuilder catalogBuilder;	
+	@Autowired
+	private EventService eventService;
+	@Autowired
+	protected WorkerFactory workerFactory;
+	@Autowired
+	protected IAppConfigurationService configurationService;
 	
 	public void registerSchoolOperation(Dump dump, Provider provider, School school, 
 			Locale locale, List<FieldError> retVal) throws ServiceNotFoundException, 
@@ -56,14 +63,14 @@ public class DumperHypervisor {
 	
 	private void registerSchoolSuccess(Dump dump, School school, Locale locale) 
 		throws ServiceNotFoundException, ContextNotActiveException {
-		StoreSuccessEvent dumperSuccess = this.serviceLocator.getEventService().createStoreSuccessEvent();
+		StoreSuccessEvent dumperSuccess = eventService.createStoreSuccessEvent();
 		dumperSuccess.setEntityClass(School.class.getName());
 		dumperSuccess.setEntityId(school.getId());
 		dumperSuccess.setWhen(Calendar.getInstance(new Locale("es")).getTime());
 		dumperSuccess.setDumpId(dump.getId());
 		dumperSuccess.setLanguage(locale.getLanguage());
 		try {
-			this.serviceLocator.getEventService().save(dumperSuccess);
+			eventService.save(dumperSuccess);
 		}catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}
@@ -72,7 +79,7 @@ public class DumperHypervisor {
 	private void registerSchoolError(Dump dump, List<FieldError> errors, 
 			School school, Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
 		StoreErrorEvent dumperError = 
-			this.serviceLocator.getEventService().createStoreErrorEvent();
+			eventService.createStoreErrorEvent();
 		StringBuffer sb = new StringBuffer();
 		for(FieldError error : errors) {
 			sb.append(error.getField() + ":" + error.getRejectedValue() + 
@@ -92,7 +99,7 @@ public class DumperHypervisor {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		} finally {
 			try {
-				this.serviceLocator.getEventService().save(dumperError);
+				eventService.save(dumperError);
 			} catch(Exception e) {
 				LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			}
@@ -129,15 +136,13 @@ public class DumperHypervisor {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("courseId", course.getId().toString());
 		params.put("language", locale.getLanguage());
-		this.serviceLocator.getWorkerFactory().createWorker().addWork(
-				this.serviceLocator.getAppConfigurationService().
-				getGlobalConfiguration().CATALOG_QUEUE, 
+		workerFactory.createWorker().addWork(configurationService.getGlobalConfiguration().CATALOG_QUEUE, 
 				"/task/catalog/create", params);
 	}
 	
 	private void registerCourseError(Dump dump, List<FieldError> errors, 
 			Course course, Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
-		StoreErrorEvent dumperError = this.serviceLocator.getEventService().createStoreErrorEvent();
+		StoreErrorEvent dumperError = eventService.createStoreErrorEvent();
 		StringBuffer sb = new StringBuffer();
 		for(FieldError error : errors) {
 			sb.append(error.getField() + ":" + error.getRejectedValue() + 
@@ -157,7 +162,7 @@ public class DumperHypervisor {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		} finally {
 			try {
-				this.serviceLocator.getEventService().save(dumperError);
+				eventService.save(dumperError);
 			} catch(Exception e) {
 				LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			}
@@ -166,14 +171,14 @@ public class DumperHypervisor {
 	
 	private void registerCourseSuccess(Dump dump, Course course, Locale locale) 
 		throws ServiceNotFoundException, ContextNotActiveException {
-		StoreSuccessEvent dumperSuccess = this.serviceLocator.getEventService().createStoreSuccessEvent();
+		StoreSuccessEvent dumperSuccess = eventService.createStoreSuccessEvent();
 		dumperSuccess.setEntityClass(Course.class.getName());
 		dumperSuccess.setEntityId(course.getId());
 		dumperSuccess.setWhen(Calendar.getInstance(new Locale("es")).getTime());
 		dumperSuccess.setDumpId(dump.getId());
 		dumperSuccess.setLanguage(locale.getLanguage());
 		try {
-			this.serviceLocator.getEventService().save(dumperSuccess);
+			eventService.save(dumperSuccess);
 		}catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}

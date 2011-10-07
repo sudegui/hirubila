@@ -11,7 +11,6 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.google.appengine.api.backends.BackendService;
 import com.google.appengine.api.backends.BackendServiceFactory;
-import com.m4f.business.service.ifc.IServiceLocator;
 import com.m4f.web.context.LazyContextLoaderListener;
 
 public class BackendUpServlet extends HttpServlet {
