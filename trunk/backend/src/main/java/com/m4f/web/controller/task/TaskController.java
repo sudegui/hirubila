@@ -252,23 +252,6 @@ public class TaskController extends BaseController  {
 	 ***************************************************************************************/
 	
 	
-	@RequestMapping(value="/school/catalog/generate", method=RequestMethod.POST)
-	public String generateSchoolCatalog(@RequestParam(required=true) Long schoolId) {
-		final int RANGE = 200;
-		try {	
-			for (Course course : courseService.getCoursesBySchool(schoolId, null, null)) {
-				for(Locale locale : this.getAvailableLanguages()) {
-					
-				}
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		return "task.launched";
-	}
-	
-	
 	@RequestMapping(value="/provider/catalog/create", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
 	public void createCatalogByProvider(@RequestParam(required=true) Long providerId) 
