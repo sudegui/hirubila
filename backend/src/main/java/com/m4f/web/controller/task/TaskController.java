@@ -2,6 +2,7 @@ package com.m4f.web.controller.task;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.xml.sax.SAXException;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
@@ -47,6 +49,7 @@ import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.web.controller.BaseController;
+import org.springframework.http.HttpStatus;
 
 @Controller
 @RequestMapping("/task")
@@ -262,13 +265,13 @@ public class TaskController extends BaseController  {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
 		}
-		
 		return "task.launched";
 	}
 	
 	
 	@RequestMapping(value="/provider/catalog/create", method=RequestMethod.POST)
-	public String createCatalogByProvider(@RequestParam(required=true) Long providerId) 
+	@ResponseStatus(HttpStatus.OK)
+	public void createCatalogByProvider(@RequestParam(required=true) Long providerId) 
 		throws Exception {
 		LOGGER.severe("#### Start - Generation catalog for provider " + providerId);
 		for(Locale locale : this.getAvailableLanguages()) {
@@ -280,7 +283,6 @@ public class TaskController extends BaseController  {
 			}
 		}
 		LOGGER.severe("#### End - Generation catalog for provider " + providerId);
-		return "task.launched";
 	}
 
 	

@@ -1,15 +1,22 @@
 package com.m4f.web.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.Validator;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import com.m4f.business.service.ifc.I18nProviderService;
 import com.m4f.business.service.ifc.I18nMediationService;
@@ -150,6 +157,15 @@ public abstract class BaseController {
 			return new Integer(10);
 		}
 	}
-		
+	
+	 //@ExceptionHandler(Exception.class)
+	 public @ResponseBody String handleIOException(Exception ex, 
+			 HttpServletRequest request, HttpServletResponse response) throws IOException {
+		 System.out.println("handling1: unexpected error: " + ex.getLocalizedMessage());
+		 response.setHeader("Content-Type", "text/plain");
+		 response.sendError(503, "" + ex.getLocalizedMessage());
+		 System.out.println("handling2: RETURNING: unexpected error: " + ex.getLocalizedMessage());
+		 return "unexpected error: " + ex.getLocalizedMessage();
+	 }
 	
 }

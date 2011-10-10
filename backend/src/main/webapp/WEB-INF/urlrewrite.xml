@@ -13,70 +13,11 @@
 		<to>/static/$1</to>
 	</rule>
 	
-	
-	<rule>
-		<from>/schema/**</from>
-		<to>/schema/$1</to>
-	</rule>
-	
-	
-	<rule>
-		<from>/login</from>
-		<to>/app/login?lang=es</to>
-	</rule>
-	
-	<rule>
-		<from>/login/</from>
-		<!--  run class="com.m4f.utils.LocaleUrlRewrite" method="chooseLocale" /-->
-		<to>/app/login?lang=es</to>
-	</rule>
-	
-	<rule>
-		<from>/denied</from>
-		<!--  run class="com.m4f.utils.LocaleUrlRewrite" method="chooseLocale" /-->
-		<to>/app/denied?lang=es</to>
-	</rule>
-	
-	<rule>
-		<from>/denied/</from>
-		<!--  run class="com.m4f.utils.LocaleUrlRewrite" method="chooseLocale" /-->
-		<to>/app/denied?lang=es</to>
-	</rule>
-	
-	<rule>
-		<from>/postlogin</from>
-		<!--  run class="com.m4f.utils.LocaleUrlRewrite" method="chooseLocale" /-->
-		<to>/app/postlogin?lang=es</to>
-	</rule>
-	
-	<rule>
-		<from>/postlogin/</from>
-		<!--  run class="com.m4f.utils.LocaleUrlRewrite" method="chooseLocale" /-->
-		<to>/app/postlogin?lang=es</to>
-	</rule>
-	
-	<rule>
-		<from>/postlogout</from>
-		<!--  run class="com.m4f.utils.LocaleUrlRewrite" method="chooseLocale" /-->
-		<to>/app/postlogout?lang=es</to>
-	</rule>
-	
-	<rule>
-		<from>/postlogout/</from>
-		<!--  run class="com.m4f.utils.LocaleUrlRewrite" method="chooseLocale" /-->
-		<to>/app/postlogout?lang=es</to>
-	</rule>
-	
 	<rule>
 		<from>/task/**</from>
 		<to>/app/task/$1?lang=es</to>
 	</rule>
-	
-	<rule>
-		<from>/launcher/**</from>
-		<to>/app/launcher/$1?lang=es</to>
-	</rule>
-	
+
 	<rule>
 		<from>/es/**</from>
 		<to>/app/$1?lang=es</to>
