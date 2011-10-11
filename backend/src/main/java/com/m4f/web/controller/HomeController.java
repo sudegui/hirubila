@@ -20,8 +20,10 @@ public class HomeController extends BaseController {
 	
 	@RequestMapping(method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public void getHome(Locale locale) {
-		
+	public void getHome(Locale locale) throws Exception {
+		for(long id : providerService.getAllProviderIds()) {
+			LOGGER.severe("Id: " + id);
+		}
 	}
 	
 	
