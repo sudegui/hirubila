@@ -28,8 +28,6 @@ import com.m4f.utils.feeds.events.model.StoreSuccessEvent;
 import com.m4f.utils.seo.SeoCatalogBuilder;
 import com.m4f.utils.worker.WorkerFactory;
 import com.m4f.utils.StackTraceUtil;
-import com.m4f.business.service.exception.ContextNotActiveException;
-import com.m4f.business.service.exception.ServiceNotFoundException;
 import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.utils.feeds.events.service.ifc.EventService;
 
@@ -48,8 +46,7 @@ public class DumperHypervisor {
 	protected IAppConfigurationService configurationService;
 	
 	public void registerSchoolOperation(Dump dump, Provider provider, School school, 
-			Locale locale, List<FieldError> retVal) throws ServiceNotFoundException, 
-			ContextNotActiveException {
+			Locale locale, List<FieldError> retVal)  {
 		/*Un centro que cumple esta condición ya existía en la base de datos.*/
 		if(school.getId() == null) {
 			return;
@@ -61,8 +58,7 @@ public class DumperHypervisor {
 		}
 	}
 	
-	private void registerSchoolSuccess(Dump dump, School school, Locale locale) 
-		throws ServiceNotFoundException, ContextNotActiveException {
+	private void registerSchoolSuccess(Dump dump, School school, Locale locale) {
 		StoreSuccessEvent dumperSuccess = eventService.createStoreSuccessEvent();
 		dumperSuccess.setEntityClass(School.class.getName());
 		dumperSuccess.setEntityId(school.getId());
@@ -77,7 +73,7 @@ public class DumperHypervisor {
 	}
 	
 	private void registerSchoolError(Dump dump, List<FieldError> errors, 
-			School school, Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
+			School school, Locale locale)  {
 		StoreErrorEvent dumperError = 
 			eventService.createStoreErrorEvent();
 		StringBuffer sb = new StringBuffer();
@@ -107,8 +103,7 @@ public class DumperHypervisor {
 	}
 	
 	public void registerCourseOperation(Dump dump, Course course, 
-			Locale locale, List<FieldError> retVal) throws ServiceNotFoundException,
-			ContextNotActiveException, Exception {
+			Locale locale, List<FieldError> retVal) throws  Exception {
 		/*Un curso que cumple esta condición ya existía en la base de datos.*/
 		if(course.getId() == null) {
 			return;
@@ -132,7 +127,7 @@ public class DumperHypervisor {
 	}
 	
 	private void _createCourseCatalog(Course course, Locale locale) 
-		throws ServiceNotFoundException, ContextNotActiveException, Exception {
+		throws  Exception {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("courseId", course.getId().toString());
 		params.put("language", locale.getLanguage());
@@ -141,7 +136,7 @@ public class DumperHypervisor {
 	}
 	
 	private void registerCourseError(Dump dump, List<FieldError> errors, 
-			Course course, Locale locale) throws ServiceNotFoundException, ContextNotActiveException {
+			Course course, Locale locale) {
 		StoreErrorEvent dumperError = eventService.createStoreErrorEvent();
 		StringBuffer sb = new StringBuffer();
 		for(FieldError error : errors) {
@@ -169,8 +164,7 @@ public class DumperHypervisor {
 		}
 	}
 	
-	private void registerCourseSuccess(Dump dump, Course course, Locale locale) 
-		throws ServiceNotFoundException, ContextNotActiveException {
+	private void registerCourseSuccess(Dump dump, Course course, Locale locale) {
 		StoreSuccessEvent dumperSuccess = eventService.createStoreSuccessEvent();
 		dumperSuccess.setEntityClass(Course.class.getName());
 		dumperSuccess.setEntityId(course.getId());
