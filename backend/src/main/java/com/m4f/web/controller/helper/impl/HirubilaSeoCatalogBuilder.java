@@ -13,8 +13,6 @@ import com.m4f.business.domain.School;
 import com.m4f.business.domain.extended.Province;
 import com.m4f.business.domain.extended.Region;
 import com.m4f.business.domain.extended.Town;
-import com.m4f.business.service.exception.ContextNotActiveException;
-import com.m4f.business.service.exception.ServiceNotFoundException;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.business.service.ifc.I18nProviderService;
 import com.m4f.business.service.ifc.I18nSchoolService;
@@ -42,7 +40,7 @@ public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 	
 	@Override
 	public void buildSeoEntity(Long courseId, List<Locale> locales) 
-		throws ServiceNotFoundException, ContextNotActiveException, Exception {		
+		throws Exception {		
 		for(Locale locale : locales) {	
 				LOGGER.info(new StringBuffer("Generacion de instancia de catalogo del curso id: ")
 					.append(courseId).append(" y locale: ").append(locale).toString());
@@ -53,7 +51,7 @@ public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 	
 	@Override
 	public void buildSeoEntity(Course course, Locale locale) 
-		throws ServiceNotFoundException, ContextNotActiveException, Exception {
+		throws Exception {
 		
 		School school = schoolService.getSchool(course.getSchool(), locale);
 		Provider provider = providerService.getProviderById(course.getProvider(), locale);
