@@ -160,15 +160,6 @@
 		<constructor-arg index="0" ref="jdoDAO"/>
 	</bean>
 	
-    <!--  
-    <bean id="phraseSearchService" class="com.m4f.business.service.impl.PhraseSearchServiceImpl">
-    	<constructor-arg index="0" ref="jdoDAO"/>
-    </bean>
-    
-    <bean id="searchInterceptor" class="com.m4f.utils.search.aop.SearchInterceptor">
-    	<constructor-arg index="0" ref="phraseSearchService"/>
-    </bean>
-    -->
     
    	<aop:aspectj-autoproxy/>
    
@@ -194,23 +185,6 @@
            	<aop:pointcut id="deleteCollection" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.delete(java.util.Collection,java.util.Locale)) and args(objs,locale)" />
             <aop:after-returning pointcut-ref="deleteCollection" method="deleteCollection" arg-names="objs,locale"/>                   
         </aop:aspect>
-         
-         
-         <aop:aspect ref="parserHypervisor">
-         	<aop:pointcut id="schoolParseOperation" expression="target(com.m4f.utils.feeds.parser.ifc.ISchoolsParser) and args(dump,provider)" />
-         	<aop:after-throwing pointcut-ref="schoolParseOperation" method="registerProviderError" throwing="ex" arg-names="dump,ex,provider"/>
-         	<aop:pointcut id="courseParseOperation" expression="target(com.m4f.utils.feeds.parser.ifc.ICoursesParser) and args(dump,school)" />
-         	<aop:after-throwing pointcut-ref="courseParseOperation" method="registerSchoolError" throwing="ex" arg-names="dump,ex,school"/>
-         </aop:aspect>
-         
-        
-         <aop:aspect ref="dumperHypervisor">
-         	<aop:pointcut id="dumpSchoolOperation" expression="execution(* com.m4f.utils.feeds.parser.ifc.DumperCapable.dumpSchool(..)) and args(dump,school,locale,provider,..)" />
-         	<aop:after-returning pointcut-ref="dumpSchoolOperation" method="registerSchoolOperation" returning="retVal" arg-names="dump,provider,school,locale,retVal"/>
-         	<aop:pointcut id="dumpCourseOperation" expression="execution(* com.m4f.utils.feeds.parser.ifc.DumperCapable.dumpCourse(..)) and args(dump,course,locale,..)" />
-         	<aop:after-returning pointcut-ref="dumpCourseOperation" method="registerCourseOperation" returning="retVal" arg-names="dump,course,locale,retVal"/>
-         </aop:aspect>
-         
           
           <aop:aspect ref="cacheInterceptor">
          	<aop:pointcut id="cacheAble" expression="@annotation(com.m4f.utils.cache.annotations.Cacheable)" />
@@ -218,13 +192,6 @@
             <aop:pointcut id="cacheFlush" expression="@annotation(com.m4f.utils.cache.annotations.Cacheflush)" />
             <aop:around pointcut-ref="cacheFlush" method="cacheFlush"/>
          </aop:aspect> 
-          
-        <!--  
-         <aop:aspect ref="searchInterceptor">
-         	<aop:pointcut id="searchSave" expression="execution(* com.m4f.utils.search.ifc.ISearchEngine.search(..)) and args(params)" />
-            <aop:before pointcut-ref="searchSave" method="saveSearchedPhrase" arg-names="params"/>
-         </aop:aspect>
-        -->
          
     </aop:config>
 	
