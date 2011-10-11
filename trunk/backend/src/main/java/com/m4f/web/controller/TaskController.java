@@ -1,4 +1,4 @@
-package com.m4f.web.controller.task;
+package com.m4f.web.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,13 +42,9 @@ import com.m4f.business.domain.extended.ExtendedCourse;
 import com.m4f.business.domain.extended.ExtendedSchool;
 import com.m4f.business.domain.extended.FeedCourses;
 import com.m4f.business.domain.extended.FeedSchools;
-import com.m4f.business.service.exception.ContextNotActiveException;
-import com.m4f.business.service.exception.ServiceNotFoundException;
-import com.m4f.business.service.extended.impl.InternalFeedServiceImpl;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
-import com.m4f.web.controller.BaseController;
 import org.springframework.http.HttpStatus;
 
 @Controller
@@ -252,144 +248,14 @@ public class TaskController extends BaseController  {
 	 ***************************************************************************************/
 	
 	
-	@RequestMapping(value="/provider/catalog/create", method=RequestMethod.POST)
-	@ResponseStatus(HttpStatus.OK)
-	public void createCatalogByProvider(@RequestParam(required=true) Long providerId) 
-		throws Exception {
-		LOGGER.severe("#### Start - Generation catalog for provider " + providerId);
-		for(Locale locale : this.getAvailableLanguages()) {
-			Collection<Course> courses = courseService.getCoursesByProvider(providerId, null, locale);
-			LOGGER.severe("#### Total courses " + courses.size());
-			for (Iterator<Course> it = courses.iterator(); it.hasNext(); ) {
-				Course course = it.next();
-				this.catalogBuilder.buildSeoEntity(course, locale);
-			}
-		}
-		LOGGER.severe("#### End - Generation catalog for provider " + providerId);
-	}
+	
 
 	
-	@RequestMapping(value="/catalog/regenerate", method=RequestMethod.GET)
-	public String generateCatalog(Locale locale) {
-		final int RANGE = 200;
-		try {
-			LOGGER.severe("#### Regenerating catalog for all Courses.............");
-			PageManager<Course> paginator = new PageManager<Course>();
-			paginator.setOffset(RANGE);
-			paginator.setStart(0);
-			long total = courseService.count();
-			paginator.setSize(total);
-			LOGGER.severe("#### Total Courses............. " + total);
-			LOGGER.severe("#### End page.................." + paginator.getPagesMax());
-			for(Integer page : paginator.getTotalPagesIterator()) {
-				Map<String, String> params = new HashMap<String, String>();
-				int start = (page-1)*RANGE;
-				params.put("start", "" + start);
-				int end = (page)*RANGE;
-				params.put("finish", "" + end);
-				workerFactory.createWorker().addWork(configurationService.getGlobalConfiguration().CATALOG_QUEUE, 
-						"/task/catalog/createpaginated", params);
-				LOGGER.severe("#### Batch: " + start + "-" + end);
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		return "task.launched";
-	}
-	
-	
-	/**
-	 * CATALOG CREATION TASKS
-	 */
-	@RequestMapping(value="/catalog/createpaginated", method=RequestMethod.POST)
-	public String createCatalogPaginatedNew(@RequestHeader("host") String host, 
-			@RequestParam(required=true) Integer start, 
-			@RequestParam(required=true) Integer finish) throws Exception {
-		try {
-			Collection<Course> courses = 
-				courseService.getCourses("title", null, start, finish);
-			LOGGER.severe("+++ Paginated total courses: " + courses.size());
-			for(Course course : courses) {
-				for(Locale locale : this.getAvailableLanguages()) {
-					CourseCatalog catalogCourse = 
-						catalogService.getCourseCatalogByCourseId(course.getId(), locale);
-					if(catalogCourse == null) {
-						LOGGER.severe("+++ Creating catalog entry for course " + 
-								course.getTitle() + " (" + course.getId() + ")");
-						Map<String, String> params = new HashMap<String, String>();
-						params.put("courseId", course.getId().toString());
-						params.put("language", locale.getLanguage());
-						workerFactory.createWorker().addWork(
-								configurationService.getGlobalConfiguration().CATALOG_QUEUE, 
-								"/task/catalog/create", params);
-					}
-				}
-			}
-		} catch(Exception e) {
-			throw e;
-		}
-		return "task.launched";
-	}
 	
 	
 	
-	@RequestMapping(value="/catalog/create", method=RequestMethod.POST)
-	public String createCourseCatalog(@RequestHeader("host") String host, 
-			@RequestParam(required=true) Long courseId, 
-			@RequestParam(required=false) String language) throws Exception {
-		try {		
-			List<Locale> locales = new ArrayList<Locale>();
-			if(language != null) {
-				locales.add(new Locale(language));
-			} else {
-				locales.addAll(this.getAvailableLanguages());
-			}
-			this.catalogBuilder.buildSeoEntity(courseId, locales);	
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			throw e;
-		}
-		return "task.launched";
-	}
 	
-	/**
-	 * CATALOG DELETION TASKS
-	 */
-	@RequestMapping(value="/catalog/deletepaginated", method=RequestMethod.POST)
-	public String deleteCatalogPaginatedNew(@RequestHeader("host") String host, 
-			@RequestParam(required=true) Integer start, 
-			@RequestParam(required=true) Integer finish) throws Exception{
-		try {
-			Collection<CourseCatalog> courses = catalogService.getCoursesCatalog(null, 
-					null, start, finish);
-			for(CourseCatalog course : courses) {
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("courseId", course.getId().toString());
-				workerFactory.createWorker().
-					addWork(configurationService.getGlobalConfiguration().CATALOG_QUEUE, 
-						"/task/catalog/delete", params);
-			}			
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			throw e;
-		}
-		return "task.launched";
-	}
-	
-	@RequestMapping(value="/catalog/delete", method=RequestMethod.POST)
-	public String deleteCourseCatalog(@RequestHeader("host") String host, 
-			@RequestParam(required=true) Long courseId) throws Exception {
-		try {
-			CourseCatalog course = catalogService.getCourseCatalogById(courseId);
-			catalogService.delete(course);
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			throw e;
-		}
-		return "task.launched";
-	}
-	
+
 	
 	@RequestMapping(value="/recovery", method=RequestMethod.POST)
 	public @ResponseBody String recovery(@RequestParam(required=true) String email) {
