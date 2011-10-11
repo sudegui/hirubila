@@ -22,21 +22,12 @@
   
   	<dependencies>
   		
-  		<!-- Appengine testing libs -->
-  		
-  		<dependency>
-    		<groupId>com.google.appengine</groupId>
-    		<artifactId>appengine-testing</artifactId>
-    		<version>${gae.version}</version>
-    		<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-    		<groupId>com.google.appengine</groupId>
-    		<artifactId>appengine-api-stubs</artifactId>
-    		<version>1.5.2</version>
-    		<scope>test</scope>
-		</dependency>
+  		<!-- Hirubila commons -->
+		  <dependency>
+      		<groupId>com.m4f</groupId>
+      		<artifactId>hirubila-commons</artifactId>
+      		<version>1.0</version>
+    	</dependency>
 		
   		<!-- Google's data API's -->
         
@@ -284,11 +275,7 @@
   			<version>1.1</version>
 		</dependency>
 		
-		<dependency>
-        	<groupId>org.mcavallo</groupId>
-            <artifactId>opencloud</artifactId>
-            <version>0.2</version>
-        </dependency>
+		
               
         <dependency>
         	<groupId>org.tuckey</groupId>
