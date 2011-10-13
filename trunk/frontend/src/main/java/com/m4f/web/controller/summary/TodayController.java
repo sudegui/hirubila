@@ -24,13 +24,13 @@ import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.web.bind.form.CronTaskReportFilterForm;
 import com.m4f.web.controller.BaseController;
-import com.m4f.web.controller.task.TaskController;
+
 
 @Controller
 @Secured({"ROLE_ADMIN","ROLE_MANUAL_MEDIATOR","ROLE_AUTOMATIC_MEDIATOR"})
 @RequestMapping("/summary")
 public class TodayController extends BaseController {
-	private static final Logger LOGGER = Logger.getLogger(TaskController.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(TodayController.class.getName());
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getSummary(Principal principal, Model model, Locale locale) {
