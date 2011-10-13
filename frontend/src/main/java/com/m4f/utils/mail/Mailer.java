@@ -1,4 +1,4 @@
-package com.m4f.mail;
+package com.m4f.utils.mail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
