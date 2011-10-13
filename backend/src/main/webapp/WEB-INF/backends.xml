@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <backends>
  <backend name="worker">
-   <class>B1</class>
+   <class>B2</class>
    <instances>1</instances>
    <max-concurrent-requests>20</max-concurrent-requests>
    <options>

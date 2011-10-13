@@ -247,14 +247,6 @@ public class TaskController extends BaseController  {
 	 * 
 	 ***************************************************************************************/
 	
-	
-	
-
-	
-	
-	
-	
-	
 
 	
 	@RequestMapping(value="/recovery", method=RequestMethod.POST)

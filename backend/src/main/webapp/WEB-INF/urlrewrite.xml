@@ -14,6 +14,11 @@
 	</rule>
 	
 	<rule>
+		<from>/catalog/**</from>
+		<to>/app/catalog/$1?lang=es</to>
+	</rule>
+	
+	<rule>
 		<from>/task/**</from>
 		<to>/app/task/$1?lang=es</to>
 	</rule>
