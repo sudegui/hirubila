@@ -1,6 +1,5 @@
 package com.m4f.web.controller.task;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -20,7 +19,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.ParserConfigurationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,142 +53,6 @@ public class TaskController extends BaseController  {
 	private static final Logger LOGGER = Logger.getLogger(TaskController.class.getName());
 	private static final String EMAIL_DOMAIN_SUFFIX = "@hirubila.appspotmail.com";
 	
-	
-	@RequestMapping(value="/updatecourses", method=RequestMethod.POST)
-	public String updateCourses(@RequestParam(required=true) Long schoolId,
-			@RequestParam(required=true) Long dumpId) throws Exception {
-		LOGGER.log(Level.INFO, "Starting the update courses from school's queue...");
-		School school = null;
-		try {
-			school = this.serviceLocator.getSchoolService().getSchool(schoolId, null);
-			if(school == null) {
-				LOGGER.severe("School with id " + schoolId + " doesn't exist.");
-				return "common.error";
-			}
-			Dump dump = null;
-			dump = this.serviceLocator.getDumpService().getDump(dumpId);
-			if(dump == null) {
-				LOGGER.severe("Dump with id " + dumpId + " doesn's exist.");
-				return "common.error";
-			}
-			Map<String, List<Course>> parsedCourses = this.serviceLocator.getCoursesParser().getCourses(dump, school);
-			this.storeCourses(dump, school, parsedCourses);
-		} catch (ParserConfigurationException e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		} catch (SAXException e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		} catch (IOException e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		} catch (Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			throw e;
-			//return "common.error";
-		}
-		return "task.launched";
-	}
-	
-	
-	
-	/*
-	 * This task creates/updates schools and courses information from one provider feed
-	 */
-	@RequestMapping(value="/loadproviderfeed", method=RequestMethod.POST)
-	public String loadProviderFeed(@RequestParam Long providerId, 
-			@RequestParam Long dumpId) throws Exception {
-		LOGGER.log(Level.SEVERE, "----- Starting the update schools from provider");
-		// Create a new CronTaskReport
-		CronTaskReport report = this.serviceLocator.getCronTaskReportService().create();
-		report.setObject_id(providerId);
-		report.setDate(new Date());
-		report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
-		Provider provider = null;
-		Dump dump = null;
-		try {
-			provider = this.serviceLocator.getProviderService().getProviderById(providerId, null);
-			LOGGER.log(Level.SEVERE, "----- name: " + provider.getName());
-			//Set report description
-			report.setDescription(new StringBuffer("Proveedor de feeds: ").append(provider.getName()).toString());
-			dump = this.serviceLocator.getDumpService().getDump(dumpId);
-			if(provider == null) {
-				LOGGER.severe("Provider with id " + providerId + " doesn's exist.");
-				return "common.error";
-			}			
-			if(dump == null) {
-				LOGGER.severe("Dump with id " + dumpId + " doesn's exist."); 
-				return "common.error";
-			}
-			/**
-			 * Proceso que realiza el parseo del feed del proveedor, el cual contiene
-			 * un conjunto de centros (schools). Existe un aspecto creado para registrar
-			 * posibles excepciones producidas dentro del proceso de parseo.
-			 * Este registro de errores se encuentra localizado en:
-			 * com.m4f.utils.feeds.aop.ParserHypervisor#registerProviderError
-			 * VALIDACI�N DE ESTRUCTURA DEL XML.
-			 */
-			List<School> schools = this.serviceLocator.getSchoolsParser().getSchools(dump, provider);
-			/**
-			 * Proceso que realiza el volcado de los centros parseados al modelo de 
-			 * persistencia. Existe un aspecto creado para registrar posibles problemas
-			 * de validación en el contenido de los centros a almacenar.
-			 * Este registro de problemas se encuentra localizado en:
-			 * com.m4f.utils.feeds.aop.DumperHypervisor#registerSchoolValidationError
-			 * 
-			 * VALIDACI�N DEL CONTENIDO DEL XML. 
-			 */
-			for(Locale locale : this.getAvailableLanguages()) {
-				this.storeSchools(dump, provider, schools, locale);
-			}
-			/**
-			 * Creación de una tarea por cada centro parseado para pasarla a ejecución
-			 * posteriormente.
-			 * TODO access to datastore to get all schools and generate the next task.
-			 */
-			List<School> storedSchools = 
-				this.serviceLocator.getSchoolService().getSchoolsByProvider(provider.getId(), null, null);
-			for(School school : storedSchools) {
-				if((school.getFeed()!=null) && (!"".equals(school.getFeed()))) {
-					Map<String, String> params = new HashMap<String, String>();
-					params.put("schoolId", school.getId().toString());
-					params.put("dumpId", "" + dump.getId());
-					this.serviceLocator.getWorkerFactory().createWorker().addWork(
-							this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE, 
-							"/task/updatecourses", params);
-					
-				}
-			}
-			
-			// Set result into report
-			report.setResult("OK");
-		} catch (ParserConfigurationException e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
-			this.serviceLocator.getCronTaskReportService().save(report);
-			return "common.error";
-		} catch (SAXException e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
-			this.serviceLocator.getCronTaskReportService().save(report);
-			return "common.error";
-		} catch (IOException e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
-			this.serviceLocator.getCronTaskReportService().save(report);
-			return "common.error";
-		} catch (Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
-			this.serviceLocator.getCronTaskReportService().save(report);
-			throw e;
-		}
-		LOGGER.info("--- Ending the update schools from provider's (" + 
-				providerId + ") queue...");
-		this.serviceLocator.getCronTaskReportService().save(report);
-		return "task.launched";
-	}
-		
 	/*
 	 * This task generates internal feeds for a mediationService
 	 */
@@ -525,36 +387,7 @@ public class TaskController extends BaseController  {
 		return "task.launched";
 	}
 	
-	/**
-	 * PRIVATE METHODS
-	 */
 	
-	private void storeSchools(Dump dump, Provider provider, 
-			List<School> schools, Locale locale) throws Exception {
-		for(School school : schools) {
-			this.serviceLocator.getDumperManager().dumpSchool(dump, school, locale, provider);
-		}
-	}
 	
-	private void storeCourses(Dump dump, School school, 
-			Map<String, List<Course>> courses) throws Exception {
-		for(String lang : courses.keySet()) {
-			Locale locale = new Locale(lang);
-			ArrayList<Course> lista = new ArrayList<Course>();
-			lista.addAll(courses.get(lang));
-			/*
-			 * Se consigue ahora la informacion de territorio, debido a que esta asociada a la escuela, 
-			 * y esta no va a variar para la colección de cursos.
-			 * De esta forma ahorramos procesamiento en las diferentes consultas, ya que sino habria que 
-			 * hacerlo en el método dumpCourse, sacando la información por cada curso.
-			 * 
-			 */
-			
-			// Get provider data
-			Provider provider = this.serviceLocator.getProviderService().getProviderById(school.getProvider(), locale);
-			for(Course course : lista) {
-				this.serviceLocator.getDumperManager().dumpCourse(dump, course, locale, school, provider);
-			}
-		}
-	}
+	
 }

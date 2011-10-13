@@ -37,9 +37,6 @@ import com.m4f.business.service.extended.ifc.I18nInternalFeedService;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.service.ifc.DumpService;
 import com.m4f.utils.feeds.events.service.ifc.EventService;
-import com.m4f.utils.feeds.parser.ifc.DumperCapable;
-import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
-import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
 import com.m4f.utils.i18n.service.ifc.I18nService;
 import com.m4f.utils.search.ifc.ISearchEngine;
 import com.m4f.utils.worker.WorkerFactory;
@@ -138,20 +135,8 @@ public class SpringServiceLocator implements IServiceLocator, ApplicationContext
 		return this.getService(IPhraseSearchService.class);
 	}
 	
-	@Override
-	public ISchoolsParser getSchoolsParser() throws ServiceNotFoundException, ContextNotActiveException {
-		return this.getService(ISchoolsParser.class);
-	}
 	
-	@Override
-	public ICoursesParser getCoursesParser() throws ServiceNotFoundException, ContextNotActiveException {
-		return this.getService(ICoursesParser.class);
-	}
 	
-	@Override
-	public DumperCapable getDumperManager() throws ServiceNotFoundException, ContextNotActiveException {
-		return this.getService(DumperCapable.class);
-	}
 	
 	@Override
 	public ICatalogService getCatalogService() throws ServiceNotFoundException, ContextNotActiveException {

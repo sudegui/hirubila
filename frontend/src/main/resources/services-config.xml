@@ -55,14 +55,6 @@
 		<constructor-arg index="0" ref="i18nDAO"/>
 	</bean>
 	
-	<bean id="dumperManager" class="com.m4f.utils.feeds.parser.impl.DumperManager" scope="prototype">
-		<constructor-arg index="0" ref="validator"/>
-		<constructor-arg index="1" ref="schoolService"/>
-		<constructor-arg index="2" ref="courseService"/>
-		<constructor-arg index="3" ref="catalogService"/>
-		<constructor-arg index="4" ref="beanManager"/>
-	</bean>
-	
 	<!-- NO multi-language DAO -->
 	<bean id="jdoDAO" class="com.m4f.utils.dao.impl.JdoDAO"/>
 	
@@ -109,23 +101,6 @@
 		<constructor-arg index="1" ref="defaultConfiguration"/>
 	</bean>
 	
-	<!-- Gae HTTP Content Acquirer -->
-	<bean id="acquirer" class="com.m4f.utils.content.impl.GaeHttpAcquirer"/>
-	
-    <!-- Schools parser -->
-    <bean id="schoolParser" class="com.m4f.utils.feeds.parser.impl.SchoolsFeedParser" scope="prototype">
-    	<constructor-arg index="0" ref="acquirer"/>
-    </bean>
-    
-    <!-- Courses parser -->
-    <bean id="courseParser" class="com.m4f.utils.feeds.parser.impl.CoursesFeedParser" scope="prototype">
-    	<constructor-arg index="0">
-    		<list>
-      			<value>yyyy/MM/dd</value>
-      			<value>yyyy-MM-dd</value>
-  			</list>
-    	</constructor-arg>
-    </bean>
    
    <!-- Internal feeds service -->
     <bean id="internalFeedService" class="com.m4f.business.service.extended.impl.InternalFeedServiceImpl">
@@ -139,17 +114,6 @@
     <bean id="multilanguageTranslator" class="com.m4f.utils.i18n.MultilanguageInterceptor">
     	<constructor-arg index="0" ref="i18nService"/>
     	<constructor-arg index="1" ref="beanManager"/>
-    </bean>
-    
-    <!-- Interceptor to control any feed parse operation. -->
-    <bean id="parserHypervisor" class="com.m4f.utils.feeds.aop.ParserHypervisor">
-    	<constructor-arg index="0" ref="eventService"/>
-    </bean>
-    
-    <!-- Interceptor to control any entity dump process from a feed capture process. -->
-    <bean id="dumperHypervisor" class="com.m4f.utils.feeds.aop.DumperHypervisor">
-    	<constructor-arg index="0" ref="serviceLocator"/>
-    	<constructor-arg index="1" ref="seoCatalogBuilder"/>
     </bean>
     
     <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
