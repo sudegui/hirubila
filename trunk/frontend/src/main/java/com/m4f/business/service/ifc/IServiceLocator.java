@@ -17,9 +17,6 @@ import com.m4f.business.service.extended.ifc.I18nInternalFeedService;
 import com.m4f.utils.i18n.service.ifc.I18nService;
 import com.m4f.utils.search.ifc.ISearchEngine;
 import com.m4f.business.service.ifc.IPhraseSearchService;
-import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
-import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
-import com.m4f.utils.feeds.parser.ifc.DumperCapable;
 import com.m4f.utils.worker.WorkerFactory;
 
 public interface IServiceLocator {
@@ -41,9 +38,6 @@ public interface IServiceLocator {
 	I18nService getI18nService() throws ServiceNotFoundException, ContextNotActiveException;
 	ISearchEngine getSearchEngine() throws ServiceNotFoundException, ContextNotActiveException;
 	IPhraseSearchService getPhraseSearchService() throws ServiceNotFoundException, ContextNotActiveException;
-	ISchoolsParser getSchoolsParser() throws ServiceNotFoundException, ContextNotActiveException;
-	ICoursesParser getCoursesParser() throws ServiceNotFoundException, ContextNotActiveException;
-	DumperCapable getDumperManager() throws ServiceNotFoundException, ContextNotActiveException;
 	ICatalogService getCatalogService() throws ServiceNotFoundException, ContextNotActiveException;
 	IAppConfigurationService getAppConfigurationService() throws ServiceNotFoundException, ContextNotActiveException;
 	ICronTaskReportService getCronTaskReportService() throws ServiceNotFoundException, ContextNotActiveException;

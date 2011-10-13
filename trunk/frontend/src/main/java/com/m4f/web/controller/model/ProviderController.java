@@ -27,8 +27,6 @@ import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
-import com.m4f.business.service.exception.ContextNotActiveException;
-import com.m4f.business.service.exception.ServiceNotFoundException;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
@@ -199,7 +197,7 @@ public class ProviderController extends BaseModelController {
 		try {
 			this.serviceLocator.getWorkerFactory().createWorker().addWork(
 					this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().CATALOG_QUEUE, 
-					"/task/provider/catalog/create", params);
+					"/catalog/provider/create", params);
 		} catch(Exception e) {
 			return "nook";
 		}

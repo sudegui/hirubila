@@ -89,7 +89,24 @@
 		
 		.yellow.button, .yellow.button:visited { background-color: #ccc902; }
 		.yellow.button:hover{ background-color: #FC9200; }
-
+		
+		blockquote {
+  			font: 14px/20px italic Times, serif;
+  			padding: 8px;
+  			background-color: #faebbc;
+  			border-top: 1px solid #e1cc89;
+  			border-bottom: 1px solid #e1cc89;
+  			margin: 5px;
+  			background-position: top left;
+  			background-repeat: no-repeat;
+  		}
+  		
+  		blockquote span {
+     		display: block;
+     		background-repeat: no-repeat;
+     		background-position: bottom right;
+   		}
+   
 	</style>
 </head>
 
@@ -104,7 +121,7 @@
 			width: 400,
 			show: "blind",
 			hide: "explode",
-			position: ['right','bottom'],
+			position: ['right','center'],
 			resizable: false,
 			closeOnEscape: true,
 			buttons: {
@@ -153,7 +170,10 @@
     		
     		
     	<!--Caja twitter con los términos de búsqueda "Formación País Vasco"-->
+    		
     		<div class="conten_twitter">
+    			<blockquote><span>  <fmt:message key="search.home.twitter.hashtags.title"/> <fmt:message key="search.home.twitter.hashtags"/>  </span></blockquote>
+    			
     			<script src="http://widgets.twimg.com/j/2/widget.js"></script>
 				<script>
 				new TWTR.Widget({
