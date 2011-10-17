@@ -166,7 +166,8 @@ padding:0 25px 25px 25px;
 }
 #buscador_top .buscador_general {
 	background:url(../img/verde_buscador_right.gif) no-repeat right 6px;
-	margin-top:16px;
+	margin-top:14px;
+	margin-left:13px;
 	float:left;
 }
 #buscador_top .buscador_general input[type="text"]{
