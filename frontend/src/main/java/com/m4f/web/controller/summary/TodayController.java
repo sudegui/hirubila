@@ -56,29 +56,7 @@ public class TodayController extends BaseController {
 		return "summary.today";
 	}	
 	
-	/*@RequestMapping(value="/{dumpId}/parseerrors", method=RequestMethod.GET)
-	public String getParseErrors(@PathVariable Long dumpId, @RequestParam(defaultValue="1", required=false) Integer page, 
-			@RequestParam(defaultValue="", required=false) String order, Principal principal, Model model, Locale locale) {
-		try {
-			String ordering = "";
-			Provider provider = this.getProviderByUserName(principal.getName(), locale);	
-			Dump dump = this.serviceLocator.getDumpService().getLastDumpByOwner(provider.getId());
-			PageManager<ParserErrorEvent> paginator = new PageManager<ParserErrorEvent>();
-			paginator.setOffset(this.getPageSize());
-			//paginator.setUrlBase("/" + locale.getLanguage()+ "/extended/school/list");
-			paginator.setStart((page-1)*paginator.getOffset());
-			paginator.setSize(this.serviceLocator.getEventService().countStoreErrorEventsByDump(dump));
-			paginator.setCollection(this.serviceLocator.getEventService().
-					getParserErrorEventByDump(dump, paginator.getStart(), paginator.getEnd(), ordering));
-			model.addAttribute("paginator", paginator);
-			model.addAttribute("order", ordering);
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			return "common.error";
-		}
-		
-		return "summary.parseerrors";
-	}*/
+	
 	
 	
 	/*

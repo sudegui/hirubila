@@ -29,8 +29,7 @@
 		#dialog ul{
 			list-style-type: square;
 			font-family:"Arial", Helvetica, sans-serif;
-			font-size:medium;
-			margin-top:5px; 
+			font-size:11px;
 			padding-left:2%;
 		}
 		
@@ -40,15 +39,15 @@
 	
 		
 		.button, .button:visited { /* botones genéricos */
-  			background: #222 url(<c:url value='/static/search/img/overlay.png'/>) repeat-x;
+  			/*background: #222 url(<c:url value='/static/search/img/overlay.png'/>) repeat-x;*/
   			display: inline-block;
   			padding: 5px 10px 6px;
   			color: #FFF;
   			text-decoration: none;
   			-moz-border-radius: 6px;
   			-webkit-border-radius: 6px;
-  			-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
-  			-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  			/*-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  			-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);*/
   			text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
   			border-bottom: 1px solid rgba(0,0,0,0.25);
   			position: relative;
@@ -90,25 +89,26 @@
   			padding: 8px 14px 9px;
 		}
 		
-		.yellow.button, .yellow.button:visited { background-color: #ccc902; }
-		.yellow.button:hover{ background-color: #FC9200; }
+	.yellow.button, .yellow.button:visited { background-color: #518DCA; }
+		.yellow.button:hover{ background-color: #9FAF55; }
 		
 		blockquote {
-  			font: 14px/20px italic Times, serif;
   			padding: 8px;
-  			background-color: #faebbc;
-  			border-top: 1px solid #e1cc89;
-  			border-bottom: 1px solid #e1cc89;
-  			margin: 5px;
-  			background-position: top left;
-  			background-repeat: no-repeat;
-  		}
+  			background-color: #518DCA;
+ 			border: 1px solid #518DCA;
+  			margin-bottom: 5px;
+  			border-radius:5px;
+  			}
   		
   		blockquote span {
      		display: block;
      		background-repeat: no-repeat;
      		background-position: bottom right;
-   		}
+     		font-family: arial, helvetica, sans-serif;
+     		font-size:11px;
+     		line-height:12px;
+     		color:#FFF;
+     			}
    		
 	</style>
 </head>
@@ -145,11 +145,11 @@ $(function() {
 	$(document).ready(function() {
 		var type = '${search.collection}';
 		if(type == 'hirubila-reglated-') {
-			$('#oficial').css('background-color','#CBDC6C');
+			$('#oficial').css('background-color','#BBDCFF');
 		} else if (type=='hirubila-nonreglated-') {
-			$('#continua').css('background-color','#CBDC6C');
+			$('#continua').css('background-color','#BBDCFF');
 		} else {
-			$('#todo').css('background-color','#CBDC6C');
+			$('#todo').css('background-color','#BBDCFF');
 		}
 		$("a[name=result-link]").each(function(){
 			$(this).attr("target", "_blank");
@@ -157,7 +157,7 @@ $(function() {
 
 		$('#todo').click(function() {
 			$('#collection').val('hirubila-');
-			$('#todo').css('background-color','#CBDC6C');			
+			$('#todo').css('background-color','#BBDCFF');			
 			$('#continua').css('background-color','');
 			$('#oficial').css('background-color','');
 			$('#target').submit();
@@ -165,7 +165,7 @@ $(function() {
 
 		$('#continua').click(function() {
 			$('#collection').val('hirubila-nonreglated-');
-			$('#continua').css('background-color','#CBDC6C');			
+			$('#continua').css('background-color','#BBDCFF');			
 			$('#todo').css('background-color','');
 			$('#oficial').css('background-color','');
 			$('#target').submit();
@@ -173,7 +173,7 @@ $(function() {
 
 		$('#oficial').click(function() {
 			$('#collection').val('hirubila-reglated-');
-			$('#oficial').css('background-color','#CBDC6C');			
+			$('#oficial').css('background-color','#BBDCFF');			
 			$('#todo').css('background-color','');
 			$('#continua').css('background-color','');
 			$('#target').submit();
@@ -232,7 +232,7 @@ $(function() {
     </div>
     <!--Caja twitter con los términos de búsqueda "Formación País Vasco"-->
     <div class="conten_twitter">
-    	<blockquote><span>  <fmt:message key="search.home.twitter.hashtags.title"/> <fmt:message key="search.home.twitter.hashtags"/>  </span></blockquote>
+    	<blockquote><span>  <fmt:message key="search.home.twitter.hashtags.title"/> <strong><fmt:message key="search.home.twitter.hashtags"/></strong> </span></blockquote>
     	<script src="http://widgets.twimg.com/j/2/widget.js"></script>
 <script>
 new TWTR.Widget({
@@ -246,13 +246,13 @@ new TWTR.Widget({
   height: 300,
    theme: {
     shell: {
-      background: '#daeb7c',
-      color: '#2c5902'
+      background: '#518DCA',
+		color: '#FFF'
     },
     tweets: {
-      background: '#ffffff',
-      color: '#757475',
-      links: '#2c5902'
+     background: '#ffffff',
+	color: '#757475',
+	links: '#518DCA'
     }
   },
   features: {
@@ -278,9 +278,9 @@ new TWTR.Widget({
     				<p>${result.description}</p>
                 	<div class="barra_enlaces"> 
                 		<p>                               
-		                   <a href="<c:url value='/${rc.locale.language}/search/results/send?link=${result.link}'/>" rel="shadowbox;height=550;width=500" class="envia_mail" target="_blank"><fmt:message key="search.result.sendByEmail"/></a> - 
+		                   <a href="<c:url value='/${rc.locale.language}/search/results/send?link=${result.link}'/>" rel="shadowbox;height=468;width=400" class="envia_mail" target="_blank"><fmt:message key="search.result.sendByEmail"/></a> - 
 		                   <a id="link_compartir_${status.count}" class="comparte_link" onClick="muestra_oculta('${status.count}')" ><fmt:message key="search.result.share"/></a> - 
-		                   <a href="<c:url value='/${rc.locale.language}/search/results/error'/>" rel="shadowbox;height=350;width=450" ><fmt:message key="search.result.send.error"/></a>
+		                   <a href="<c:url value='/${rc.locale.language}/search/results/error'/>" rel="shadowbox;height=300;width=400" ><fmt:message key="search.result.send.error"/></a>
               			</p>
               			<div class="caja_compartir" id="caja_compartir_${status.count}" style="display:none">
               				
@@ -364,7 +364,7 @@ new TWTR.Widget({
 			<li><fmt:message key="search.field.example.2"/></li>
 			<li><fmt:message key="search.field.example.3"/></li>
 			<li><fmt:message key="search.field.example.4"/></li>
-			<li><span style="font-size:small;font-style: italic;"><fmt:message key="search.field.example.5"/></span></li>
+			<li><span style="font-size:11px;"><fmt:message key="search.field.example.5"/></span></li>
 		</ul>
 
 	</div>
