@@ -5,7 +5,7 @@ body {
  background:#FFF;
 }
 a {
-	color:#2c5902;
+	color:#518DCA;
 }
 a:hover {
 	text-decoration:none;
@@ -27,8 +27,8 @@ a:active {
 }
 /*Menu izquierda */
 #nav {
-	margin-left:15px;
-}
+	
+	}
 #nav ul{
 
 }
@@ -43,10 +43,21 @@ a:active {
 #nav ul li a:hover{
 	text-decoration:underline;
 }
-#nav ul li.red{
-	background:url(../img/ico_maps.png) no-repeat left 2px;
+#nav ul li {
+	padding-left:30px;
+}
+#nav ul li.red {
+	padding-left:0;
 }
 
+#nav ul li.red a{
+	background:url(../img/ikasgida_logo.jpg) no-repeat left top;
+	height:61px;
+	width:190px;
+	text-indent:-1000px;
+	display:block;
+	margin:auto;
+	}
 #nav ul li.todo{
 	cursor:pointer;
 	background:url(../img/todo.png) no-repeat left 2px;
@@ -69,18 +80,13 @@ font-size:1.1em;
 #nav ul li.guiada{
 	background:url(../img/ico_lupa_verde.png) no-repeat left 2px;
 }
-/*#nav ul li.avanzada{
-	background:url(../img/ico_lupa_verde.png) no-repeat left 2px;
-}
-#nav ul li.cursos{
-	background:url(../img/ico_mano.png) no-repeat left 1px;
-}*/
+
 .margin_home {
 margin-top:15px;
 }
 /* Twitter*/
 .conten_twitter {
-	margin:130px auto 0;
+	margin:20px auto 0;
 	width:199px;
 }
 /*Contenido central */
@@ -108,7 +114,7 @@ padding:0 25px 25px 25px;
 	font-size:0.75em;
 	float:left;
 	width:auto;
-	margin:15px 0 0 25px;
+	margin:6px 0 0 15px;
 	*width:250px;
 }
 .conten_margin_top .txt_ejemplo {
@@ -117,12 +123,12 @@ padding:0 25px 25px 25px;
 }
 .txt_mediador {
 	border-top:1px solid #ddd;
-	margin-top:10px;
+	margin-top:10px!important;
 	padding-top:10px;
 	font-size:0.9em;
 }
 .conten_margin_top .txt_mediador {
-	margin-top:380px;
+	margin-top:220px!important;
 }
 /*Estilos caja buscador */ 
 .buscador_general {
@@ -132,7 +138,8 @@ padding:0 25px 25px 25px;
 	display:none;
 }
 .buscador_general input[type="text"] {
-	width:100%;
+	width:673px;
+	*width:672px;
 	height:20px;
 	padding:5px;
 	border-width:1px;
@@ -140,33 +147,36 @@ padding:0 25px 25px 25px;
 	border-style:solid;
 }
 .buscador_general input[type="submit"] {
-	background:url(../img/fondo_submit.gif) repeat-x left top;
+	background:url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #CCCCCC;
 	height:32px;
 	width:65px;
 	padding:5px;
-	border:1px solid #ccc;
+	border:1px solid #5E5C5C;
 	position:absolute;
 	top:0;
 	*top:1px;
 	right:1px;
 	cursor:pointer;
+	border-radius:5px;
+	font-family:Arial, Helvetica, sans-serif;
+	
 }
 .buscador_general input[type="submit"]:active {
-	background:url(../img/fondo_submit_hover.gif) repeat-x left top;
+	background:url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 70% #CCCCCC;
 }
 
 /*Buscador página resultados */
 #buscador_top {
 	overflow:hidden;
-	background:url(../img/fondo_verde.gif) repeat-x left 6px;
+	/*background:url(../img/fondo_verde.gif) repeat-x left 6px;*/
 	margin:0 15px 10px 6px;
 }
 #buscador_top a{
 	float:left;
 }
 #buscador_top .buscador_general {
-	background:url(../img/verde_buscador_right.gif) no-repeat right 6px;
-	margin-top:14px;
+	/*background:url(../img/verde_buscador_right.gif) no-repeat right 6px;*/
+	margin-top:12px;
 	margin-left:13px;
 	float:left;
 }
@@ -177,27 +187,35 @@ padding:0 25px 25px 25px;
 	box-shadow:0px 0px 2px #B1B1B1 inset;
 }
 .fin_caja {
-	background:url(../img/verde_buscador_right.gif) no-repeat left 6px;
+	/*background:url(../img/verde_buscador_right.gif) no-repeat left 6px;*/
 	width:14px;
 	height:55px;
 	float:right;
 }
 #conten_central h2 {
-	font-size:1.1em;
+	font-size:13px;
 	padding-bottom:3px;
 }
 
 #conten_central > ul {
-	width:550px;
+	/*width:550px;*/
 	line-height:1.1em;
 	overflow:hidden;
 	margin-bottom:5px;
 }
 #conten_central > ul li {
-	margin-bottom:10px;
+	border-bottom: 1px solid #DDDDDD;
+    padding-bottom: 6px;
+    padding-top: 6px;
+	padding-left:10px;
 }
+#conten_central > ul li:hover {
+	background:#f3f2f2;
+	}
 #conten_central p{
 	font-size:0.9em;
+	line-height: 1.3em;
+    margin: 5px 0;
 }
 .barra_enlaces {
 	margin-top:5px;
@@ -207,7 +225,7 @@ padding:0 25px 25px 25px;
 	color:#86a00a;
 }
 .barra_enlaces a {
-	color:#86a00a;
+	color:#518DCA;
 	margin:0 3px;
 	text-decoration:underline;
 }
@@ -233,7 +251,7 @@ a.envia_mail {
 }
 /*Caja compartir */
 .caja_compartir {
-	margin:15px 15px 5px 15px;
+	margin:15px 5px 5px;
 	display:none;
 }
 .caja_compartir a{
@@ -266,6 +284,15 @@ a.envia_mail {
 	vertical-align:bottom;
 	margin-right:4px;
 }
+.caja_compartir table {
+	border-top:1px solid #518DCA;
+	border-bottom:1px solid #518DCA;
+	background:#FFF;
+	width:627px;
+}
+.caja_compartir table td{
+	text-align:center;
+	}
 /*Paginado */
 .hiru_paginado {
 	width:auto;
@@ -273,12 +300,13 @@ a.envia_mail {
 	*margin:10px 10px 20px 50px;
 }
 #conten_central .hiru_paginado ul{
-	background:url(../img/hirubila_pag.png) no-repeat left 2px;
-	padding-left:125px;
+	background:url(../img/hirubila_pag.png) no-repeat left top;
+	padding-left:95px;
 	width:auto;
-	line-height:1.2em;
+	line-height:1.3em;
 	*height:35px;
 	overflow:hidden;
+	font-size:12px;
 }
 #conten_central .hiru_paginado li{
 	float:left;
@@ -310,9 +338,9 @@ a.envia_mail {
 	padding:0;
 }
 .formu_envia_mail form{
-	border:4px solid #87A00A;
+	/*border:2px solid #518DCA;*/
 	background:#FFF;
-	font-size:0.9em;
+	font-size:0.8em;
 	margin:0;
 	padding:0;
 }
@@ -368,7 +396,7 @@ a.envia_mail {
 	line-height:2.4em;
 	padding-left:15px;
 	font-weight:bold;
-	background:#C0D25A;
+	background:#BBDCFF;
 }
 /*Búsqueda guiada */
 .busqueda_guiada, .red_mediadores {
@@ -577,7 +605,7 @@ a.envia_mail {
 .red_mediadores h2{
 	font-size:1.2em;
 	font-weight:bold;
-	color:#d35527;
+	color:#EDAC44;
 	text-align:justify;
 }
 .red_mediadores p{
@@ -595,7 +623,7 @@ a.envia_mail {
 }
 .conten_mapa {
 	float:left;
-	border:1px solid #9caf39;
+	border:1px solid #EDAC44;
 	width:600px;
 	height:415px;
 }

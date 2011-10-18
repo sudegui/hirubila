@@ -19,9 +19,16 @@
 			<googleapi.version>1.3.2-alpha</googleapi.version>
 	</properties>
 	
+	
   
   	<dependencies>
-  		
+  		<!-- Scala dependencies 
+  		<dependency>
+      		<groupId>org.scala-lang</groupId>
+      		<artifactId>scala-library</artifactId>
+      		<version>${scala.version}</version>
+    	</dependency>
+    	-->
   		<!-- Hirubila commons -->
 		  <dependency>
       		<groupId>com.m4f</groupId>
@@ -315,14 +322,14 @@
   
   <build>
 
-  	<plugins>
-  	 
+  	<plugins>	 
 		<plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
         <version>2.8</version>
         <configuration>
-        		<ajdtVersion>none</ajdtVersion> 		
+        		<ajdtVersion>none</ajdtVersion>
+        		<downloadSources>true</downloadSources>
                 <additionalBuildcommands>                    
                         <buildCommand>
                                 <name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
@@ -336,6 +343,11 @@
                         <buildCommand>
                                 <name>com.google.appengine.eclipse.core.enhancerbuilder</name>
                         </buildCommand>
+                         <!--  
+                         <buildCommand>
+                         		<name>ch.epfl.lamp.sdt.core.scalabuilder</name>
+                         </buildCommand>
+                         -->
                 </additionalBuildcommands>
                 <additionalProjectnatures>
                         <projectnature>org.eclipse.jdt.core.javanature</projectnature>
@@ -361,6 +373,8 @@
         </configuration>
 		</plugin>
 		
+		
+      
 		<plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
@@ -383,7 +397,10 @@
           </plugin>
           
 	</plugins>
+	
 	<outputDirectory>${basedir}/src/main/webapp/WEB-INF/classes</outputDirectory>
   </build>
+  
+  
   
 </project>

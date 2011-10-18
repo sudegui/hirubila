@@ -26,8 +26,7 @@
 		#dialog ul{
 			list-style-type: square;
 			font-family:"Arial", Helvetica, sans-serif;
-			font-size:medium;
-			margin-top:5px; 
+			font-size:11px;
 			padding-left:2%;
 		}
 		
@@ -37,15 +36,15 @@
 	
 		
 		.button, .button:visited { /* botones genéricos */
-  			background: #222 url(<c:url value='/static/search/img/overlay.png'/>) repeat-x;
+  			/*background: #222 url(<c:url value='/static/search/img/overlay.png'/>) repeat-x;*/
   			display: inline-block;
   			padding: 5px 10px 6px;
   			color: #FFF;
   			text-decoration: none;
   			-moz-border-radius: 6px;
   			-webkit-border-radius: 6px;
-  			-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
-  			-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  			/*-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  			-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);*/
   			text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
   			border-bottom: 1px solid rgba(0,0,0,0.25);
   			position: relative;
@@ -87,25 +86,26 @@
   			padding: 8px 14px 9px;
 		}
 		
-		.yellow.button, .yellow.button:visited { background-color: #ccc902; }
-		.yellow.button:hover{ background-color: #FC9200; }
+		.yellow.button, .yellow.button:visited { background-color: #518DCA; }
+		.yellow.button:hover{ background-color: #9FAF55; }
 		
 		blockquote {
-  			font: 14px/20px italic Times, serif;
   			padding: 8px;
-  			background-color: #faebbc;
-  			border-top: 1px solid #e1cc89;
-  			border-bottom: 1px solid #e1cc89;
-  			margin: 5px;
-  			background-position: top left;
-  			background-repeat: no-repeat;
-  		}
+  			background-color: #518DCA;
+ 			border: 1px solid #518DCA;
+  			margin-bottom: 5px;
+  			border-radius:5px;
+  			}
   		
   		blockquote span {
      		display: block;
      		background-repeat: no-repeat;
      		background-position: bottom right;
-   		}
+     		font-family: arial, helvetica, sans-serif;
+     		font-size:11px;
+     		line-height:12px;
+     		color:#FFF;
+     			}
    
 	</style>
 </head>
@@ -161,7 +161,9 @@
 		    	<ul>
 		    		
 		        	<li class="red">
-		           	<a href="<c:url value='/${rc.locale.language}/search/mediators'/>"><fmt:message key="search.mediators.net"/></a>
+		        	
+		           	<a href="http://www.hiru.com/mapa-de-servicios-de-mediacion" target="_blank"><fmt:message key="search.mediators.net"/></a>
+		           	
 		            </li>
 		            
 		        </ul>
@@ -172,7 +174,7 @@
     	<!--Caja twitter con los términos de búsqueda "Formación País Vasco"-->
     		
     		<div class="conten_twitter">
-    			<blockquote><span>  <fmt:message key="search.home.twitter.hashtags.title"/> <fmt:message key="search.home.twitter.hashtags"/>  </span></blockquote>
+    			<blockquote><span>  <fmt:message key="search.home.twitter.hashtags.title"/> <strong><fmt:message key="search.home.twitter.hashtags.formatted"/> </strong> </span></blockquote>
     			
     			<script src="http://widgets.twimg.com/j/2/widget.js"></script>
 				<script>
@@ -187,13 +189,13 @@
 				  height: 300,
 				   theme: {
 				    shell: {
-				      background: '#daeb7c',
-				      color: '#2c5902'
+				      background: '#518DCA',
+				      color: '#FFF'
 				    },
 				    tweets: {
 				      background: '#ffffff',
 				      color: '#757475',
-				      links: '#2c5902'
+				      links: '#518DCA'
 				    }
 				  },
 				  features: {
@@ -232,7 +234,7 @@
             </p>
 	        </form:form>
 	        <p class="txt_mediador"><fmt:message key="search.footer.message.part1"/> 
-	        	<a href="<c:url value='/${rc.locale.language}/search/mediators'/>"><fmt:message key="search.footer.message.part2"/></a>.
+	        	<a href="http://www.hiru.com/mapa-de-servicios-de-mediacion" target="_blank"><fmt:message key="search.footer.message.part2"/></a>.
 	        </p>
 	    </div>
 	</div>
@@ -244,7 +246,7 @@
 			<li><fmt:message key="search.field.example.2"/></li>
 			<li><fmt:message key="search.field.example.3"/></li>
 			<li><fmt:message key="search.field.example.4"/></li>
-			<li><span style="font-size:small;font-style: italic;"><fmt:message key="search.field.example.5"/></span></li>
+			<li><span style="font-size:11px;"><fmt:message key="search.field.example.5"/></span></li>
 		</ul>
 
 	</div>
