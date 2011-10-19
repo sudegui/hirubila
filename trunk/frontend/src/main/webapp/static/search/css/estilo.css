@@ -14,7 +14,9 @@ a:active {
 	position:relative;
 	top:1px;
 }
-
+a img {
+	border:none;
+}
 #contenedor { 
 	width:940px;
 	margin:20px auto;
@@ -155,7 +157,7 @@ padding:0 25px 25px 25px;
 	position:absolute;
 	top:0;
 	*top:1px;
-	right:1px;
+	right:0;
 	cursor:pointer;
 	border-radius:5px;
 	font-family:Arial, Helvetica, sans-serif;
@@ -179,9 +181,10 @@ padding:0 25px 25px 25px;
 	margin-top:12px;
 	margin-left:13px;
 	float:left;
+	width:690px;
 }
 #buscador_top .buscador_general input[type="text"]{
-	width:690px;
+	width:610px;
 	-moz-box-shadow:0px 0px 2px #B1B1B1 inset;
 	-webkit-box-shadow:0px 0px 2px #B1B1B1 inset;
 	box-shadow:0px 0px 2px #B1B1B1 inset;
@@ -195,6 +198,8 @@ padding:0 25px 25px 25px;
 #conten_central h2 {
 	font-size:13px;
 	padding-bottom:3px;
+	padding-left:16px;
+	background:url("../img/lista_right.png") no-repeat scroll left 2px transparent;
 }
 
 #conten_central > ul {
@@ -289,9 +294,11 @@ a.envia_mail {
 	border-bottom:1px solid #518DCA;
 	background:#FFF;
 	width:627px;
+	
 }
 .caja_compartir table td{
 	text-align:center;
+	width:125px\9;
 	}
 /*Paginado */
 .hiru_paginado {
@@ -582,37 +589,44 @@ a.envia_mail {
 
 /*red mediadores */
 .red_mediadores h1 {
-	font-size:1.2em;
+	/*font-size:1.2em;
 	font-weight:bold;
 	padding:10px 10px 10px 35px;
 	background:#c0d25a url(../img/ico_mapas.png) no-repeat 15px 50%;
-	margin:0 10px;
+	margin:0 10px;*/
+	margin-top:0;
+	margin-bottom:0;
+	text-align:center;
 }
 .detalle_busqueda h1 {
 	background-image:none;	
 	padding:10px;
 }
 .content_red_texto {
-	overflow:hidden;
-	margin:0 10px;
+	background:#FFFAED;
+    border: 1px solid #D2890D;
+    margin: 0 10px;
+    overflow: hidden;
+    padding: 0 12px;
 }
 .red_texto {
 	float:left;
-	width:450px;
-	margin-top:20px;
+	width:435px;
 	padding:1px 0;
 }
 .red_mediadores h2{
 	font-size:1.2em;
 	font-weight:bold;
-	color:#EDAC44;
+	color:#D2890D;
 	text-align:justify;
+	*padding-top:10px;
 }
 .red_mediadores p{
 	font-size:0.9em;
 	margin-top:15px;
 	line-height:1.2em;
 	text-align:justify;
+	*margin-bottom:15px;
 }
 .red_texto + .red_texto{
 	float:right;
@@ -623,21 +637,22 @@ a.envia_mail {
 }
 .conten_mapa {
 	float:left;
-	border:1px solid #EDAC44;
 	width:600px;
 	height:415px;
 }
 
 .caja_red_dcha {
 	float:right;
-	margin-top:25px;
 	width: 300px;
 	}
 .caja_red_dcha h3 {
-	text-align:right;
+	text-align:left;
 	font-weight:bold;
 	font-size:1.2em;
 	margin-bottom:10px;
+	margin-top:0;
+	border-bottom:1px solid #D2890D;
+	color:#D2890D;
 }
 .caja_red_dcha select {
 	width:100%;
