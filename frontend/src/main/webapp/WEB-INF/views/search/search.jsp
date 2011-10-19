@@ -162,7 +162,7 @@
 		    		
 		        	<li class="red">
 		        	
-		           	<a href="http://www.hiru.com/mapa-de-servicios-de-mediacion" target="_blank"><fmt:message key="search.mediators.net"/></a>
+		           	<a href="<c:url value='/${rc.locale.language}/search/mediators/'/>"><fmt:message key="search.mediators.net"/></a>
 		           	
 		            </li>
 		            
@@ -234,7 +234,7 @@
             </p>
 	        </form:form>
 	        <p class="txt_mediador"><fmt:message key="search.footer.message.part1"/> 
-	        	<a href="http://www.hiru.com/mapa-de-servicios-de-mediacion" target="_blank"><fmt:message key="search.footer.message.part2"/></a>.
+	        	<a href="<c:url value='/${rc.locale.language}/search/mediators/'/>"><fmt:message key="search.footer.message.part2"/></a>.
 	        </p>
 	    </div>
 	</div>

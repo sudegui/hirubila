@@ -8,7 +8,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>${mediatonService.name} | <fmt:message key="search.mediators.net.message.part1"/></title>
-	<link href="<c:url value='/static/search/css/reset.css'/>" rel="stylesheet" type="text/css" />
 	<link href="<c:url value='/static/search/css/estilo.css'/>" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="<c:url value='/static/search/js/jquery-1.5.1.js'/>"></script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -58,7 +57,8 @@
 
 <body>
 <div id="contenedor" class="red_mediadores">
-    <h1><fmt:message key="search.mediators.net.header"/></h1>
+    <h1><!--<img alt="Hirubila ikasgida" src="/static/search/img/logo_ikasgida_es.jpg">--><img src="<c:url value='/static/search/img/logo_ikasgida_${rc.locale.language}.jpg'/>" alt="<fmt:message key='search.site.title'/>"/>
+      <!-- <fmt:message key="search.mediators.net.header"/>--></h1>
      <div class="content_red_texto">
         <div class="red_texto">
             <h2>${mediatonService.name}</h2>

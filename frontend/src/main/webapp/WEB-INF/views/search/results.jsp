@@ -232,7 +232,7 @@ $(function() {
     </div>
     <!--Caja twitter con los términos de búsqueda "Formación País Vasco"-->
     <div class="conten_twitter">
-    	<blockquote><span>  <fmt:message key="search.home.twitter.hashtags.title"/> <strong><fmt:message key="search.home.twitter.hashtags"/></strong> </span></blockquote>
+    	<blockquote><span>  <fmt:message key="search.home.twitter.hashtags.title"/> <strong><fmt:message key="search.home.twitter.hashtags.formatted"/></strong> </span></blockquote>
     	<script src="http://widgets.twimg.com/j/2/widget.js"></script>
 <script>
 new TWTR.Widget({
