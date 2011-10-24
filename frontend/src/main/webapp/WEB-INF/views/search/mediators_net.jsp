@@ -85,14 +85,8 @@
     <!--<fmt:message key="search.mediators.net.header"/>-->
     </h1>
      <div class="content_red_texto">
-        <div class="red_texto">
             <h2><fmt:message key="search.mediators.net.question.one"/></h2>
             <p><fmt:message key="search.mediators.net.answer.one"/></p>
-        </div> 
-        <div class="red_texto">
-            <h2><fmt:message key="search.mediators.net.question.two"/></h2>
-            <p><fmt:message key="search.mediators.net.answer.two"/></p>
-        </div> 
      </div>
    	<div class="conten_red_principal">
           <div class="conten_mapa">
