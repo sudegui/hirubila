@@ -129,7 +129,7 @@ public class TaskController extends BaseController  {
 			 * com.m4f.utils.feeds.aop.ParserHypervisor#registerProviderError
 			 * VALIDACI�N DE ESTRUCTURA DEL XML.
 			 */
-			List<School> schools = schoolsParser.getSchools(dump, provider);
+			List<School> schools = schoolsParser.getSchools(provider);
 			/**
 			 * Proceso que realiza el volcado de los centros parseados al modelo de 
 			 * persistencia. Existe un aspecto creado para registrar posibles problemas
