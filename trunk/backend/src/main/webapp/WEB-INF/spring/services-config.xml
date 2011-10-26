@@ -178,13 +178,14 @@
         </aop:aspect>
          
          
+         <!--  
          <aop:aspect ref="parserHypervisor">
          	<aop:pointcut id="schoolParseOperation" expression="target(com.m4f.utils.feeds.parser.ifc.ISchoolsParser) and args(dump,provider)" />
          	<aop:after-throwing pointcut-ref="schoolParseOperation" method="registerProviderError" throwing="ex" arg-names="dump,ex,provider"/>
          	<aop:pointcut id="courseParseOperation" expression="target(com.m4f.utils.feeds.parser.ifc.ICoursesParser) and args(dump,school)" />
          	<aop:after-throwing pointcut-ref="courseParseOperation" method="registerSchoolError" throwing="ex" arg-names="dump,ex,school"/>
          </aop:aspect>
-         
+         -->
         
          <aop:aspect ref="dumperHypervisor">
          	<aop:pointcut id="dumpSchoolOperation" expression="execution(* com.m4f.utils.feeds.parser.ifc.DumperCapable.dumpSchool(..)) and args(dump,school,locale,provider,..)" />

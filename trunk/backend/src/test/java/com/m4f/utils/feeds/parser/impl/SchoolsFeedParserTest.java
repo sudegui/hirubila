@@ -25,11 +25,10 @@ public class SchoolsFeedParserTest {
 	@Test
 	public void getSchoolsTest() throws Exception {
 		Provider provider = new Provider();
-		Dump dump = new Dump();
 		provider.setId(1L);
 		provider.setName("Proveedor de prueba de Debabarrena");
 		provider.setFeed("http://www.zerikasi.com/feed/ikasgida/debabarrena.php");
-		List<School> schools = this.schoolsFeedParser.getSchools(dump, provider);
+		List<School> schools = this.schoolsFeedParser.getSchools(provider);
 		Assert.assertTrue(schools.size() > 0);
 	}
 }

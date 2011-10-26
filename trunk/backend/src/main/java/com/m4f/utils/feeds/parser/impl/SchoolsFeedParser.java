@@ -36,7 +36,7 @@ public class SchoolsFeedParser implements ISchoolsParser {
 	}
 
 	@Override
-	public List<School> getSchools(Dump dump, Provider provider) throws ParserConfigurationException, 
+	public List<School> getSchools(Provider provider) throws ParserConfigurationException, 
 		SAXException, IOException, Exception {
 		byte[] content = this.contentAcquirer.getContent(new URI(provider.getFeed()));
 		InputSource inputFeed = new InputSource(new ByteArrayInputStream(content));
