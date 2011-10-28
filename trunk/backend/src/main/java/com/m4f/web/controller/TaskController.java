@@ -72,7 +72,7 @@ public class TaskController extends BaseController  {
 				LOGGER.severe("Dump with id " + dumpId + " doesn's exist.");
 				return "common.error";
 			}
-			Map<String, List<Course>> parsedCourses = coursesParser.getCourses(dump, school);
+			Map<String, List<Course>> parsedCourses = coursesParser.getCourses(school);
 			this.storeCourses(dump, school, parsedCourses);
 		} catch (ParserConfigurationException e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
