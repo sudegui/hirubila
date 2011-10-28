@@ -48,7 +48,7 @@ public class CoursesFeedParser implements ICoursesParser {
 	}
 	
 	@Override
-	public Map<String, List<Course>> getCourses(Dump dump, School school) 
+	public Map<String, List<Course>> getCourses(School school) 
 		throws ParserConfigurationException, SAXException, IOException {
 		String uriFeed = school.getFeed();
 		URL urlFeed = new URL(uriFeed);
