@@ -16,7 +16,7 @@
       <datanucleus.version>1.1.5</datanucleus.version>
       <spring.version>3.0.5.RELEASE</spring.version>
       <version.aspectj>1.6.5</version.aspectj>
-      <gae.version>1.5.2</gae.version>
+      <gae.version>1.5.3</gae.version>
 	</properties>
 	
 	<repositories>
@@ -75,6 +75,14 @@
 			<version>4.5</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- Spring testing libs -->
+		<dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.version}</version>
+      <scope>test</scope>
+    </dependency>
 		
 		<dependency>
 			<groupId>org.slf4j</groupId>
