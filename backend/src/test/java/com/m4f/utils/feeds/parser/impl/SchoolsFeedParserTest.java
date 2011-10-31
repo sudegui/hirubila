@@ -7,28 +7,38 @@ import org.junit.Ignore;
 import org.junit.Assert;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
+import com.m4f.business.service.ifc.I18nProviderService;
+import com.m4f.business.service.ifc.I18nSchoolService;
+import com.m4f.test.spring.GaeSpringContextTest;
 import com.m4f.utils.content.ifc.IAcquirer;
 import com.m4f.utils.content.impl.GaeHttpAcquirer;
-import com.m4f.utils.feeds.events.model.Dump;
+import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import java.util.Locale;
 
-@Ignore
-public class SchoolsFeedParserTest {
+public class SchoolsFeedParserTest extends GaeSpringContextTest {
 	
-	private SchoolsFeedParser schoolsFeedParser;
+	@Autowired
+	private ISchoolsParser schoolsFeedParser;
+	@Autowired
+	protected I18nSchoolService schoolService;
+	@Autowired
+	protected I18nProviderService providerService;
 	
-	@Before
-	public void setUp() {
-		IAcquirer contentAcquirer = new GaeHttpAcquirer();
-		this.schoolsFeedParser = new SchoolsFeedParser(contentAcquirer);
-	}
+	
 	
 	@Test
 	public void getSchoolsTest() throws Exception {
-		Provider provider = new Provider();
+		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+		Provider provider = providerService.createProvider();
 		provider.setId(1L);
 		provider.setName("Proveedor de prueba de Debabarrena");
 		provider.setFeed("http://www.zerikasi.com/feed/ikasgida/debabarrena.php");
+		providerService.save(provider, new Locale("es"));
 		List<School> schools = this.schoolsFeedParser.getSchools(provider);
 		Assert.assertTrue(schools.size() > 0);
 	}
+	
 }

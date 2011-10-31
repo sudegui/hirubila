@@ -12,7 +12,7 @@ import scala.collection.mutable.Buffer
 @RequestMapping(Array("/school"))
 class SchoolController extends BaseController {
 	
-  @RequestMapping(value=Array("/feed"), method=Array(GET,POST)) 
+  @RequestMapping(value=Array("/feed"), method=Array(GET,POST))
   @ResponseStatus(HttpStatus.OK)
   def loadFeed(@RequestParam(value="id", required=true) schoolId:Long) {
 	  var school:School = schoolService.getSchool(schoolId, null)

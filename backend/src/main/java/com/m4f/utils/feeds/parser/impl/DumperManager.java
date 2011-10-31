@@ -41,8 +41,8 @@ public class DumperManager implements DumperCapable {
 	}
 	
 	@Override
-	public List<FieldError> dumpSchool(Dump dump, 
-			School school, Locale locale, Provider provider) throws Exception {
+	public List<FieldError> dumpSchool(Dump dump, School school, Locale locale, 
+			Provider provider) throws Exception {
 		DataBinder dataBinder = new DataBinder(school);
 		dataBinder.setValidator(validator);
 		dataBinder.validate();

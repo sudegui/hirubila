@@ -27,16 +27,22 @@ class ProviderController extends BaseController {
   @ResponseStatus(HttpStatus.OK)
   def base{LOGGER.severe("hola " + this.providerService.getAllProviderIds())}
   
-  @RequestMapping(value=Array("/feed"), method=Array(GET,POST)) 
+  @RequestMapping(value=Array("/loadschools"), method=Array(GET,POST)) 
   @ResponseStatus(HttpStatus.OK)
-  def loadFeed(@RequestParam(value="id",required=true) providerId:Long) { 
+  def loadSchools(@RequestParam(value="id",required=true) providerId:Long) { 
 	val provider = this.providerService.getProviderById(providerId, null)
     val schools:Buffer[School] =  asBuffer(schoolsParser.getSchools(provider))
     var locales:Buffer[Locale] = asBuffer(configurationService.getLocales())
-    locales.foreach((locale: Locale) => storeSchools(null, provider, schools, locale))
-    var storedSchools:Buffer[School] = asBuffer(schoolService.getSchoolsByProvider(provider.getId(), null, null))
+    locales.foreach((locale: Locale) => storeSchools(null, provider, schools, locale))  
+  }
+  
+ 
+  @RequestMapping(value=Array("/loadcourses"), method=Array(GET,POST))
+  def loadCourses(@RequestParam(value="id",required=true) providerId:Long) {
+	var storedSchools:Buffer[School] = asBuffer(schoolService.getSchoolsByProvider(providerId, null, null))
     storedSchools.foreach((school:School) => loadCourses(school))
   }
+  
   
   def storeSchools(dump:Dump, provider:Provider, schools:Buffer[School], locale:Locale) {
 	schools.foreach((school: School) => dumperManager.dumpSchool(null, school, locale, provider))
@@ -45,11 +51,14 @@ class ProviderController extends BaseController {
   def loadCourses(school:School) {
 	  var params: java.util.Map[String, String] = new java.util.HashMap[String, String]()
 	  if((school.getFeed()!=null) && (!"".equals(school.getFeed()))) {
-		params.put("schoolId", school.getId().toString());
-		workerFactory.createWorker().addWork(
-			configurationService.getGlobalConfiguration().SCHOOL_QUEUE, "/task/updatecourses", params)
+		var parsedCourses: scala.collection.mutable.Map[String, java.util.List[Course]]  = coursesParser.getCourses(school)
+	    parsedCourses.foreach{case (key, value) => storeCourses(new java.util.Locale(key),school,value)}
 	  }
   }
   
+  def storeCourses(locale:java.util.Locale, school:School, courses: Buffer[Course]) {
+    var provider: Provider = providerService.getProviderById(school.getProvider(), locale)
+	courses.foreach((course:Course) => dumperManager.dumpCourse(null, course, locale, school, provider))				
+  }
     
 }
