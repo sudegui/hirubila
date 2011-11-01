@@ -22,15 +22,15 @@ import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
-import com.m4f.utils.content.ifc.IAcquirer;
+import com.m4f.utils.content.ifc.ContentAcquirer;
 
 public class SchoolsFeedParser implements ISchoolsParser {
 	
-	private IAcquirer contentAcquirer;
+	private ContentAcquirer contentAcquirer;
 	private List<School> schools = new ArrayList<School>();
 	
 
-	public SchoolsFeedParser(IAcquirer cAcquirer) {
+	public SchoolsFeedParser(ContentAcquirer cAcquirer) {
 		super();
 		this.contentAcquirer =  cAcquirer;
 	}

@@ -2,9 +2,9 @@ package com.m4f.utils.content.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import com.m4f.utils.content.ifc.IAcquirer;
+import com.m4f.utils.content.ifc.ContentAcquirer;
 
-public abstract class BaseAcquirer implements IAcquirer {
+public abstract class BaseAcquirer implements ContentAcquirer {
 
 	public byte[] getBytesFromInputStream(InputStream is) throws IOException {
 		// Get the size of the file

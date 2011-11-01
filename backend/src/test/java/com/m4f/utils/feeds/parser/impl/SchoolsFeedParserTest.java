@@ -10,7 +10,7 @@ import com.m4f.business.domain.School;
 import com.m4f.business.service.ifc.I18nProviderService;
 import com.m4f.business.service.ifc.I18nSchoolService;
 import com.m4f.test.spring.GaeSpringContextTest;
-import com.m4f.utils.content.ifc.IAcquirer;
+import com.m4f.utils.content.ifc.ContentAcquirer;
 import com.m4f.utils.content.impl.GaeHttpAcquirer;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
 import org.springframework.beans.factory.annotation.Autowired;

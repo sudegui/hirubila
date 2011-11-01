@@ -152,6 +152,8 @@
 		<constructor-arg index="0" ref="jdoDAO"/>
 	</bean>
 	
+	<context:component-scan base-package="com.m4f.utils.feeds.parser.aspect"/>
+	
    	<aop:aspectj-autoproxy/>
    
     <aop:config>

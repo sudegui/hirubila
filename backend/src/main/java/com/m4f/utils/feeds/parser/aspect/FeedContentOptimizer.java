@@ -7,7 +7,11 @@ import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.dao.ifc.DAOSupport;
 import com.m4f.utils.diff.xml.ifc.Differ;
 import com.m4f.utils.feeds.parser.model.FeedContent;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.AfterReturning;
 
+
+@Aspect
 public class FeedContentOptimizer {
 	
 	private String encoding = "UTF8";
@@ -19,6 +23,9 @@ public class FeedContentOptimizer {
 		this.DAO = DAO;
 	}
 	
+	@AfterReturning(
+	pointcut = "execution(* com.m4f.utils.content.ifc.ContentAcquirer.*(..))",
+	returning= "retVal")
 	public void optimize(URI source, byte[] retVal) {
 		try {
 			String newContent = new String(retVal, this.encoding);
@@ -28,7 +35,7 @@ public class FeedContentOptimizer {
 				if(this.differ.equals(newContent, oldContent)) {
 					retVal = this.createEmptyFeed();
 				} else {
-					
+					retVal = this.diff(newContent, oldContent);
 				}
 			} else {
 				persistContent = this.DAO.createInstance(FeedContent.class);
@@ -45,6 +52,11 @@ public class FeedContentOptimizer {
 	private byte[] createEmptyFeed() {
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><root/>";
 		return xml.getBytes();
+	}
+	
+	private byte[] diff(String newContent, String storeContent) {
+		String diff  = "";
+		return diff.getBytes();
 	}
 	
 	private FeedContent getStoreContent(URI source) {
