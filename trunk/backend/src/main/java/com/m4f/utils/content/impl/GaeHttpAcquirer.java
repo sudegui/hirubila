@@ -3,7 +3,7 @@ package com.m4f.utils.content.impl;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
-public class GaeHttpAcquirer extends BaseAcquirer {
+public class GaeHttpAcquirer extends BaseAcquirer{
 	
 	
 	private int timeout = 1000 * 10; // In milliseconds
