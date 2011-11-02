@@ -1,9 +1,10 @@
 package com.m4f.utils.content.ifc;
 
 import java.net.URI;
+import java.io.ByteArrayOutputStream;
 
 public interface ContentAcquirer {
 	
-	byte[] getContent(URI source) throws Exception;
+	ByteArrayOutputStream getContent(URI source) throws Exception;
 	
 }

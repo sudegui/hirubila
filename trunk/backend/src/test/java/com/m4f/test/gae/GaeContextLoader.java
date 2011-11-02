@@ -10,11 +10,14 @@ import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
 
 public class GaeContextLoader {
 	
-	private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
-		     new LocalDatastoreServiceTestConfig());
+	private LocalServiceTestHelper helper;
 	
 	@Before
 	public void setUp() {
+		LocalDatastoreServiceTestConfig datastore = new LocalDatastoreServiceTestConfig();
+		datastore.setNoStorage(false);
+		datastore.setStoreDelayMs(10);
+		helper =  new  LocalServiceTestHelper(datastore);
 		helper.setUp();		
 	}
 	
