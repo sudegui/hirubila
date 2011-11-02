@@ -38,7 +38,7 @@ public class SchoolsFeedParser implements ISchoolsParser {
 	@Override
 	public List<School> getSchools(Provider provider) throws ParserConfigurationException, 
 		SAXException, IOException, Exception {
-		byte[] content = this.contentAcquirer.getContent(new URI(provider.getFeed()));
+		byte[] content = this.contentAcquirer.getContent(new URI(provider.getFeed())).toByteArray();
 		InputSource inputFeed = new InputSource(new ByteArrayInputStream(content));
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 		SAXParser sp = spf.newSAXParser();

@@ -9,7 +9,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.datastore.Blob;
 
 @SuppressWarnings("serial")
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
@@ -20,7 +20,7 @@ public class FeedContent implements Serializable {
     private Key key;
 	
 	@Persistent
-	private Text content;
+	private Blob content;
 	
 	public Key getKey() {
 		return this.key;
@@ -31,12 +31,12 @@ public class FeedContent implements Serializable {
         this.key = key;
     }
 	
-    public Text getContent() {
-    	return this.content;
+    public byte[] getContent() {
+    	return this.content.getBytes();
     }
     
-    public void setContent(Text c) {
-    	this.content = c;
+    public void setContent(byte[] c) {
+    	this.content = new Blob(c);
     }
 
 }
