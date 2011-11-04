@@ -98,7 +98,10 @@
     	<constructor-arg index="1" ref="eventService"/>
     </bean>
        
-    
+    <!-- A service to store multilanguage entities into JDO model. -->
+    <bean id="parserService" class="com.m4f.utils.feeds.parser.service.impl.JDOParserServiceImpl">
+    	<constructor-arg index="0" ref="jdoDAO"/>
+    </bean>
     
     <!-- Configuration Service -->
 	<bean id="configuration" class="com.m4f.business.service.impl.AppConfigurationServiceImpl">
@@ -155,14 +158,11 @@
 	</bean>
 	
 	
-	<bean id="differ" class="com.m4f.utils.diff.xml.impl.XmlUnitDiffer"/>
+	<bean id="differ" class="com.m4f.utils.diff.xml.impl.JDOMDiffer"/>
 	
 	
 	<!-- Aspect -->
-	<bean id="contentOptimizerAspect" class="com.m4f.utils.feeds.parser.aspect.FeedContentOptimizer">
-		<constructor-arg index="0" ref="jdoDAO"/>
-		<constructor-arg index="1" ref="differ"/>
-	</bean>
+	<bean id="contentOptimizerAspect" class="com.m4f.utils.feeds.parser.aspect.FeedContentOptimizer"/>
 	
    
     <aop:config>

@@ -1,16 +1,16 @@
 package com.m4f.utils.feeds.parser.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -19,13 +19,12 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
 import com.google.appengine.api.datastore.Text;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.School;
 import com.m4f.business.domain.Topic;
+import com.m4f.utils.content.ifc.ContentAcquirer;
 import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
-import com.m4f.utils.feeds.events.model.Dump;
 
 public class CoursesFeedParser implements ICoursesParser {
 	
@@ -33,7 +32,7 @@ public class CoursesFeedParser implements ICoursesParser {
 	private Map<String, List<Course>> courses;
 	private List<Course> courses_es;
 	private List<Course> courses_eu;
-	
+	private ContentAcquirer contentAcquirer;
 	private List<SimpleDateFormat> dateFormatters = new ArrayList<SimpleDateFormat>();
 	
 	public CoursesFeedParser(List<String> dateFormats) {
@@ -49,16 +48,9 @@ public class CoursesFeedParser implements ICoursesParser {
 	
 	@Override
 	public Map<String, List<Course>> getCourses(School school) 
-		throws ParserConfigurationException, SAXException, IOException {
-		String uriFeed = school.getFeed();
-		URL urlFeed = new URL(uriFeed);
-		URLConnection connection = urlFeed.openConnection();
-		//El API fetch de appengine soporta como máximo un timeout de 10 segundos.
-		connection.setConnectTimeout(10000);
-		connection.setReadTimeout(10000);
-		connection.setAllowUserInteraction(false);         
-		connection.setDoOutput(true);
-		InputSource inputFeed = new InputSource(connection.getInputStream());
+		throws ParserConfigurationException, SAXException, IOException, Exception {
+		byte[] content = this.contentAcquirer.getContent(new URI(school.getFeed())).toByteArray();
+		InputSource inputFeed = new InputSource(new ByteArrayInputStream(content));
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 		SAXParser sp = spf.newSAXParser();
 		sp.parse(inputFeed, new CoursesFeedReader(school));
