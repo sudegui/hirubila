@@ -158,7 +158,7 @@ public class JdoDAO implements DAOSupport {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Collection<T> objs = new ArrayList<T>();
 		try {
-			 Query query = pm.newQuery(InternalUser.class,":p.contains(id)");
+			 Query query = pm.newQuery(clazz,":p.contains(id)");
 			 if((ids!=null)&&(ids.size()>0)) {
 				 objs.addAll((Collection<T>)query.execute(ids));
 			 }
