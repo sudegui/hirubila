@@ -2,13 +2,14 @@ package com.m4f.business.service.ifc;
 
 import java.util.List;
 import java.util.Locale;
-
+import java.util.Collection;
 import com.m4f.business.domain.School;
 
 public interface I18nSchoolService {
 	School createSchool();
 	List<School> getAllSchools(String ordering, Locale locale) throws Exception;
 	void save(School school, Locale locale) throws Exception;
+	void save(Collection<School> schools, Locale locale) throws Exception;
 	School getSchool(Long id, Locale locale) throws Exception;
 	School getSchoolByExternalId(String externalId, Locale locale);
 	List<School> getSchoolsByProvider(Long providerId, String ordering, Locale locale, int init, int end) throws Exception;

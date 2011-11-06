@@ -17,6 +17,7 @@ public interface I18nCourseService {
 	Collection<Course> getAllCourses(String ordering, Locale locale) throws Exception;
 	Collection<Course> getCourses(String ordering, Locale locale, int init, int end) throws Exception;
 	void save(Course course, Locale locale) throws Exception;
+	void save(Collection<Course> courses, Locale locale) throws Exception;
 	Course getCourse(Long id, Locale locale) throws Exception;
 	Course getCourseByExternalId(String externalId, Locale locale);
 	void erasure() throws Exception;

@@ -20,11 +20,27 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 	public CourseCatalog createCourseCatalog() {
 		return this.DAO.createInstance(CourseCatalog.class);
 	}
-
+	
+	@Override
+	@Cacheflush(cacheName="coursesCatalog")
+	public void save(CourseCatalog courseCatalog) throws Exception {
+		this.DAO.saveOrUpdate(courseCatalog);
+	}
+	
+	@Override
+	@Cacheflush(cacheName="coursesCatalog")
+	public void save(Collection<CourseCatalog> courses) throws Exception {
+		this.DAO.saveOrUpdateCollection(courses);
+	}
+	
 	@Override
 	@Cacheflush(cacheName="coursesCatalog")
 	public void delete(CourseCatalog course) throws Exception {
 		this.DAO.delete(course);
+	}
+	
+	public void delete(Collection<CourseCatalog> courses) throws Exception {
+		this.DAO.delete(courses);
 	}
 	
 	@Override
@@ -82,12 +98,6 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 		String params = "java.lang.String langParam, java.lang.Boolean reglatedParam";
 		return this.DAO.findEntitiesByRange(CourseCatalog.class, filter, params, 
 				new Object[]{locale.getLanguage(), reglated}, ordering, init, end);
-	}
-	
-	@Override
-	@Cacheflush(cacheName="coursesCatalog")
-	public void save(CourseCatalog courseCatalog) throws Exception {
-		this.DAO.saveOrUpdate(courseCatalog);
 	}
 	
 	@Override

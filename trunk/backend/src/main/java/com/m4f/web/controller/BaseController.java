@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import com.m4f.utils.feeds.parser.impl.SchoolStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.Validator;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import com.m4f.business.domain.Course;
+import com.m4f.business.domain.School;
 import com.m4f.business.service.ifc.I18nProviderService;
 import com.m4f.business.service.ifc.I18nMediationService;
 import com.m4f.utils.StackTraceUtil;
@@ -26,18 +28,17 @@ import com.m4f.utils.worker.WorkerFactory;
 import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.business.service.ifc.I18nSchoolService;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
+import com.m4f.utils.feeds.parser.ifc.IStorage;
 import com.m4f.utils.feeds.events.service.ifc.DumpService;
 import com.m4f.utils.feeds.events.service.ifc.EventService;
 import com.m4f.business.service.ifc.ICronTaskReportService;
 import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
-import com.m4f.business.service.ifc.I18nMediationService;
 import com.m4f.business.service.extended.ifc.I18nExtendedCourseService;
 import com.m4f.business.service.extended.ifc.I18nExtendedSchoolService;
 import com.m4f.business.service.extended.ifc.I18nInternalFeedService;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.business.service.ifc.I18nInboxService;
-import com.m4f.utils.feeds.parser.ifc.DumperCapable;
 
 @SessionAttributes(value={"langs"})
 public abstract class BaseController {
@@ -51,7 +52,9 @@ public abstract class BaseController {
 	protected IServiceLocator serviceLocator;*/
 	
 	@Autowired
-	protected DumperCapable dumperManager;
+	protected IStorage<School> schoolStorage;
+	@Autowired
+	protected IStorage<Course> courseStorage;
 	@Autowired
 	protected I18nInboxService inboxService;
 	@Autowired
