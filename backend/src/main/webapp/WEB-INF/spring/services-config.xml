@@ -10,6 +10,8 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 	
 	
+	<aop:aspectj-autoproxy/>
+	
 	<bean id="beanManager" class="com.m4f.utils.beans.BeanManager"/>
 	
 	<!-- MultiLanguage DAO -->
@@ -53,14 +55,6 @@
 		<constructor-arg index="0" ref="i18nDAO"/>
 	</bean>
 	
-	<bean id="dumperManager" class="com.m4f.utils.feeds.parser.impl.DumperManager" scope="prototype">
-		<constructor-arg index="0" ref="validator"/>
-		<constructor-arg index="1" ref="schoolService"/>
-		<constructor-arg index="2" ref="courseService"/>
-		<constructor-arg index="3" ref="catalogService"/>
-		<constructor-arg index="4" ref="beanManager"/>
-	</bean>
-	
 	<!-- NO multi-language DAO -->
 	<bean id="jdoDAO" class="com.m4f.utils.dao.impl.JdoDAO"/>
 	
@@ -96,7 +90,10 @@
     	<constructor-arg index="1" ref="eventService"/>
     </bean>
        
-    
+    <!-- A service to store multilanguage entities into JDO model. -->
+    <bean id="parserService" class="com.m4f.utils.feeds.parser.service.impl.JDOParserServiceImpl">
+    	<constructor-arg index="0" ref="jdoDAO"/>
+    </bean>
     
     <!-- Configuration Service -->
 	<bean id="configuration" class="com.m4f.business.service.impl.AppConfigurationServiceImpl">
@@ -136,13 +133,9 @@
     	<constructor-arg index="1" ref="beanManager"/>
     </bean>
     
-    <!-- Interceptor to control any feed parse operation. -->
-    <bean id="parserHypervisor" class="com.m4f.utils.feeds.aop.ParserHypervisor">
-    	<constructor-arg index="0" ref="eventService"/>
-    </bean>
     
-    <!-- Interceptor to control any entity dump process from a feed capture process. -->
-    <bean id="dumperHypervisor" class="com.m4f.utils.feeds.aop.DumperHypervisor"/>
+    
+    
     
     <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
     <bean id="cacheInterceptor" class="com.m4f.utils.cache.CacheInterceptor"/>
@@ -152,8 +145,26 @@
 		<constructor-arg index="0" ref="jdoDAO"/>
 	</bean>
 	
-   	<aop:aspectj-autoproxy/>
-   
+	
+	<bean id="differ" class="com.m4f.utils.diff.xml.impl.JDOMDiffer"/>
+	
+	<bean id="schoolStorage" class="com.m4f.utils.feeds.parser.impl.SchoolStore" scope="prototype"/>
+	<bean id="courseStorage" class="com.m4f.utils.feeds.parser.impl.CourseStore" scope="prototype"/>
+	
+	<!--  
+		<constructor-arg index="0" ref="validator"/>
+		<constructor-arg index="1" ref="schoolService"/>
+		<constructor-arg index="2" ref="courseService"/>
+		<constructor-arg index="3" ref="catalogService"/>
+		<constructor-arg index="4" ref="beanManager"/>
+	</bean>
+	-->
+	<!-- Aspect -->
+	<bean id="contentOptimizerAspect" class="com.m4f.utils.feeds.parser.aspects.FeedContentOptimizer"/>
+	<bean id="parserHypervisor" class="com.m4f.utils.feeds.parser.aspects.ParserHypervisor"/>
+   <!-- Interceptor to control any entity dump process from a feed capture process. -->
+    <bean id="dumperHypervisor" class="com.m4f.utils.feeds.aop.DumperHypervisor"/>
+    
     <aop:config>
     	
         <aop:aspect ref="multilanguageTranslator">           
@@ -179,13 +190,6 @@
          
          
          <!--  
-         <aop:aspect ref="parserHypervisor">
-         	<aop:pointcut id="schoolParseOperation" expression="target(com.m4f.utils.feeds.parser.ifc.ISchoolsParser) and args(dump,provider)" />
-         	<aop:after-throwing pointcut-ref="schoolParseOperation" method="registerProviderError" throwing="ex" arg-names="dump,ex,provider"/>
-         	<aop:pointcut id="courseParseOperation" expression="target(com.m4f.utils.feeds.parser.ifc.ICoursesParser) and args(dump,school)" />
-         	<aop:after-throwing pointcut-ref="courseParseOperation" method="registerSchoolError" throwing="ex" arg-names="dump,ex,school"/>
-         </aop:aspect>
-         
         
          <aop:aspect ref="dumperHypervisor">
          	<aop:pointcut id="dumpSchoolOperation" expression="execution(* com.m4f.utils.feeds.parser.ifc.DumperCapable.dumpSchool(..)) and args(dump,school,locale,provider,..)" />

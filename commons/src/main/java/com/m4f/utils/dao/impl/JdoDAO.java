@@ -62,6 +62,18 @@ public class JdoDAO implements DAOSupport {
 	}
 	
 	@Override
+	public <T> void saveOrUpdateCollection(Collection<T> objs) throws Exception {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+        try {
+        	pm.makePersistentAll(objs);
+        } catch(Exception e) {
+        	throw e;
+        } finally {
+            pm.close();
+        }
+	}
+	
+	@Override
 	public <T> void delete(T object) throws Exception {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try {

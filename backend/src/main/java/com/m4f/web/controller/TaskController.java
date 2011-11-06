@@ -338,7 +338,7 @@ public class TaskController extends BaseController  {
 	private void storeSchools(Dump dump, Provider provider, 
 			List<School> schools, Locale locale) throws Exception {
 		for(School school : schools) {
-			dumperManager.dumpSchool(dump, school, locale, provider);
+			//dumperManager.dumpSchool(dump, school, locale, provider);
 		}
 	}
 	
@@ -359,7 +359,7 @@ public class TaskController extends BaseController  {
 			// Get provider data
 			Provider provider = providerService.getProviderById(school.getProvider(), locale);
 			for(Course course : lista) {
-				dumperManager.dumpCourse(dump, course, locale, school, provider);
+				//dumperManager.dumpCourse(dump, course, locale, school, provider);
 			}
 		}
 	}

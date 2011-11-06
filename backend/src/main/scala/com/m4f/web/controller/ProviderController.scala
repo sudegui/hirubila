@@ -13,9 +13,9 @@ import java.util.Locale
 import com.m4f.utils.feeds.events.model.Dump
 import scala.collection.JavaConversions._
 import scala.collection.mutable.Buffer
-import com.m4f.utils.feeds.parser.ifc.DumperCapable
 import com.m4f.business.service.ifc._
 import com.m4f.utils.worker.WorkerFactory
+
 
 @Controller
 @RequestMapping(Array("/provider"))
@@ -33,21 +33,22 @@ class ProviderController extends BaseController {
 	val provider = this.providerService.getProviderById(providerId, null)
     val schools:Buffer[School] =  asBuffer(schoolsParser.getSchools(provider))
     var locales:Buffer[Locale] = asBuffer(configurationService.getLocales())
-    locales.foreach((locale: Locale) => storeSchools(null, provider, schools, locale))  
+    locales.foreach((locale: Locale) => storeSchools(provider, schools, locale))
   }
   
  
   @RequestMapping(value=Array("/loadcourses"), method=Array(GET,POST))
   def loadCourses(@RequestParam(value="id",required=true) providerId:Long) {
 	var storedSchools:Buffer[School] = asBuffer(schoolService.getSchoolsByProvider(providerId, null, null))
-    storedSchools.foreach((school:School) => loadCourses(school))
+    //storedSchools.foreach((school:School) => loadCourses(school))
   }
   
   
-  def storeSchools(dump:Dump, provider:Provider, schools:Buffer[School], locale:Locale) {
-	schools.foreach((school: School) => dumperManager.dumpSchool(null, school, locale, provider))
+  def storeSchools(provider:Provider, schools:Buffer[School], locale:Locale) {
+    schoolStorage.store(schools, locale, provider)
   }
   
+  /*
   def loadCourses(school:School) {
 	  var params: java.util.Map[String, String] = new java.util.HashMap[String, String]()
 	  if((school.getFeed()!=null) && (!"".equals(school.getFeed()))) {
@@ -60,5 +61,5 @@ class ProviderController extends BaseController {
     var provider: Provider = providerService.getProviderById(school.getProvider(), locale)
 	courses.foreach((course:Course) => dumperManager.dumpCourse(null, course, locale, school, provider))				
   }
-    
+    */
 }

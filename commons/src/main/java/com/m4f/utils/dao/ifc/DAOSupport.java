@@ -14,6 +14,8 @@ public interface DAOSupport {
 	<T> List<Long> getAllIds(Class<T> clazz, String order, String filter, String params, Object[] values) throws Exception;
 	
 	<T> void saveOrUpdate(T obj) throws Exception; 
+	
+	<T> void saveOrUpdateCollection(Collection<T> objs) throws Exception;
     
     <T> void delete(T object) throws Exception;
     

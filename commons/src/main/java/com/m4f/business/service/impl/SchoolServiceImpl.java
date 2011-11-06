@@ -1,6 +1,7 @@
 package com.m4f.business.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +40,12 @@ public class SchoolServiceImpl extends I18nDAOBaseService implements I18nSchoolS
 	@Cacheflush(cacheName="schools")
 	public void save(School school, Locale locale) throws Exception {
 		this.DAO.saveOrUpdate(school, locale);
+	}
+	
+	@Override
+	@Cacheflush(cacheName="schools")
+	public void save(Collection<School> schools, Locale locale) throws Exception {
+		this.DAO.saveOrUpdateCollection(schools, locale);
 	}
 	
 	@Override

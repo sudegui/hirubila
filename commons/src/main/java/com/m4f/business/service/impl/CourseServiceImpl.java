@@ -65,6 +65,12 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 	
 	@Override
 	@Cacheflush(cacheName="courses")
+	public void save(Collection<Course> courses, Locale locale) throws Exception {
+		this.DAO.saveOrUpdateCollection(courses, locale);
+	}
+	
+	@Override
+	@Cacheflush(cacheName="courses")
 	public void erasure() throws Exception {
 		this.DAO.erasure(Course.class);
 	}

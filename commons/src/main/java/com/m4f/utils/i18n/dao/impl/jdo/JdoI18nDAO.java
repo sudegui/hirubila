@@ -63,11 +63,10 @@ public class JdoI18nDAO implements I18nDAOSupport {
         }
 	}
 	
-	public void saveOrUpdateCollection(Collection<BaseEntity> entities, 
-			Locale locale) throws Exception {
+	public <T extends BaseEntity> void saveOrUpdateCollection(Collection<T> objs, Locale locale) throws Exception {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
         try {
-        	pm.makePersistentAll(entities);
+        	pm.makePersistentAll(objs);
         } catch(Exception e) {
         	throw e;
         } finally {
