@@ -17,13 +17,13 @@ import com.m4f.business.domain.School;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.utils.beans.BeanManager;
 import com.m4f.utils.beans.exception.NotSameClassException;
-import com.m4f.utils.feeds.parser.ifc.IStorage;
+import com.m4f.utils.feeds.parser.ifc.ICourseStorage;
 
-public class CourseStore extends StoreBase<Course> implements IStorage<Course> {
+public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 	
 	@Override
 	public Map<Course , List<FieldError>> store(Collection<Course> courses, 
-			Locale locale, Provider provider) throws Exception {
+			Locale locale, School school, Provider provider) throws Exception {
 		Map<Course , List<FieldError>> executions = new HashMap<Course , List<FieldError>>();
 		for(Course course : courses) {
 			course.setRegulated(provider.getRegulated());

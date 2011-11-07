@@ -1,4 +1,4 @@
-package com.m4f.utils.feeds.parser.aspects;
+package com.m4f.utils.feeds.parser.aspect;
 
 import java.util.logging.Logger;
 import com.m4f.business.domain.Provider;

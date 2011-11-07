@@ -13,15 +13,15 @@ import org.springframework.validation.FieldError;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.beans.exception.NotSameClassException;
-import com.m4f.utils.feeds.parser.ifc.IStorage;
+import com.m4f.utils.feeds.parser.ifc.ISchoolStorage;
 
-public class SchoolStore extends StoreBase<School> implements IStorage<School> {
+public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 	
 	@Override
-	public Map<School, List<FieldError>> store(Collection<School> schools, Locale locale, 
+	public Map<School, List<FieldError>> store(Collection<School> objs, Locale locale, 
 			Provider provider) throws Exception {
 		Map<School , List<FieldError>> executions = new HashMap<School , List<FieldError>>();
-		for(School school : schools) {
+		for(School school : objs) {
 			DataBinder dataBinder = new DataBinder(school);
 			dataBinder.setValidator(validator);
 			dataBinder.validate();

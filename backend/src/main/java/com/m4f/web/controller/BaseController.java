@@ -28,7 +28,8 @@ import com.m4f.utils.worker.WorkerFactory;
 import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.business.service.ifc.I18nSchoolService;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
-import com.m4f.utils.feeds.parser.ifc.IStorage;
+import com.m4f.utils.feeds.parser.ifc.ICourseStorage;
+import com.m4f.utils.feeds.parser.ifc.ISchoolStorage;
 import com.m4f.utils.feeds.events.service.ifc.DumpService;
 import com.m4f.utils.feeds.events.service.ifc.EventService;
 import com.m4f.business.service.ifc.ICronTaskReportService;
@@ -52,9 +53,9 @@ public abstract class BaseController {
 	protected IServiceLocator serviceLocator;*/
 	
 	@Autowired
-	protected IStorage<School> schoolStorage;
+	protected ISchoolStorage schoolStorage;
 	@Autowired
-	protected IStorage<Course> courseStorage;
+	protected ICourseStorage courseStorage;
 	@Autowired
 	protected I18nInboxService inboxService;
 	@Autowired

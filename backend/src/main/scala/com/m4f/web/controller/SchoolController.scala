@@ -22,7 +22,7 @@ class SchoolController extends BaseController {
   
   def storeCourses(locale:java.util.Locale, school:School, courses: Buffer[Course]) {
     var provider: Provider = providerService.getProviderById(school.getProvider(), locale)
-    courseStorage.store(courses, locale, provider)				
+    courseStorage.store(courses, locale, school, provider)				
   }
   
 }

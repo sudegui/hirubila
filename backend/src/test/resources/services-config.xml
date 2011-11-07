@@ -147,15 +147,14 @@
 	
 	
 	<bean id="differ" class="com.m4f.utils.diff.xml.impl.JDOMDiffer"/>
-	
 	<bean id="schoolStorage" class="com.m4f.utils.feeds.parser.impl.SchoolStore" scope="prototype"/>
 	<bean id="courseStorage" class="com.m4f.utils.feeds.parser.impl.CourseStore" scope="prototype"/>
 	
 	
 	<!-- Aspects -->
-	<bean id="contentOptimizerAspect" class="com.m4f.utils.feeds.parser.aspects.FeedContentOptimizer"/>
-	<bean id="parserHypervisor" class="com.m4f.utils.feeds.parser.aspects.ParserHypervisor"/>
-	 <bean id="storeHypervisor" class="com.m4f.utils.feeds.parser.aspects.StoreHypervisor"/>
+	<bean id="contentOptimizerAspect" class="com.m4f.utils.feeds.parser.aspect.FeedContentOptimizer"/>
+	<bean id="parserHypervisor" class="com.m4f.utils.feeds.parser.aspect.ParserHypervisor"/>
+	 <bean id="storeHypervisor" class="com.m4f.utils.feeds.parser.aspect.StoreHypervisor"/>
 	 <!--
     <bean id="dumperHypervisor" class="com.m4f.utils.feeds.aop.DumperHypervisor"/>
     
