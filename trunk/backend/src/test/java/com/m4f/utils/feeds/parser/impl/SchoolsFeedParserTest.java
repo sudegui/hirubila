@@ -11,9 +11,10 @@ import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.business.service.ifc.I18nProviderService;
 import com.m4f.business.service.ifc.I18nSchoolService;
+import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.test.spring.GaeSpringContextTest;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
-import com.m4f.utils.feeds.parser.ifc.IStorage;
+import com.m4f.utils.feeds.parser.ifc.ISchoolStorage;
 import com.m4f.utils.feeds.parser.service.ifc.IParserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.m4f.utils.feeds.parser.model.Feed;
@@ -31,14 +32,15 @@ public class SchoolsFeedParserTest extends GaeSpringContextTest {
 	@Autowired
 	private IParserService parserService;
 	@Autowired
-	protected IStorage<School> schoolStorage;
+	protected ISchoolStorage schoolStorage;
+	
 	
 	@Test
 	public void getSchoolsTest() throws Exception {
 		Provider provider = providerService.createProvider();
-		provider.setId(1L);
 		provider.setName("Proveedor de prueba de Debabarrena");
 		provider.setFeed("http://www.elespazio.com/xml_centros.asp");
+		providerService.save(provider, new Locale("es"));
 		int eventsSizeBefore = 0, eventsSizeAfter = 0;
 		Feed feed = parserService.getFeed(new URI(provider.getFeed()));
 		if(feed!=null) {

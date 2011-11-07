@@ -17,9 +17,11 @@ import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
 import com.m4f.utils.content.ifc.ContentAcquirer;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class SchoolsFeedParser implements ISchoolsParser {
 	
+	@Autowired
 	private ContentAcquirer contentAcquirer;
 	private List<School> schools = new ArrayList<School>();
 	

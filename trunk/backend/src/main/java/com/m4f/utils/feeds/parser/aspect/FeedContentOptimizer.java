@@ -1,4 +1,4 @@
-package com.m4f.utils.feeds.parser.aspects;
+package com.m4f.utils.feeds.parser.aspect;
 
 import java.net.URI;
 import com.m4f.utils.dao.ifc.DAOSupport;

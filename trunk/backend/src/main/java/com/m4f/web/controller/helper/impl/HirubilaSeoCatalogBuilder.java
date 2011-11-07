@@ -1,7 +1,9 @@
 package com.m4f.web.controller.helper.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -20,6 +22,7 @@ import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.utils.seo.SeoCatalogBuilder;
 import com.m4f.business.service.ifc.I18nTerritorialService;
+import com.m4f.business.domain.School;
 
 public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 
@@ -47,6 +50,34 @@ public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 				Course course = courseService.getCourse(courseId, locale);
 				this.buildSeoEntity(course, locale);
 		}
+	}
+	
+	@Override
+	public void buildSeo(Collection<Course> courses, School school, Provider provider, Locale locale) throws Exception {
+		// TODO Auto-generated method stub
+		// Territorial data
+		String townName = school.getContactInfo() != null && 
+				school.getContactInfo().getCity() != null ? school.getContactInfo().getCity() : "";		
+		List<Town> towns = territorialService.findTownsByName(townName, locale);		
+		Town town = new Town();
+		Province province = new Province();
+		Region region = new Region();
+		if(towns != null && towns.size() > 0) {
+			town = towns.get(0);
+			region = this.getRegionsMap().get(locale.getLanguage()).get(town.getRegion());
+			province = this.getProvincesMap().get(locale.getLanguage()).get(town.getProvince());
+		}
+		List<CourseCatalog> catCourses = new ArrayList<CourseCatalog>();
+		for(Course course : courses) {
+			CourseCatalog catalog = new CourseCatalog(course, locale.getLanguage(), 
+					school, provider.getName(), province.getName(), region.getName(), town.getName());
+			CourseCatalog catalogOld = catalogService.getCourseCatalogByCourseId(course.getId(), locale);
+			if(catalogOld != null) {
+				catalog.setId(catalogOld.getId());
+			}
+			catCourses.add(catalog);
+		}
+		catalogService.save(catCourses);
 	}
 	
 	@Override
@@ -101,5 +132,7 @@ public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 		}
 		return provincesMap;
 	}
+
+	
 
 }

@@ -15,6 +15,8 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -32,6 +34,7 @@ public class CoursesFeedParser implements ICoursesParser {
 	private Map<String, List<Course>> courses;
 	private List<Course> courses_es;
 	private List<Course> courses_eu;
+	@Autowired
 	private ContentAcquirer contentAcquirer;
 	private List<SimpleDateFormat> dateFormatters = new ArrayList<SimpleDateFormat>();
 	
