@@ -29,7 +29,8 @@
       		<url>http://scala-tools.org/repo-releases</url>
     	</repository>
   	</repositories>
-
+	
+	<!--  
   	<pluginRepositories>
     	<pluginRepository>
       		<id>scala-tools.org</id>
@@ -37,6 +38,7 @@
       		<url>http://scala-tools.org/repo-releases</url>
     	</pluginRepository>
   	</pluginRepositories>
+  	-->
   	
   <dependencies>
   		
@@ -47,12 +49,14 @@
             <scope>test</scope>
         </dependency>
         
+        <!--  
   		<dependency>
       		<groupId>org.scala-lang</groupId>
       		<artifactId>scala-library</artifactId>
       		<version>${scala.version}</version>
     	</dependency>
-    
+    	-->
+    	
   		<!-- Hirubila commons -->
 		  <dependency>
       		<groupId>com.m4f</groupId>
@@ -341,9 +345,11 @@
         <configuration>
         		<ajdtVersion>none</ajdtVersion> 		
                 <additionalBuildcommands>
+                		<!--  
                 		<buildCommand>
                          		<name>ch.epfl.lamp.sdt.core.scalabuilder</name>
                          </buildCommand>
+                         -->
                          <buildCommand>
                                 <name>com.google.appengine.eclipse.core.enhancerbuilder</name>
                         </buildCommand>       
@@ -355,13 +361,17 @@
                         </buildCommand>
                 </additionalBuildcommands>
                 <additionalProjectnatures>
+                		<!--  
                 		<projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
+                		-->
                         <projectnature>org.eclipse.jdt.core.javanature</projectnature>
                         <projectnature>com.google.appengine.eclipse.core.gaeNature</projectnature>
                         <projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
                 </additionalProjectnatures>
                 <classpathContainers>
+                		<!--  
                         <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
+                        -->
                         <classpathContainer>com.google.appengine.eclipse.core.GAE_CONTAINER</classpathContainer>
                         <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
                 </classpathContainers>
@@ -370,7 +380,6 @@
                                 <name>.settings/com.google.gdt.eclipse.core.prefs</name>
                                 <content><![CDATA[
                                         eclipse.preferences.version=1
-                                        #filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.4.0.jar|appengine-api-labs-1.4.0.jar|appengine-jsr107cache-1.4.0.jar|jsr107cache-1.1.jar|datanucleus-appengine-1.0.8.final.jar|datanucleus-core-1.1.5.jar|datanucleus-jpa-1.1.5.jar|geronimo-jpa_3.0_spec-1.1.1.jar|geronimo-jta_1.1_spec-1.1.1.jar|jdo2-api-2.3-eb.jar
                                         warSrcDir=src/main/webapp/
                                         warSrcDirIsOutput=true
                                      

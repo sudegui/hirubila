@@ -13,7 +13,9 @@ import javax.jdo.annotations.PrimaryKey;
 public class CronTaskReport extends BaseEntity {
 	
 	public enum TYPE {
-		PROVIDER_FEED("Importacion de feed de un proveedor"), INTERNAL_FEED("Generacion interna feed mediador manual");
+		PROVIDER_FEED("Importacion del feed de centros de un proveedor"), 
+		PROVIDER_SCHOOLS("Importacion de los cursos de los centros de un proveedor"),
+		INTERNAL_FEED("Generacion interna feed mediador manual");
 		
 		private final String displayName;
 		

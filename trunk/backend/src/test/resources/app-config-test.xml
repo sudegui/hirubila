@@ -21,9 +21,6 @@
 	<!-- Configuration Bean -->
 	<bean id="defaultConfiguration" class="com.m4f.business.domain.GlobalConfiguration"/>
 	
-	<!-- SEO catalog Helper Bean  -->
-	<bean id="seoCatalogBuilder" class="com.m4f.web.controller.helper.impl.HirubilaSeoCatalogBuilder"/>
-	
 	<!-- Configures Spring MVC -->
 	<import resource="mvc-config.xml" />
 	

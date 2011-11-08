@@ -1,4 +1,4 @@
-package com.m4f.utils.seo;
+package com.m4f.utils.seo.ifc;
 
 import java.util.List;
 import java.util.Collection;

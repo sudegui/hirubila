@@ -10,9 +10,11 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.HttpMethod;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import com.m4f.test.spring.GaeSpringContextTest;
 
+@Ignore
 public class HomeHttpClient  {
 	
 
