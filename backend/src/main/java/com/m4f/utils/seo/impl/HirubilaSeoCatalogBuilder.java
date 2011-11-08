@@ -1,4 +1,4 @@
-package com.m4f.web.controller.helper.impl;
+package com.m4f.utils.seo.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import com.m4f.business.service.ifc.I18nProviderService;
 import com.m4f.business.service.ifc.I18nSchoolService;
 import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.business.service.ifc.ICatalogService;
-import com.m4f.utils.seo.SeoCatalogBuilder;
+import com.m4f.utils.seo.ifc.SeoCatalogBuilder;
 import com.m4f.business.service.ifc.I18nTerritorialService;
 import com.m4f.business.domain.School;
 
@@ -132,6 +132,8 @@ public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 		}
 		return provincesMap;
 	}
+
+	
 
 	
 

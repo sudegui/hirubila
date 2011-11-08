@@ -14,8 +14,10 @@ import org.springframework.validation.FieldError;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.business.domain.Course;
+import com.m4f.business.service.ifc.I18nCourseService;
+import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
-import com.m4f.utils.seo.SeoCatalogBuilder;
+import com.m4f.utils.seo.ifc.SeoCatalogBuilder;
 
 @Aspect
 public class StoreHypervisor {
@@ -23,6 +25,8 @@ public class StoreHypervisor {
 	private static final Logger LOGGER = Logger.getLogger(StoreHypervisor.class.getName());
 	@Autowired
 	private SeoCatalogBuilder catalogBuilder;
+	@Autowired
+	protected I18nCourseService courseService;
 	
 	
 	@Pointcut("execution(* com.m4f.utils.feeds.parser.ifc.ISchoolStorage.store(..)) && args(objs,locale,provider)")
@@ -37,6 +41,16 @@ public class StoreHypervisor {
 	public void createCatalogRequest(Collection<School> objs, Locale locale, 
 			Provider provider, Map<School, List<FieldError>> retVal) {
 		System.out.println("Registering SchoolStoreHypervisor");
+		for(School school : objs) {
+			if(!school.getCreated().equals(school.getUpdated())) {
+				LOGGER.info("Generar todo el catálogo del centro " + school.getName());
+				try {
+					generateSchoolCatalog(provider, school, locale);
+				} catch(Exception e) {
+					LOGGER.severe(StackTraceUtil.getStackTrace(e));
+				}
+			}
+		}
 	}
 	
 	@AfterReturning(pointcut ="coursesStoreOperation(objs,locale,school,provider)", 
@@ -57,6 +71,23 @@ public class StoreHypervisor {
 			validCourses(validCourses, school, provider, locale);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+		}
+	}
+	
+	private void generateSchoolCatalog(Provider provider, School school, 
+			Locale locale) throws Exception {
+		final int RANGE = 300;
+		PageManager<Course> paginator = new PageManager<Course>();
+		long total = courseService.countCoursesBySchool(school);
+		paginator.setOffset(RANGE);
+		paginator.setStart(0);
+		paginator.setSize(total);
+		for (Integer page : paginator.getTotalPagesIterator()) {
+			int start = (page - 1) * RANGE;
+			int end = (page) * RANGE;
+			Collection<Course> courses = courseService.getCourses("id", locale,
+					start, end);
+			this.catalogBuilder.buildSeo(courses, school, provider, locale);
 		}
 	}
 	

@@ -16,7 +16,11 @@
 	
 	<!-- MultiLanguage DAO -->
 	<bean id="i18nDAO" class="com.m4f.utils.i18n.dao.impl.jdo.JdoI18nDAO"/>
-
+	
+	
+	<!-- SEO catalog Helper Bean  -->
+	<bean id="seoCatalogBuilder" class="com.m4f.utils.seo.impl.HirubilaSeoCatalogBuilder"/>
+	
 	<!-- Mulilanguage services definitions. -->
 	
 	<bean id="mediatorService" class="com.m4f.business.service.impl.MediationServiceImpl" scope="prototype">
@@ -133,10 +137,6 @@
     	<constructor-arg index="1" ref="beanManager"/>
     </bean>
     
-    
-    
-    
-    
     <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
     <bean id="cacheInterceptor" class="com.m4f.utils.cache.CacheInterceptor"/>
     
@@ -154,11 +154,8 @@
 	<!-- Aspects -->
 	<bean id="contentOptimizerAspect" class="com.m4f.utils.feeds.parser.aspect.FeedContentOptimizer"/>
 	<bean id="parserHypervisor" class="com.m4f.utils.feeds.parser.aspect.ParserHypervisor"/>
-	 <bean id="storeHypervisor" class="com.m4f.utils.feeds.parser.aspect.StoreHypervisor"/>
-	 <!--
-    <bean id="dumperHypervisor" class="com.m4f.utils.feeds.aop.DumperHypervisor"/>
-    
-    -->
+	<bean id="storeHypervisor" class="com.m4f.utils.feeds.parser.aspect.StoreHypervisor"/>
+	
     <aop:config>
     	
         <aop:aspect ref="multilanguageTranslator">           
@@ -184,15 +181,14 @@
          
          
          <!--  
-          
-          <aop:aspect ref="cacheInterceptor">
+        <aop:aspect ref="cacheInterceptor">
          	<aop:pointcut id="cacheAble" expression="@annotation(com.m4f.utils.cache.annotations.Cacheable)" />
             <aop:around pointcut-ref="cacheAble" method="cacheAble"/>
             <aop:pointcut id="cacheFlush" expression="@annotation(com.m4f.utils.cache.annotations.Cacheflush)" />
             <aop:around pointcut-ref="cacheFlush" method="cacheFlush"/>
-         </aop:aspect> 
-          -->
-       
+        </aop:aspect> 
+         -->
+         
          
     </aop:config>
 	

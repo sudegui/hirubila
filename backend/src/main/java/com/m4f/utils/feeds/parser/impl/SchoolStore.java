@@ -18,8 +18,8 @@ import com.m4f.utils.feeds.parser.ifc.ISchoolStorage;
 public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 	
 	@Override
-	public Map<School, List<FieldError>> store(Collection<School> objs, Locale locale, 
-			Provider provider) throws Exception {
+	public Map<School, List<FieldError>> store(Collection<School> objs, 
+			Locale locale, Provider provider) throws Exception {
 		Map<School , List<FieldError>> executions = new HashMap<School , List<FieldError>>();
 		for(School school : objs) {
 			DataBinder dataBinder = new DataBinder(school);

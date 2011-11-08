@@ -1,5 +1,7 @@
 package com.m4f.utils.feeds.parser.impl;
 
+import static org.junit.Assert.*;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -20,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.m4f.utils.feeds.parser.model.Feed;
 import java.net.URI;
 
-
+@Ignore
 public class SchoolsFeedParserTest extends GaeSpringContextTest {
 	
 	@Autowired
@@ -33,14 +35,16 @@ public class SchoolsFeedParserTest extends GaeSpringContextTest {
 	private IParserService parserService;
 	@Autowired
 	protected ISchoolStorage schoolStorage;
-	
+	@Autowired
+	protected IAppConfigurationService configurationService;
 	
 	@Test
 	public void getSchoolsTest() throws Exception {
-		Provider provider = providerService.createProvider();
-		provider.setName("Proveedor de prueba de Debabarrena");
-		provider.setFeed("http://www.elespazio.com/xml_centros.asp");
-		providerService.save(provider, new Locale("es"));
+		List<Provider> providers = providerService.getAllProviders(new Locale("es"));
+		if(providers.size()==0) {
+			Assert.fail("No hay providers");
+		}
+		Provider provider = providerService.getAllProviders(configurationService.getLocales().get(0)).get(0);
 		int eventsSizeBefore = 0, eventsSizeAfter = 0;
 		Feed feed = parserService.getFeed(new URI(provider.getFeed()));
 		if(feed!=null) {
@@ -52,7 +56,6 @@ public class SchoolsFeedParserTest extends GaeSpringContextTest {
 		if(feed!=null) {
 			eventsSizeAfter = parserService.getLoadEvents(feed).size();
 		}
-		
 		schoolStorage.store(schools, new Locale("es"), provider);
 		Assert.assertTrue(eventsSizeAfter>eventsSizeBefore);
 		
