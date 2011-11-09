@@ -1,11 +1,7 @@
 package com.m4f.utils.feeds.parser.impl;
 
-import static org.junit.Assert.*;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-
 import org.junit.Test;
 import org.junit.Ignore;
 import org.junit.Assert;

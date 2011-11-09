@@ -98,25 +98,6 @@
 	
 	
 	<servlet>
-		<servlet-name>Course Catalog Custom Servlet</servlet-name>
-		<servlet-class>com.m4f.web.servlet.CourseCatalogServlet</servlet-class>
-	</servlet>	
-	<servlet-mapping>
-		<servlet-name>Course Catalog Custom Servlet</servlet-name>
-		<url-pattern>/courseCatalog/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>courseCatalogJsp</servlet-name>
-		<jsp-file>/WEB-INF/views/catalog2/course/course_detail.jsp</jsp-file>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>courseCatalogJsp</servlet-name>
-		<url-pattern>/catalog2/course_detail.jsp</url-pattern>
-	</servlet-mapping>
-	
-	
-	<servlet>
  		<servlet-name>_ah_warmup</servlet-name>
  		<servlet-class>com.m4f.web.servlet.WarmUpServlet</servlet-class>
  	</servlet>

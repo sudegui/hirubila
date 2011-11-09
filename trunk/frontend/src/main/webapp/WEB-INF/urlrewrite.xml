@@ -73,8 +73,8 @@
 	</rule>
 	
 	<rule>
-		<from>/launcher/**</from>
-		<to>/app/launcher/$1?lang=es</to>
+		<from>/loader/**</from>
+		<to>/app/loader/$1?lang=es</to>
 	</rule>
 	
 	<rule>

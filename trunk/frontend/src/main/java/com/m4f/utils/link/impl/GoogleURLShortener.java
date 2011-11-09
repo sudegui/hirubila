@@ -1,8 +1,6 @@
 package com.m4f.utils.link.impl;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 import com.google.api.client.http.HttpRequest;
@@ -23,13 +21,6 @@ public class GoogleURLShortener implements URLShortener{
 	
 	public static final String GOOGL_URL = "https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyD9h-WfnUUEecGjB6ovQLySg_zmquYUHJA";
 	private static final Logger LOGGER = Logger.getLogger(GoogleURLShortener.class.getName());
-	
-	/*public String shortURL(String urlToShort) throws NoSuchAlgorithmException, IOException {
-		URL url = new URL(GOOGL_URL);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection
-		return "";
-	}*/
 	
 	@Override
 	public String shortURL(String url) throws NoSuchAlgorithmException, IOException {

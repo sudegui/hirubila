@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.xml.sax.SAXException;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Locale;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.PageManager;
@@ -36,10 +38,22 @@ public class ProviderController extends BaseController {
 	@ResponseStatus(HttpStatus.OK)
 	public void loadFeed(@RequestParam Long providerId) 
 			throws ParserConfigurationException, SAXException, IOException, Exception {
-		Provider provider = this.providerService.getProviderById(providerId, null);
-		Collection<School> schools = schoolsParser.getSchools(provider);
-		for(Locale locale : this.configurationService.getLocales()) {
-			this.storeSchools(provider, schools, locale);
+		CronTaskReport report = cronTaskReportService.create();
+		report.setObject_id(providerId);
+		report.setDate(new Date());
+		report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
+		try {
+			Provider provider = this.providerService.getProviderById(providerId, null);
+			Collection<School> schools = schoolsParser.getSchools(provider);
+			for(Locale locale : this.configurationService.getLocales()) {
+				this.storeSchools(provider, schools, locale);
+			}
+			report.setResult("OK");
+		} catch(Exception e) {
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
+			throw e;
+		} finally {
+			cronTaskReportService.save(report);
 		}
 	}
 	
@@ -48,21 +62,34 @@ public class ProviderController extends BaseController {
 	@ResponseStatus(HttpStatus.OK)
 	public void loadSchools(@RequestParam Long providerId) 
 			throws ParserConfigurationException, SAXException, IOException, Exception {
+		CronTaskReport report = cronTaskReportService.create();
+		report.setObject_id(providerId);
+		report.setDate(new Date());
+		report.setType(CronTaskReport.TYPE.PROVIDER_SCHOOLS);
 		final int RANGE = 100;
-		Provider provider = this.providerService.getProviderById(providerId, null);
-		PageManager<School> paginator = new PageManager<School>();
-		long total = schoolService.countSchoolsByProvider(providerId);
-		paginator.setOffset(RANGE);
-		paginator.setStart(0);
-		paginator.setSize(total);
-		for (Integer page : paginator.getTotalPagesIterator()) {
-			int start = (page - 1) * RANGE;
-			int end = (page) * RANGE;
-			Collection<School> schools = schoolService.getSchoolsByProvider(providerId, "updated", null, start, end);
-			for(School school : schools) {
-				this.createLoadTask(provider, school);
+		try {
+			Provider provider = this.providerService.getProviderById(providerId, null);
+			PageManager<School> paginator = new PageManager<School>();
+			long total = schoolService.countSchoolsByProvider(providerId);
+			paginator.setOffset(RANGE);
+			paginator.setStart(0);
+			paginator.setSize(total);
+			for (Integer page : paginator.getTotalPagesIterator()) {
+				int start = (page - 1) * RANGE;
+				int end = (page) * RANGE;
+				Collection<School> schools = schoolService.getSchoolsByProvider(providerId, "updated", null, start, end);
+				for(School school : schools) {
+					this.createLoadTask(provider, school);
+				}
 			}
+			report.setResult("OK");
+		} catch(Exception e) {
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
+			throw e;
+		} finally {
+			cronTaskReportService.save(report);
 		}
+		
 	}
 	
 	private void storeSchools(Provider provider, Collection<School> schools, 

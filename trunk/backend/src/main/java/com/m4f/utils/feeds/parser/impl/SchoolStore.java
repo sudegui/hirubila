@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Collection;
 import java.util.Set;
+import java.util.logging.Logger;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
 import com.m4f.business.domain.Provider;
@@ -16,6 +17,8 @@ import com.m4f.utils.beans.exception.NotSameClassException;
 import com.m4f.utils.feeds.parser.ifc.ISchoolStorage;
 
 public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
+	
+	private static final Logger LOGGER = Logger.getLogger(SchoolStore.class.getName());
 	
 	@Override
 	public Map<School, List<FieldError>> store(Collection<School> objs, 
@@ -60,7 +63,10 @@ public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 				properties.add("name");
 				properties.add("feed");
 				this.beanManager.mergeObjects(newSchool, oldSchool, properties);
+				newSchool.setId(oldSchool.getId());
+				newSchool.setCreated(oldSchool.getCreated());
 				oldSchool.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
+				newSchool.setUpdated(oldSchool.getUpdated());
 				this.entities.add(oldSchool);
 			}
 		}

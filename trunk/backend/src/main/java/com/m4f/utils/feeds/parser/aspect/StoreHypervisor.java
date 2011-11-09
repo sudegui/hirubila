@@ -40,28 +40,33 @@ public class StoreHypervisor {
 			argNames="objs,locale,provider,retVal", returning= "retVal")
 	public void createCatalogRequest(Collection<School> objs, Locale locale, 
 			Provider provider, Map<School, List<FieldError>> retVal) {
-		System.out.println("Registering SchoolStoreHypervisor");
-		for(School school : objs) {
-			if(!school.getCreated().equals(school.getUpdated())) {
-				LOGGER.info("Generar todo el catálogo del centro " + school.getName());
-				try {
-					generateSchoolCatalog(provider, school, locale);
-				} catch(Exception e) {
-					LOGGER.severe(StackTraceUtil.getStackTrace(e));
-				}
+		List<School> validSchools = new ArrayList<School>();
+		List<School> problematicSchools = new ArrayList<School>();
+		for(School school : retVal.keySet()) {
+			if(retVal!=null && retVal.get(school).size()==0) {
+				validSchools.add(school);
+			} else {
+				problematicSchools.add(school);
 			}
 		}
+		try {
+			processValidSchools(validSchools,provider,locale);
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+		}
 	}
+	
+	
 	
 	@AfterReturning(pointcut ="coursesStoreOperation(objs,locale,school,provider)", 
 			argNames="objs,locale,school,provider,retVal", returning= "retVal")
 	public void createCatalogEntries(Collection<Course> objs, Locale locale, School school, 
 			Provider provider, Map<Course, List<FieldError>> retVal) {
-		System.out.println("Registering CourseStoreHypervisor");
+		LOGGER.severe("Registering CourseStoreHypervisor");
 		List<Course> validCourses = new ArrayList<Course>();
 		List<Course> problematicCourses = new ArrayList<Course>();
 		for(Course course : retVal.keySet()) {
-			if(retVal.get(course).size()==0) {
+			if(retVal!=null && retVal.get(course).size()==0) {
 				validCourses.add(course);
 			} else {
 				problematicCourses.add(course);
@@ -71,6 +76,19 @@ public class StoreHypervisor {
 			validCourses(validCourses, school, provider, locale);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+		}
+	}
+	
+	private void processValidSchools(Collection<School> schools, 
+			Provider provider, Locale locale) throws Exception {
+		for(School school : schools) {
+			/*LOGGER.severe("School: " + school);
+			LOGGER.severe("CreatedDate: " + school.getCreated() + 
+					"-UpdatedDate: " + school.getUpdated());*/
+			if(!school.getCreated().equals(school.getUpdated())) {
+				LOGGER.info("Generar todo el catálogo del centro " + school.getName());		
+				generateSchoolCatalog(provider, school, locale);
+			}
 		}
 	}
 	

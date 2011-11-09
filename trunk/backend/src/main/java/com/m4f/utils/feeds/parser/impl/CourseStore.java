@@ -45,6 +45,7 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 			if(oldCourse == null) {
 				/*Alta nueva: el curso no estaba registrado en la base de datos.*/
 				newCourse.setCreated(Calendar.getInstance(new Locale("es")).getTime());
+				newCourse.setUpdated(newCourse.getCreated());
 				newCourse.setActive(true);
 				this.entities.add(newCourse);
 			} else if(!oldCourse.equals(newCourse) || !oldCourse.isTranslated()) {
@@ -60,6 +61,8 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 				this.beanManager.mergeObjects(newCourse, oldCourse, properties);
 				if(oldCourse.isTranslated()) oldCourse.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
 				newCourse.setId(oldCourse.getId());
+				newCourse.setCreated(oldCourse.getCreated());
+				newCourse.setUpdated(oldCourse.getUpdated());
 				this.entities.add(oldCourse);
 			}
 			
