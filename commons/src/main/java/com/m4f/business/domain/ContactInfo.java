@@ -1,16 +1,14 @@
 package com.m4f.business.domain;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.jdo.annotations.EmbeddedOnly;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
-
-import com.google.appengine.api.datastore.GeoPt;
-import com.google.appengine.api.datastore.PhoneNumber;
-import com.google.appengine.api.datastore.Link;
+import com.m4f.business.domain.annotation.Comparable;
 import com.m4f.utils.i18n.annotations.Multilanguage;
 
 @SuppressWarnings("serial")
@@ -19,9 +17,11 @@ import com.m4f.utils.i18n.annotations.Multilanguage;
 public class ContactInfo implements Serializable {
 	
 	@Persistent
+	@Comparable
 	public String telephone;
 	
 	@Persistent
+	@Comparable
 	public String fax;
 	
 	@Persistent
@@ -30,19 +30,24 @@ public class ContactInfo implements Serializable {
 	
 	@Persistent
 	@Multilanguage
+	@Comparable
 	public String city;
 	
 	@Persistent
+	@Comparable
 	public String zipCode;
 	
 	@Persistent
 	@Multilanguage
+	@Comparable
 	public String streetAddress;
 	
 	@Persistent
+	@Comparable
 	public String webSite;
 	
 	@Persistent
+	@Comparable
 	public String email;
 		
 	public String getTelephone() {
@@ -111,11 +116,21 @@ public class ContactInfo implements Serializable {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer("[").append(this.getClass().getName()).append(" ");
-		if(this.telephone != null) sb.append("Phone: ").append(this.telephone).append(" ");
-		if(this.fax != null) sb.append("Fax: ").append(this.fax).append(" ");
-		if(this.country != null) sb.append("Country: ").append(this.country).append(" ");
+		StringBuffer sb = new StringBuffer("[");
+		for(Field field: this.getClass().getDeclaredFields()) {
+			try {
+				if(!field.isAnnotationPresent(Comparable.class)) {
+					continue;
+				}
+				if(field.get(this) != null) {
+					String value = field.getName() + ":" + field.get(this).toString();
+					sb.append(value + ",");
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		sb.append("]");
-		return super.toString();
+		return sb.toString();
 	}
 }

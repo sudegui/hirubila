@@ -7,13 +7,11 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.m4f.business.domain.Provider;
 import com.m4f.business.service.ifc.I18nProviderService;
 import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.test.spring.GaeSpringContextTest;
 
-@Ignore
 public class DataLoader extends GaeSpringContextTest {
 	
 	@Autowired
@@ -32,6 +30,24 @@ public class DataLoader extends GaeSpringContextTest {
 		if(providers.size()==0) {
 			Assert.fail("No hay providers");
 		}
+		provider = providerService.createProvider();
+		provider.setName("Tolosaldea provider");
+		provider.setFeed("http://www.ikastn.com/feed/ikasgida/tolosaldea.php");
+		providerService.save(provider, new Locale("es"));
+		providers = providerService.getAllProviders(new Locale("es"));
+		if(providers.size()==1) {
+			Assert.fail("El numero de proveedores ha de ser 2");
+		}
+		
+		provider = providerService.createProvider();
+		provider.setName("Mungialdea provider");
+		provider.setFeed("http://www.ikasizhazi.com/feeds/mungialdea.xml");
+		providerService.save(provider, new Locale("es"));
+		providers = providerService.getAllProviders(new Locale("es"));
+		if(providers.size()==2) {
+			Assert.fail("El numero de proveedores ha de ser 3");
+		}
+		
 	}
 	
 }

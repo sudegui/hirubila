@@ -1,12 +1,17 @@
 package com.m4f.web.controller;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
+
+import org.junit.Assert;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.m4f.business.domain.Provider;
 
 @Controller
 @RequestMapping("/")
@@ -21,9 +26,19 @@ public class HomeController extends BaseController {
 	@RequestMapping(method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void getHome(Locale locale) throws Exception {
-		for(long id : providerService.getAllProviderIds()) {
-			LOGGER.severe("Id: " + id);
-		}
+		Provider provider = providerService.createProvider();
+		provider.setName("Proveedor local");
+		provider.setFeed("http://localhost/feeds/zentruak.xml");
+		providerService.save(provider, new Locale("es"));
+		provider = providerService.createProvider();
+		provider.setName("Tolosaldea provider");
+		provider.setFeed("http://www.ikastn.com/feed/ikasgida/tolosaldea.php");
+		providerService.save(provider, new Locale("es"));
+		provider = providerService.createProvider();
+		provider.setName("Mungialdea provider");
+		provider.setFeed("http://www.ikasizhazi.com/feeds/mungialdea.xml");
+		providerService.save(provider, new Locale("es"));
+		
 	}
 	
 	

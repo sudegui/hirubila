@@ -62,7 +62,7 @@ public class StoreHypervisor {
 			argNames="objs,locale,school,provider,retVal", returning= "retVal")
 	public void createCatalogEntries(Collection<Course> objs, Locale locale, School school, 
 			Provider provider, Map<Course, List<FieldError>> retVal) {
-		LOGGER.severe("Registering CourseStoreHypervisor");
+		LOGGER.info("Registering CourseStoreHypervisor");
 		List<Course> validCourses = new ArrayList<Course>();
 		List<Course> problematicCourses = new ArrayList<Course>();
 		for(Course course : retVal.keySet()) {

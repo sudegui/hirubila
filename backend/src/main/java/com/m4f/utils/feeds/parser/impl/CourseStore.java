@@ -1,6 +1,7 @@
 package com.m4f.utils.feeds.parser.impl;
 
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -8,18 +9,28 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.logging.Logger;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.Validator;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
-import com.m4f.business.service.ifc.I18nCourseService;
-import com.m4f.utils.beans.BeanManager;
 import com.m4f.utils.beans.exception.NotSameClassException;
 import com.m4f.utils.feeds.parser.ifc.ICourseStorage;
 
 public class CourseStore extends StoreBase<Course> implements ICourseStorage {
+	
+	private static final Logger LOGGER = Logger.getLogger(CourseStore.class.getName());
+	
+	private class CourseComparator implements Comparator<Course> {
+
+		@Override
+		public int compare(Course o1, Course o2) {
+			if(o1.toString().equals(o2.toString())) return 0;
+			return -1;
+		}
+		
+	}
 	
 	@Override
 	public Map<Course , List<FieldError>> store(Collection<Course> courses, 
@@ -41,14 +52,22 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 	
 	private void selectiveCourseStore(Course newCourse, Locale locale) 
 			throws NotSameClassException, Exception {
+			newCourse.setCreated(Calendar.getInstance(new Locale("es")).getTime());
+			newCourse.setUpdated(newCourse.getCreated());	
 			Course oldCourse = this.courseService.getCourseByExternalId(newCourse.getExternalId(), locale);
 			if(oldCourse == null) {
 				/*Alta nueva: el curso no estaba registrado en la base de datos.*/
-				newCourse.setCreated(Calendar.getInstance(new Locale("es")).getTime());
-				newCourse.setUpdated(newCourse.getCreated());
 				newCourse.setActive(true);
 				this.entities.add(newCourse);
 			} else if(!oldCourse.equals(newCourse) || !oldCourse.isTranslated()) {
+				CourseComparator comparator = new CourseComparator();
+				if(comparator.compare(newCourse, oldCourse) == 0) {
+					LOGGER.info("Curso existente y NO MODIFICADO");
+					return;
+				}
+				LOGGER.info("Curso existente y NO MODIFICADO");
+				LOGGER.info("OldCourse: " + oldCourse.toString());
+				LOGGER.info("NewCourse: " + newCourse.toString());
 				/*Modificacion: el curso estaba registrado en la base de datos, pero se modifica.*/
 				Set<String> properties = new HashSet<String>();
 				properties.add("externalId");
