@@ -1,7 +1,9 @@
 package com.m4f.business.domain;
 
+import com.m4f.business.domain.annotation.Comparable;
 import com.m4f.utils.i18n.model.ifc.I18nBehaviour;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 public abstract class BaseEntity implements Serializable, I18nBehaviour {
 	

@@ -63,10 +63,10 @@ public class JdoI18nDAO implements I18nDAOSupport {
         }
 	}
 	
-	public <T extends BaseEntity> void saveOrUpdateCollection(Collection<T> objs, Locale locale) throws Exception {
+	public <T extends BaseEntity> void saveOrUpdateCollection(Collection<T> entities, Locale locale) throws Exception {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
         try {
-        	pm.makePersistentAll(objs);
+        	pm.makePersistentAll(entities);
         } catch(Exception e) {
         	throw e;
         } finally {
@@ -247,7 +247,7 @@ public class JdoI18nDAO implements I18nDAOSupport {
 		}
 		// execute query
 		Collection<T> entities = (Collection<T>) query.executeWithArray(values);
-		LOGGER.severe("## Entidades size: " + entities.size());
+		//LOGGER.info("## Entidades size: " + entities.size());
 		Collection<T> detached = pm.detachCopyAll(entities);
 		pm.close();
 		return detached;

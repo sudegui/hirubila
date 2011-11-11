@@ -37,37 +37,22 @@ public class MultilanguageInterceptor {
 		
 		
 	public void loadCollection(List retVal, Locale locale, Object clazz) throws Throwable {
-		if(locale == null) {
-			return;
-		}
-		LOGGER.info("*********** Load Collection....................");
-		if(retVal == null) {
-			return;
-		}
+		if(locale == null) {return;}
+		if(retVal == null) {return;}
 		this.loadCollection(locale, (List<I18nBehaviour>)retVal);
 	}
 	
 	
 	public void loadEntity(Object clazz, I18nBehaviour retVal, 
 			Locale locale) throws Throwable {
-		if(locale == null) {
-			return;
-		}
-		LOGGER.info("*********** Load entity....................");
-		if(retVal == null) {
-			return;
-		}
+		if(locale == null) {return;}
+		if(retVal == null) {return;}
 		this.loadObject(locale, retVal);
 	}
 	
-	
-	
-	
 	public <T extends I18nBehaviour> void deleteCollection(Collection<T> objs, 
 			Locale locale) throws Exception {
-		for(T object : objs) {
-			this.deleteAllTranslations(object);
-		}
+		for(T object : objs) {this.deleteAllTranslations(object);}
 	}
 	
 	
@@ -106,13 +91,19 @@ public class MultilanguageInterceptor {
 	
 	
 	public <T extends I18nBehaviour> void putMultilanguage(T entity, Locale locale) throws Throwable {
-		if(locale == null) {
-			return;
-		}
+		if(locale == null) {return;}
 		this.deleteTranslations(locale, entity);
 		this.locateMultiLanguageFields(locale, entity);
 	}
 	
+	
+	public <T extends I18nBehaviour> void collection(Collection<T> entities, Locale locale) throws Throwable {
+		if(locale == null) {return;}
+		for(T entity : entities) {
+			this.deleteTranslations(locale, entity);
+			this.locateMultiLanguageFields(locale, entity);	
+		}
+	}
 		
 	/****************************************************************************************
 	 * 
@@ -162,37 +153,28 @@ public class MultilanguageInterceptor {
 		}
 	}
 	
-	
 	private <T extends I18nBehaviour> Collection <JdoI18nEntry> checkIntegrity(Collection<JdoI18nEntry> entries, 
 			T obj) throws SecurityException, NoSuchFieldException {
-		LOGGER.info("++++ Checking translations integrity");
 		Collection<JdoI18nEntry> finalEntries = new ArrayList<JdoI18nEntry>();
 		Set<String> ents = new HashSet<String>();
 		String propertyName = "";
 		for(JdoI18nEntry entry : entries) {
 			propertyName = entry.getFieldKey();
-			LOGGER.info("Introspecting " + propertyName);
 			if(ents.contains(propertyName)) {
 				if(propertyName.contains(".")) {
 					continue;
 				}
 				if(this.beanManager.hasProperty(obj, propertyName)) {
 					Field field = obj.getClass().getField(propertyName);
-					LOGGER.info("Introspecting field element" + field.getName());
 					if(field.isAnnotationPresent(MultilanguageCollection.class)) {
-						LOGGER.info("Exist, adding " + propertyName);
 						finalEntries.add(entry);
 					}
 				}
 			} else {
-				LOGGER.info("Not exist, adding " + propertyName);
 				finalEntries.add(entry);
 				ents.add(propertyName);
 			}	
 		}
-		LOGGER.info("Final resumen.............");
-		LOGGER.info("Init size: " + entries.size());
-		LOGGER.info("Init size: " + finalEntries.size());
 		return finalEntries;
 	}
 	
@@ -267,7 +249,6 @@ public class MultilanguageInterceptor {
 		Field[] fields = aClass.getDeclaredFields();
 		for(Field field : fields) {
 			if(field.isAnnotationPresent(Multilanguage.class)) {
-				LOGGER.info("Annotation located in " + field.getName());
 				Object value;
 				if(field.getType().getName().equals(Text.class.getName()) && field.get(object) != null) {
 					value = ((Text)field.get(object)).getValue();
@@ -339,18 +320,5 @@ public class MultilanguageInterceptor {
 		entry.setLang(locale.getLanguage());
 		this.i18nService.saveOrUpdate(entry);
 	}
-	
-	
-	
-	private Locale discoverLocale(Object[] objects) {
-		Locale locale = Locale.getDefault();
-		for(Object object : objects) {
-			if(object.getClass().isInstance(locale)) {
-				locale = (Locale) object;
-			}
-		}
-		return locale;
-	}
-	
 	
 }

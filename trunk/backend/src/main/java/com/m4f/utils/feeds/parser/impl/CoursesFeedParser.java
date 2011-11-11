@@ -3,8 +3,6 @@ package com.m4f.utils.feeds.parser.impl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +13,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -31,33 +28,30 @@ import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
 public class CoursesFeedParser implements ICoursesParser {
 	
 	private static final Logger LOGGER = Logger.getLogger(CoursesFeedParser.class.getName());
-	private Map<String, List<Course>> courses;
-	private List<Course> courses_es;
-	private List<Course> courses_eu;
+	private List<SimpleDateFormat> dateFormatters = new ArrayList<SimpleDateFormat>();
 	@Autowired
 	private ContentAcquirer contentAcquirer;
-	private List<SimpleDateFormat> dateFormatters = new ArrayList<SimpleDateFormat>();
 	
 	public CoursesFeedParser(List<String> dateFormats) {
-		courses = new HashMap<String, List<Course>>();
 		for(String dateFormat : dateFormats) {
 			this.dateFormatters.add(new SimpleDateFormat(dateFormat));
 		}
-		this.courses_es = new ArrayList<Course>();
-		this.courses_eu = new ArrayList<Course>();
-		this.courses.put("es", this.courses_es);
-		this.courses.put("eu", this.courses_eu);
 	}
 	
 	@Override
 	public Map<String, List<Course>> getCourses(School school) 
-		throws ParserConfigurationException, SAXException, IOException, Exception {
+			throws ParserConfigurationException, SAXException, IOException, Exception {
+		List<Course> courses_es = new ArrayList<Course>();
+		List<Course> courses_eu = new ArrayList<Course>();
+		Map<String, List<Course>> courses = new HashMap<String, List<Course>>();
+		courses.put("es", courses_es);
+		courses.put("eu", courses_eu);
 		byte[] content = this.contentAcquirer.getContent(new URI(school.getFeed())).toByteArray();
 		InputSource inputFeed = new InputSource(new ByteArrayInputStream(content));
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 		SAXParser sp = spf.newSAXParser();
-		sp.parse(inputFeed, new CoursesFeedReader(school));
-		return this.courses;
+		sp.parse(inputFeed, new CoursesFeedReader(school, courses));
+		return courses;
 	}
 	
 	private class CoursesFeedReader extends DefaultHandler {
@@ -76,16 +70,16 @@ public class CoursesFeedParser implements ICoursesParser {
 		private static final String COURSE_GAIA = "gaia";
 		private static final String COURSE_GAIA_ID = "gaia_id";
 		private static final String COURSE_GAIA_NAME = "gaia_izena";
-		
 		private Course course_es, course_eu;
 		private School school;
 		private List<String> topics;
 		private Topic topic;
 		private StringBuffer sb;
+		private Map<String, List<Course>> courses;
 		
-		public CoursesFeedReader(School school) {
-			//courses_es.removeAll(courses_es);
-			//courses_eu.removeAll(courses_eu);
+		public CoursesFeedReader(School school, 
+				Map<String, List<Course>> courses) {
+			this.courses = courses;
 			this.school = school;
 		}
 		
@@ -126,8 +120,8 @@ public class CoursesFeedParser implements ICoursesParser {
 		public void endElement(String uri, String localName, String qName)
 				throws SAXException {
 			if(COURSE.equals(qName)) {
-				courses_es.add(this.course_es);
-				courses_eu.add(this.course_eu);
+				this.courses.get("es").add(this.course_es);
+				this.courses.get("eu").add(this.course_eu);
 			} else if(COURSE_ID.equals(qName)) {
 				this.course_es.setExternalId(this.school.getId() + "-" + this.sb.toString());
 				this.course_eu.setExternalId(this.school.getId() + "-" + this.sb.toString());

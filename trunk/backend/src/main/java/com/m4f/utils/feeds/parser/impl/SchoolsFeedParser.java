@@ -23,7 +23,6 @@ public class SchoolsFeedParser implements ISchoolsParser {
 	
 	@Autowired
 	private ContentAcquirer contentAcquirer;
-	private List<School> schools = new ArrayList<School>();
 	
 
 	public SchoolsFeedParser(ContentAcquirer cAcquirer) {
@@ -34,12 +33,13 @@ public class SchoolsFeedParser implements ISchoolsParser {
 	@Override
 	public List<School> getSchools(Provider provider) throws ParserConfigurationException, 
 		SAXException, IOException, Exception {
+		List<School> schools = new ArrayList<School>();
 		byte[] content = this.contentAcquirer.getContent(new URI(provider.getFeed())).toByteArray();
 		InputSource inputFeed = new InputSource(new ByteArrayInputStream(content));
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 		SAXParser sp = spf.newSAXParser();
-		sp.parse(inputFeed, new SchoolsFeedReader(provider));
-		return this.schools;
+		sp.parse(inputFeed, new SchoolsFeedReader(provider, schools));
+		return schools;
 	}
 	
 	private class SchoolsFeedReader extends DefaultHandler {
@@ -60,10 +60,12 @@ public class SchoolsFeedParser implements ISchoolsParser {
 		private ContactInfo info;
 		private StringBuffer sb;
 		private Provider provider;
+		private List<School> schools;
 		
-		public SchoolsFeedReader(Provider provider) {
+		public SchoolsFeedReader(Provider provider, List<School> schools) {
 			super();
 			this.provider = provider;
+			this.schools = schools;
 		}
 		
 		@Override

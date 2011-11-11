@@ -161,8 +161,8 @@
         <aop:aspect ref="multilanguageTranslator">           
             <aop:pointcut id="putMethods" expression="execution (* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.saveOrUpdate*(..)) and args(entity,locale)" />
          	<aop:after-returning pointcut-ref="putMethods" method="putMultilanguage" arg-names="entity,locale"/>
-         	<!--  <aop:pointcut id="putCollectionMethods" expression="execution (* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.saveOrUpdateCollection(..)) and args(entity,locale)" />
-         	<aop:after-returning pointcut-ref="putCollectionMethods" method="putMultilanguage" arg-names="entity,locale"/>-->
+         	<aop:pointcut id="saveMethod" expression="execution (* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.saveOrUpdateCollection*(..)) and args(entities,locale)" />
+         	<aop:after-returning pointcut-ref="saveMethod" method="collection" arg-names="entities,locale"/>
             <aop:pointcut id="loadSingleEntity" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.findById(..)) and args(clazz,locale,..)"/>
          	<aop:after-returning pointcut-ref="loadSingleEntity" method="loadEntity" returning="retVal" arg-names="clazz,retVal,locale"/>    
             <aop:pointcut id="loadSingleEntity2" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.findEntity(..)) and args(clazz,locale,..)"/>
@@ -171,8 +171,6 @@
             <aop:after-returning pointcut-ref="loadCollection" method="loadCollection" returning="retVal" arg-names="retVal,locale,clazz"/>
             <aop:pointcut id="loadCollection2" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.findEntities*(..)) and args(entityClass,locale,..)" />
             <aop:after-returning pointcut-ref="loadCollection2" method="loadCollection" returning="retVal" arg-names="retVal,locale,entityClass"/>
-            <!--  <aop:pointcut id="loadCollection3" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.findEntitiesByRange(..)) and args(entityClass,locale,..)" />
-            <aop:after-returning pointcut-ref="loadCollection3" method="loadCollection" returning="retVal" arg-names="retVal,locale,entityClass"/>-->
             <aop:pointcut id="deleteMethods" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.delete(..))" />
             <aop:around pointcut-ref="deleteMethods" method="deleteMultilanguage"/>
            	<aop:pointcut id="deleteCollection" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.delete(java.util.Collection,java.util.Locale)) and args(objs,locale)" />

@@ -34,7 +34,7 @@ public class ProviderController extends BaseController {
 		return this.providerService.getAllProviderIds();
 	}
 	
-	@RequestMapping(value = "/feed", method = RequestMethod.POST)
+	@RequestMapping(value = "/feed", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseStatus(HttpStatus.OK)
 	public void loadFeed(@RequestParam Long providerId) 
 			throws ParserConfigurationException, SAXException, IOException, Exception {
@@ -58,7 +58,7 @@ public class ProviderController extends BaseController {
 	}
 	
 	
-	@RequestMapping(value = "/schools", method = RequestMethod.POST)
+	@RequestMapping(value = "/schools", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseStatus(HttpStatus.OK)
 	public void loadSchools(@RequestParam Long providerId) 
 			throws ParserConfigurationException, SAXException, IOException, Exception {

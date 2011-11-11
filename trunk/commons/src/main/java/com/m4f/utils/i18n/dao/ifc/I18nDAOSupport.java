@@ -17,7 +17,7 @@ public interface I18nDAOSupport {
 	
 	void saveOrUpdate(BaseEntity entity, Locale locale) throws Exception;
 
-	<T extends BaseEntity> void saveOrUpdateCollection(Collection<T> objs, Locale locale) throws Exception; 
+	<T extends BaseEntity> void saveOrUpdateCollection(Collection<T> entities, Locale locale) throws Exception; 
     
     void delete(BaseEntity entity, Locale locale) throws Exception;
     

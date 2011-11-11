@@ -5,9 +5,13 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.Persistent;
+
+import com.m4f.business.domain.annotation.Comparable;
 import com.m4f.business.domain.ifc.Taggeable;
 import com.m4f.utils.i18n.annotations.Multilanguage;
 import com.m4f.utils.i18n.annotations.MultilanguageCollection;
+
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -45,6 +49,7 @@ public class Course extends BaseEntity implements Taggeable {
 	private Long id;
 	
 	@Persistent
+	@Comparable
 	private String externalId;
 	
 	@Persistent
@@ -58,20 +63,25 @@ public class Course extends BaseEntity implements Taggeable {
     @Persistent
     @NotNull
     @Multilanguage
+    @Comparable
     public String title;
     
     @Persistent
     @Multilanguage
+    @Comparable
     public String url;
     
     @Persistent
+    @Comparable
     private Date start;
     
     @Persistent
+    @Comparable
     private Date end;
     
     @Persistent
     @Multilanguage
+    @Comparable
     public Text information;
     
     @Persistent
@@ -205,15 +215,6 @@ public class Course extends BaseEntity implements Taggeable {
 	}
 
 	@Override
-	public String toString() {
-		StringBuffer sb = new StringBuffer("[");
-		sb.append("id: ").append(this.getId()).append(", ");
-		sb.append("title: ").append(this.title);
-		sb.append("]");
-		return sb.toString();
-	}
-
-	@Override
 	public void addTag(String tag) {
 		this.initTags();
 		this.tags.add(new Category(tag));
@@ -280,5 +281,25 @@ public class Course extends BaseEntity implements Taggeable {
 		}
 		
 		return equal;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer("[");
+		for(Field field: this.getClass().getDeclaredFields()) {
+			try {
+				if(!field.isAnnotationPresent(Comparable.class)) {
+					continue;
+				}
+				if(field.get(this) != null) {
+					String value = field.getName() + ":" + field.get(this).toString();
+					sb.append(value + ",");
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		sb.append("]");
+		return sb.toString();
 	}
 }

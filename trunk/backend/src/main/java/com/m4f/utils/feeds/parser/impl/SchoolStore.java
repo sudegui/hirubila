@@ -1,6 +1,7 @@
 package com.m4f.utils.feeds.parser.impl;
 
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,15 @@ import com.m4f.utils.feeds.parser.ifc.ISchoolStorage;
 public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 	
 	private static final Logger LOGGER = Logger.getLogger(SchoolStore.class.getName());
+	
+	private class SchoolComparator implements Comparator<School> {
+		@Override
+		public int compare(School o1, School o2) {
+			if(o1.toString().equals(o2.toString())) return 0;
+			return -1;
+		}
+		
+	}
 	
 	@Override
 	public Map<School, List<FieldError>> store(Collection<School> objs, 
@@ -39,16 +49,25 @@ public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 	
 	private void selectiveSchoolStore(School newSchool, Locale locale) 
 			throws NotSameClassException, Exception {	
+			newSchool.setCreated(Calendar.getInstance(new Locale("es")).getTime());
+			newSchool.setUpdated(newSchool.getCreated());
 			School oldSchool;
 			oldSchool = this.schoolService.getSchoolByExternalId(newSchool.getExternalId(), locale);
 			if(oldSchool == null) {
 				// Creacion de un centro nuevo.
-				newSchool.setCreated(Calendar.getInstance(new Locale("es")).getTime());
-				newSchool.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
+				LOGGER.info("Añadiendo nuevo centro: " + newSchool.getName());
 				this.entities.add(newSchool);
 			} else {
 				// Actualizacion de un centro existente.
 				// Logica de actualizacion
+				SchoolComparator comparator = new SchoolComparator();
+				if(comparator.compare(newSchool, oldSchool) == 0) {
+					LOGGER.info("Centro existente y NO MODIFICADO");
+					return;
+				}
+				LOGGER.info("Centro existente y MODIFICADO");
+				LOGGER.info("OldSchool: " + oldSchool);
+				LOGGER.info("NewSchool: " + newSchool);
 				Set<String> properties = new HashSet<String>();
 				properties.add("telephone");
 				properties.add("fax");
@@ -74,7 +93,6 @@ public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 	@Override
 	protected void flush(Locale locale) throws Exception {
 		schoolService.save(entities, locale);
-
 	}
 
 }

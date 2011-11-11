@@ -13,10 +13,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.logging.Logger;
 import org.jdom.output.*;
 import java.io.ByteArrayOutputStream;
 
 public class JDOMDiffer implements Differ {
+	
+	private static final Logger LOGGER = Logger.getLogger(JDOMDiffer.class.getName());
 	
 	private class ExtendElement {
 		
@@ -46,9 +49,7 @@ public class JDOMDiffer implements Differ {
 		@Override
 		public boolean equals(java.lang.Object ob) {
 			return this.toString().equals(ob.toString());
-		}
-		
-		
+		}	
 		
 		@Override
 		public int hashCode() {
@@ -63,10 +64,8 @@ public class JDOMDiffer implements Differ {
 		builder.setValidation(false);
 		Document docA = builder.build(new ByteArrayInputStream(xmlA));
 		Document docB = builder.build(new ByteArrayInputStream(xmlB));
-		
 		List<Element> childs = docB.getRootElement().getChildren();
 		Iterator i = childs.iterator();
-	   
 		while (i.hasNext()) {
 	    	Element clonedChild = (Element)(((Element)((Element)i.next()).clone()).detach());
 	    	System.out.println("Unique-ID: " + clonedChild.getChild("unique_id").getText());
@@ -81,10 +80,6 @@ public class JDOMDiffer implements Differ {
 	    			clonedChild.getChild("unique_id").getText() + "]/.");
 	    	list = xPath.selectNodes(docA);
 	    }
-	    
-	    
-	    
-	    
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		XMLOutputter xop = new XMLOutputter();
 		xop.output(docA, bos);
@@ -109,11 +104,9 @@ public class JDOMDiffer implements Differ {
 		for(Element child: children) {
 			groupB.add(new ExtendElement(child));
 		}
-		
-		
 		//Solo quedaran los nuevos
-		System.out.println("RemoveAll: " + groupA.removeAll(groupB));
-		System.out.println("Group A size: " + groupA.size());
+		LOGGER.info("RemoveAll: " + groupA.removeAll(groupB));
+		LOGGER.info("Group A size: " + groupA.size());
 		return this.buildFinalXML(docA, groupA);
 	}
 	
