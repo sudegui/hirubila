@@ -75,6 +75,7 @@ public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 				properties.add("webSite");
 				properties.add("streetAddress");
 				properties.add("city");
+				properties.add("email");
 				this.beanManager.mergeObjects(newSchool.getContactInfo(), 
 						oldSchool.getContactInfo(), properties);
 				properties = new HashSet<String>();
