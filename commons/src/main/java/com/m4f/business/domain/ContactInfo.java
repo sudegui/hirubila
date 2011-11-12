@@ -8,7 +8,7 @@ import java.util.List;
 import javax.jdo.annotations.EmbeddedOnly;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
-import com.m4f.business.domain.annotation.Comparable;
+import com.m4f.business.domain.annotation.Imported;
 import com.m4f.utils.i18n.annotations.Multilanguage;
 
 @SuppressWarnings("serial")
@@ -17,11 +17,11 @@ import com.m4f.utils.i18n.annotations.Multilanguage;
 public class ContactInfo implements Serializable {
 	
 	@Persistent
-	@Comparable
+	@Imported
 	public String telephone;
 	
 	@Persistent
-	@Comparable
+	@Imported
 	public String fax;
 	
 	@Persistent
@@ -30,24 +30,24 @@ public class ContactInfo implements Serializable {
 	
 	@Persistent
 	@Multilanguage
-	@Comparable
+	@Imported
 	public String city;
 	
 	@Persistent
-	@Comparable
+	@Imported
 	public String zipCode;
 	
 	@Persistent
 	@Multilanguage
-	@Comparable
+	@Imported
 	public String streetAddress;
 	
 	@Persistent
-	@Comparable
+	@Imported
 	public String webSite;
 	
 	@Persistent
-	@Comparable
+	@Imported
 	public String email;
 		
 	public String getTelephone() {
@@ -119,7 +119,7 @@ public class ContactInfo implements Serializable {
 		StringBuffer sb = new StringBuffer("[");
 		for(Field field: this.getClass().getDeclaredFields()) {
 			try {
-				if(!field.isAnnotationPresent(Comparable.class)) {
+				if(!field.isAnnotationPresent(Imported.class)) {
 					continue;
 				}
 				if(field.get(this) != null) {

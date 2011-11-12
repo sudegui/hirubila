@@ -6,7 +6,7 @@ import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.Persistent;
 
-import com.m4f.business.domain.annotation.Comparable;
+import com.m4f.business.domain.annotation.Imported;
 import com.m4f.business.domain.ifc.Taggeable;
 import com.m4f.utils.i18n.annotations.Multilanguage;
 import com.m4f.utils.i18n.annotations.MultilanguageCollection;
@@ -49,7 +49,7 @@ public class Course extends BaseEntity implements Taggeable {
 	private Long id;
 	
 	@Persistent
-	@Comparable
+	@Imported
 	private String externalId;
 	
 	@Persistent
@@ -63,25 +63,25 @@ public class Course extends BaseEntity implements Taggeable {
     @Persistent
     @NotNull
     @Multilanguage
-    @Comparable
+    @Imported
     public String title;
     
     @Persistent
     @Multilanguage
-    @Comparable
+    @Imported
     public String url;
     
     @Persistent
-    @Comparable
+    @Imported
     private Date start;
     
     @Persistent
-    @Comparable
+    @Imported
     private Date end;
     
     @Persistent
     @Multilanguage
-    @Comparable
+    @Imported
     public Text information;
     
     @Persistent
@@ -281,25 +281,5 @@ public class Course extends BaseEntity implements Taggeable {
 		}
 		
 		return equal;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuffer sb = new StringBuffer("[");
-		for(Field field: this.getClass().getDeclaredFields()) {
-			try {
-				if(!field.isAnnotationPresent(Comparable.class)) {
-					continue;
-				}
-				if(field.get(this) != null) {
-					String value = field.getName() + ":" + field.get(this).toString();
-					sb.append(value + ",");
-				}
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		sb.append("]");
-		return sb.toString();
 	}
 }

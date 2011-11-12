@@ -45,9 +45,12 @@ public class ProviderController extends BaseController {
 		try {
 			Provider provider = this.providerService.getProviderById(providerId, null);
 			Collection<School> schools = schoolsParser.getSchools(provider);
-			for(Locale locale : this.configurationService.getLocales()) {
-				this.storeSchools(provider, schools, locale);
-			}
+			/**
+			 * El feed de centros no es multidioma, con lo cual no hay que procesar cada una de las locales
+			 * for(Locale locale : this.configurationService.getLocales()) {this.storeSchools(provider,schools,locale);}	
+			 */
+			this.storeSchools(provider, schools, 
+					this.configurationService.getDefaultLocale());
 			report.setResult("OK");
 		} catch(Exception e) {
 			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
@@ -77,7 +80,8 @@ public class ProviderController extends BaseController {
 			for (Integer page : paginator.getTotalPagesIterator()) {
 				int start = (page - 1) * RANGE;
 				int end = (page) * RANGE;
-				Collection<School> schools = schoolService.getSchoolsByProvider(providerId, "updated", null, start, end);
+				Collection<School> schools = schoolService.getSchoolsByProvider(providerId, 
+						"updated", null, start, end);
 				for(School school : schools) {
 					this.createLoadTask(provider, school);
 				}
