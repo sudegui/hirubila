@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import com.m4f.business.domain.annotation.Comparable;
+import com.m4f.business.domain.annotation.Imported;
 import javax.jdo.annotations.Embedded;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -16,7 +16,7 @@ import java.lang.annotation.Annotation;
 import com.google.appengine.api.datastore.GeoPt;
 import com.m4f.utils.i18n.annotations.Multilanguage;
 import com.m4f.utils.i18n.annotations.MultilanguageEmbedded;
-import com.m4f.business.domain.annotation.Comparable;
+import com.m4f.business.domain.annotation.Imported;
 
 @SuppressWarnings("serial")
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
@@ -27,13 +27,13 @@ public class School extends BaseEntity {
 	private Long id;
 
 	@Persistent
-	@Comparable
+	@Imported
 	private String externalId;
 	
 	@Persistent
 	@Multilanguage
 	@NotNull
-	@Comparable
+	@Imported
 	public String name;
 		
 	@Persistent(defaultFetchGroup="true")
@@ -42,12 +42,12 @@ public class School extends BaseEntity {
 	@Persistent(defaultFetchGroup="true")
 	@Embedded
 	@MultilanguageEmbedded
-	@Comparable
+	@Imported
 	public ContactInfo contactInfo;
 	
 	@Persistent
 	//@Pattern(regexp="(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]", message="Bad feed url")
-	@Comparable
+	@Imported
 	public String feed;
 		
 	@Persistent
@@ -149,24 +149,5 @@ public class School extends BaseEntity {
 		return provider;
 	}
 	
-	@Override
-	public String toString() {
-		StringBuffer sb = new StringBuffer("[");
-		for(Field field: this.getClass().getDeclaredFields()) {
-			try {
-				if(!field.isAnnotationPresent(Comparable.class)) {
-					continue;
-				}
-				if(field.get(this) != null) {
-					String value = field.getName() + ":" + field.get(this).toString();
-					sb.append(value + ",");
-				}
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		sb.append("]");
-		return sb.toString();
-	}
 
 }

@@ -93,6 +93,11 @@ public class AppConfigurationServiceImpl extends DAOBaseService implements IAppC
 			this.globalConfiguration = this.defaultConfiguration;
 		}
 	}
+
+	@Override
+	public Locale getDefaultLocale() throws Exception {
+		return this.avLocales.get(0);
+	}
 	
 	
 }

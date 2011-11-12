@@ -12,4 +12,5 @@ public interface IAppConfigurationService {
     void deleteGlobalConfiguration() throws Exception;
     Map<String, Locale> getLocalesMap() throws Exception;
     List<Locale> getLocales() throws Exception;
+    Locale getDefaultLocale() throws Exception;
 }

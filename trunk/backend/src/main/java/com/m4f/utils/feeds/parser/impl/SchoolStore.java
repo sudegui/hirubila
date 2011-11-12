@@ -55,17 +55,17 @@ public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 			oldSchool = this.schoolService.getSchoolByExternalId(newSchool.getExternalId(), locale);
 			if(oldSchool == null) {
 				// Creacion de un centro nuevo.
-				LOGGER.info("Añadiendo nuevo centro: " + newSchool.getName());
+				LOGGER.info("Adding new school: " + newSchool.getName());
 				this.entities.add(newSchool);
 			} else {
 				// Actualizacion de un centro existente.
 				// Logica de actualizacion
 				SchoolComparator comparator = new SchoolComparator();
 				if(comparator.compare(newSchool, oldSchool) == 0) {
-					LOGGER.info("Centro existente y NO MODIFICADO");
+					LOGGER.info("Existing school but NOT MODIFIED");
 					return;
 				}
-				LOGGER.info("Centro existente y MODIFICADO");
+				LOGGER.info("Existing school but MODIFIED");
 				LOGGER.info("OldSchool: " + oldSchool);
 				LOGGER.info("NewSchool: " + newSchool);
 				Set<String> properties = new HashSet<String>();
