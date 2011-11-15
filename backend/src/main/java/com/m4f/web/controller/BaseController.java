@@ -50,9 +50,6 @@ public abstract class BaseController {
 	
 	@Autowired
 	private ReloadableResourceBundleMessageSource messageSource;
-	/*@Autowired
-	protected IServiceLocator serviceLocator;*/
-	
 	@Autowired
 	protected ISchoolStorage schoolStorage;
 	@Autowired

@@ -176,6 +176,11 @@
            	<aop:pointcut id="deleteCollection" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.delete(java.util.Collection,java.util.Locale)) and args(objs,locale)" />
             <aop:after-returning pointcut-ref="deleteCollection" method="deleteCollection" arg-names="objs,locale"/>                   
         </aop:aspect>
+        
+        <aop:aspect ref="cacheInterceptor">
+            <aop:pointcut id="cacheFlush" expression="@annotation(com.m4f.utils.cache.annotations.Cacheflush)" />
+            <aop:around pointcut-ref="cacheFlush" method="cacheFlush"/>
+         </aop:aspect>
          
     </aop:config>
 	

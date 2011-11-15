@@ -1,5 +1,6 @@
 package com.m4f.utils.feeds.parser.aspect;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
@@ -11,12 +12,18 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.FieldError;
+
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.business.domain.Course;
 import com.m4f.business.service.ifc.I18nCourseService;
+import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
+import com.m4f.utils.feeds.tasks.GenerateSchoolCatalog;
 import com.m4f.utils.seo.ifc.SeoCatalogBuilder;
 
 @Aspect
@@ -24,10 +31,11 @@ public class StoreHypervisor {
 	
 	private static final Logger LOGGER = Logger.getLogger(StoreHypervisor.class.getName());
 	@Autowired
-	private SeoCatalogBuilder catalogBuilder;
-	@Autowired
 	protected I18nCourseService courseService;
-	
+	@Autowired
+	protected IAppConfigurationService configurationService;
+	@Autowired
+	protected SeoCatalogBuilder catalogBuilder;
 	
 	@Pointcut("execution(* com.m4f.utils.feeds.parser.ifc.ISchoolStorage.store(..)) && args(objs,locale,provider)")
 	private void schoolsStoreOperation(Collection<School> objs, Locale locale, Provider provider) {}
@@ -86,27 +94,27 @@ public class StoreHypervisor {
 			LOGGER.severe("CreatedDate: " + school.getCreated() + 
 					"-UpdatedDate: " + school.getUpdated());*/
 			if(!school.getCreated().equals(school.getUpdated())) {
-				LOGGER.info("Generar todo el catálogo del centro " + school.getName());		
-				generateSchoolCatalog(provider, school, locale);
+				LOGGER.info("Generar todo el catálogo del centro " + school.getName());
+				/**
+				 * Debido a que el feed de centros no viene en dos idiomas la carga sólo
+				 * contempla el idioma por defecto. Por eso en este punto hay que formar
+				 * la creación del catálogo en todos los idiomas disponibles.
+				*/
+				for(Locale systemLocale : this.configurationService.getLocales()) {
+					generateSchoolCatalog(provider, school, systemLocale);
+				}
 			}
 		}
 	}
 	
-	private void generateSchoolCatalog(Provider provider, School school, 
-			Locale locale) throws Exception {
-		final int RANGE = 300;
-		PageManager<Course> paginator = new PageManager<Course>();
-		long total = courseService.countCoursesBySchool(school);
-		paginator.setOffset(RANGE);
-		paginator.setStart(0);
-		paginator.setSize(total);
-		for (Integer page : paginator.getTotalPagesIterator()) {
-			int start = (page - 1) * RANGE;
-			int end = (page) * RANGE;
-			Collection<Course> courses = courseService.getCourses("id", locale,
-					start, end);
-			this.catalogBuilder.buildSeo(courses, school, provider, locale);
-		}
+	private void generateSchoolCatalog(Provider p, School s, 
+			Locale l) throws Exception {
+		TaskOptions taskOptions = 
+				TaskOptions.Builder.withPayload(new GenerateSchoolCatalog(p,s,l));
+		taskOptions.taskName(l.getLanguage()+ "-GenerateSchoolCatalog-" + s.getId() + 
+				"-" + Calendar.getInstance().getTimeInMillis());
+		Queue queue = QueueFactory.getQueue(configurationService.getGlobalConfiguration().SCHOOL_QUEUE);
+		queue.add(taskOptions);
 	}
 	
 	private void validCourses(Collection<Course> courses, School school, 
@@ -114,8 +122,5 @@ public class StoreHypervisor {
 		this.catalogBuilder.buildSeo(courses, school, provider, locale);
 	}
 	
-	private void problematicCourses(Collection<Course> courses, Locale locale) {
-		
-	}
 	
 }

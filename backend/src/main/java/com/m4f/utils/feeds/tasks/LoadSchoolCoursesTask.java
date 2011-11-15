@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.springframework.web.context.ContextLoader;
 import com.google.appengine.api.taskqueue.DeferredTask;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.Provider;

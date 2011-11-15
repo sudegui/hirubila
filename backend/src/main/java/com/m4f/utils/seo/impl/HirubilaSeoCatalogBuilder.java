@@ -22,7 +22,6 @@ import com.m4f.business.service.ifc.IAppConfigurationService;
 import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.utils.seo.ifc.SeoCatalogBuilder;
 import com.m4f.business.service.ifc.I18nTerritorialService;
-import com.m4f.business.domain.School;
 
 public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 
@@ -109,7 +108,6 @@ public class HirubilaSeoCatalogBuilder implements SeoCatalogBuilder {
 		if(catalogOld != null) {
 			catalog.setId(catalogOld.getId());
 		}
-		
 		LOGGER.info(new StringBuffer("Fin generacion instancia de catalago del curso: ")
 			.append(course.getId()).append(" y locale: ").append(locale).toString());
 		catalogService.save(catalog);

@@ -65,9 +65,7 @@ public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 					LOGGER.info("Existing school but NOT MODIFIED");
 					return;
 				}
-				LOGGER.info("Existing school but MODIFIED");
-				LOGGER.info("OldSchool: " + oldSchool);
-				LOGGER.info("NewSchool: " + newSchool);
+				LOGGER.severe("Existing school but MODIFIED");
 				Set<String> properties = new HashSet<String>();
 				properties.add("telephone");
 				properties.add("fax");
