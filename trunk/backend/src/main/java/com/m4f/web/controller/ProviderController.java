@@ -44,6 +44,7 @@ public class ProviderController extends BaseController {
 		report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
 		try {
 			Provider provider = this.providerService.getProviderById(providerId, null);
+			report.setDescription("Importing schools from " + provider.getName() + " provider.");
 			Collection<School> schools = schoolsParser.getSchools(provider);
 			/**
 			 * El feed de centros no es multidioma, con lo cual no hay que procesar cada una de las locales
@@ -63,7 +64,7 @@ public class ProviderController extends BaseController {
 	
 	@RequestMapping(value = "/schools", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseStatus(HttpStatus.OK)
-	public void loadSchools(@RequestParam Long providerId) 
+	public void loadSchools(@RequestParam(required=false) Long providerId) 
 			throws ParserConfigurationException, SAXException, IOException, Exception {
 		CronTaskReport report = cronTaskReportService.create();
 		report.setObject_id(providerId);
@@ -72,6 +73,7 @@ public class ProviderController extends BaseController {
 		final int RANGE = 100;
 		try {
 			Provider provider = this.providerService.getProviderById(providerId, null);
+			report.setDescription("Importing courses from " + provider.getName() + " provider.");
 			PageManager<School> paginator = new PageManager<School>();
 			long total = schoolService.countSchoolsByProvider(providerId);
 			paginator.setOffset(RANGE);

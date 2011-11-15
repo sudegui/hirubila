@@ -1,6 +1,8 @@
 package com.m4f.utils.feeds.parser.aspect;
 
 import java.net.URI;
+
+import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.dao.ifc.DAOSupport;
 import com.m4f.utils.diff.xml.ifc.Differ;
 import com.m4f.utils.feeds.parser.model.Feed;
@@ -9,8 +11,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.AfterReturning;
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import com.m4f.utils.feeds.parser.service.ifc.IParserService;
 
 @Aspect
 public class FeedContentOptimizer {
@@ -18,9 +21,8 @@ public class FeedContentOptimizer {
 	@Autowired
 	private Differ differ;
 	@Autowired
-	private IParserService parserService;
-	@Autowired
 	private DAOSupport dao;
+	private static final Logger LOGGER = Logger.getLogger(FeedContentOptimizer.class.getName());
 	
 	public FeedContentOptimizer() {}
 	
@@ -45,7 +47,6 @@ public class FeedContentOptimizer {
 				loadEvent.setDiffContent(diffContent);
 				byte[] mergedContent = this.differ.merge(persistContent.getContent(), diffContent);
 				persistContent.setContent(mergedContent);
-				
 			} else {
 				persistContent = this.dao.createInstance(Feed.class);
 				persistContent.setKey(source.toASCIIString());
@@ -56,17 +57,18 @@ public class FeedContentOptimizer {
 			persistContent.addLoadEvent(loadEvent);
 			this.dao.saveOrUpdate(persistContent);
 		} catch(Exception e) {
-			e.printStackTrace();
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}
 	}
 	
 	
 	private Feed getStoreContent(URI source) {	
+		Feed feed = null;
 		try {
-			return this.dao.findByKey(Feed.class, source.toASCIIString());
+			feed = this.dao.findByKey(Feed.class, source.toASCIIString());
 		} catch(Exception e) {
-			return null;
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}
-		
+		return feed;
 	}
 }

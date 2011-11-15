@@ -54,6 +54,8 @@ private static final Logger LOGGER = Logger.getLogger(InternalFeedServiceImpl.cl
 	public static final String SCHOOL_DETAIL_URL = "/extended/public/school/feed/";
 	public static final String COURSES_FEED = "/extended/public/course/feed/";
 	
+	private static final String COURSE_DETAIL_URL = "/extended/public/course/";
+	
 	// Course's constants
 	private static final String COURSE_ROOT = "kurtsoak";
 	private static final String COURSE_ELEMENT = "kurtsoa";
@@ -72,7 +74,7 @@ private static final Logger LOGGER = Logger.getLogger(InternalFeedServiceImpl.cl
 		COURSE_ATTR_END, COURSE_ATTR_INFO, COURSE_ATTR_GAIAK};
 	private static final String[] GAIA_ATTRS = {GAIA_ATTR_ID, GAIA_ATTR_NAME};
 	
-	private static final String COURSE_DETAIL_URL = "/extended/public/course/";
+	
 	
 	I18nExtendedSchoolService schoolService;
 	I18nExtendedCourseService courseService;
@@ -111,8 +113,6 @@ private static final Logger LOGGER = Logger.getLogger(InternalFeedServiceImpl.cl
 			ExtendedSchool school = this.schoolService.getSchool(course.getSchool(), locale);
 			if(school != null) schools.put(school.getId(), school);
 		}
-		//OLD List<ExtendedSchool> schools = this.schoolService.getAllSchools(null, locales.get(0));
-		
 		
 		for(ExtendedSchool school : schools.values()) {
 			Element schoolNode = new Element(SCHOOL_ELEMENT);
@@ -156,10 +156,9 @@ private static final Logger LOGGER = Logger.getLogger(InternalFeedServiceImpl.cl
 		Document document = new Document(root);
 	    XMLOutputter outputter = new XMLOutputter();		
 	    String content = outputter.outputString(document);
-	    feed.setContent(new Blob(content.getBytes()));
+	    feed.setContent(new Blob(content.getBytes("UTF-8")));
 	    feed.setDate(new Date());
 	    feed.setProviderId(provider.getId());
-	    
 		return feed;
 	}
 
