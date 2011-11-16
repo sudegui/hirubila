@@ -2,6 +2,7 @@ package com.m4f.web.controller;
 
 import java.util.Locale;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,25 +68,30 @@ public class CatalogController extends BaseController {
 	}
 	
 	@RequestMapping(value="/reglated/course/detail/{courseId}", method=RequestMethod.GET)
-	public String reglatedDetail(@PathVariable Long courseId, Model model, Locale locale) {
-		return this.redirectToCourseDetail(courseId, model, locale);
+	public String reglatedDetail(@PathVariable Long courseId, Model model, Locale locale, 
+			HttpServletResponse response) {
+		return this.redirectToCourseDetail(response, courseId, model, locale);
 	}
 	
 	@RequestMapping(value="/non-reglated/course/detail/{courseId}", method=RequestMethod.GET)
-	public String nonReglatedDetail(@PathVariable Long courseId, Model model, Locale locale) {
-		return this.redirectToCourseDetail(courseId, model, locale);
+	public String nonReglatedDetail(@PathVariable Long courseId, Model model, Locale locale, 
+			HttpServletResponse response) {
+		return this.redirectToCourseDetail(response, courseId, model, locale);
 	}
 	
 	@RequestMapping(value="/course/detail/{courseId}", method=RequestMethod.GET)
-	public String detail(@PathVariable Long courseId, Model model, Locale locale) {
-		return this.redirectToCourseDetail(courseId, model, locale);
+	public String detail(@PathVariable Long courseId, Model model, 
+			Locale locale, HttpServletResponse response) {
+		return this.redirectToCourseDetail(response, courseId, model, locale);
 	}
 	
-	private String redirectToCourseDetail(Long courseId, Model model, Locale locale) {
+	private String redirectToCourseDetail(HttpServletResponse response, 
+			Long courseId, Model model, Locale locale) {
 		try {
 			CourseCatalog courseCatalog = 
 				this.serviceLocator.getCatalogService().getCourseCatalogByCourseId(courseId, locale);
 			model.addAttribute("course", courseCatalog);
+			response.addDateHeader("Last-Modified", courseCatalog.getStart().getTime());;
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";

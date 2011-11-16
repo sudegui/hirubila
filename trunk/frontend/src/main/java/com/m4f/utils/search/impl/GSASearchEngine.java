@@ -89,7 +89,6 @@ public class GSASearchEngine implements ISearchEngine {
 			}
 			if(!url.toString().endsWith("&")) url.append("&");
 		}
-		
 		// Set GSA's properties (//&output=xml client=gipuzkoa_kultura)
 		// TODO add or update this list of properties
 		
@@ -98,8 +97,8 @@ public class GSASearchEngine implements ISearchEngine {
 		url.append("&");
 		url.append("filter=0");
 		url.append("&");
-		url.append("client=hiru");
-		url.append("&");
+		url.append("client=" + parameters.getParam(PARAM.CLIENT));
+		url.append("&date:D:S:d1");
 		LOGGER.severe("### GSA search url: " + url);
 		//url.append("client=").append("gipuzkoa_kultura");
 		//url.append("&");

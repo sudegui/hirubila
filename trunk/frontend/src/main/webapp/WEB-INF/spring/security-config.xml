@@ -14,6 +14,7 @@
 		
 		<security:intercept-url pattern="/" access="permitAll"/>	
 		<security:intercept-url pattern="/static/**" filters="none"/>
+		<security:intercept-url pattern="/_ah/**" filters="none"/>
 		<security:intercept-url pattern="/favicon.ico" filters="none" />
 		<security:intercept-url pattern="/**/ping" filters="none"/>
 		<security:intercept-url pattern="/**/admin/**" access="hasRole('ROLE_ADMIN')"/>

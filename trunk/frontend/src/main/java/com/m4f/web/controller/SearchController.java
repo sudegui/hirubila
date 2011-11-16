@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -49,7 +50,7 @@ import com.m4f.web.bind.form.SearchForm;
 public class SearchController extends BaseController {
 	
 	private static final Logger LOGGER = Logger.getLogger(SearchController.class.getName());
-	
+	private static final String gsa_client = "hirubila";
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String getSearchForm(
@@ -63,6 +64,7 @@ public class SearchController extends BaseController {
 			if (q != null && !("").equals(q)) {
 				StringTokenizer terms = new StringTokenizer(q.trim());
 				SearchParamsImpl params = new SearchParamsImpl();
+				params.addParam(PARAM.CLIENT, gsa_client);
 				params.addParam(PARAM.SEARCH_URI, this.serviceLocator.getAppConfigurationService().
 						getGlobalConfiguration().getSearchUri());
 				params.addParam(PARAM.BASE_COLLECTION_NAME, collection);												
@@ -111,6 +113,7 @@ public class SearchController extends BaseController {
 			}
 			StringTokenizer terms = new StringTokenizer(searchForm.getQuery().trim());
 			SearchParamsImpl params = new SearchParamsImpl();
+			params.addParam(PARAM.CLIENT, gsa_client);
 			params.addParam(PARAM.SEARCH_URI, this.serviceLocator.getAppConfigurationService().
 					getGlobalConfiguration().getSearchUri());
 			params.addParam(PARAM.BASE_COLLECTION_NAME, searchForm.getCollection());
@@ -127,7 +130,6 @@ public class SearchController extends BaseController {
 				paginator.setSize(0);
 			}
 			model.addAttribute("paginator", paginator);
-
 		} catch (Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
@@ -284,7 +286,8 @@ public class SearchController extends BaseController {
 				terms = new StringTokenizer(searchForm.getQuery().trim());
 			}
 			 
-			SearchParamsImpl params = new SearchParamsImpl(); 
+			SearchParamsImpl params = new SearchParamsImpl();
+			params.addParam(PARAM.CLIENT, gsa_client);
 			params.addParam(PARAM.SEARCH_URI, this.serviceLocator.getAppConfigurationService().
 					getGlobalConfiguration().getSearchUri());
 			params.addParam(PARAM.BASE_COLLECTION_NAME, this.serviceLocator.getAppConfigurationService().
