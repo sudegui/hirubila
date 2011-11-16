@@ -2,7 +2,7 @@
 <urlrewrite default-match-type="wildcard">
 	<rule>
 		<from>/home</from>
-		<to>/app/home/$1?lang=es</to>
+		<to>/app/home/?lang=es</to>
 	</rule>
 	<rule>
 		<from>/mediation/**</from>

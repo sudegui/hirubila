@@ -1,24 +1,17 @@
 package com.m4f.web.controller;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
-
-import org.junit.Assert;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 import com.m4f.business.domain.Provider;
 
 @Controller
 @RequestMapping("/home")
 public class HomeController extends BaseController {
-
-	private static final Logger LOGGER = Logger.getLogger(HomeController.class.getName());
-		
+	
 	public HomeController() {
 		super();
 	}
@@ -28,7 +21,7 @@ public class HomeController extends BaseController {
 	public void getHome(Locale locale) throws Exception {
 		Provider provider = providerService.createProvider();
 		provider.setName("Proveedor local");
-		provider.setFeed("http://clients.m4f.es/zentruak_hezkuntza.xml");
+		provider.setFeed("http://localhost/feeds/zentruak_test.xml");
 		providerService.save(provider, new Locale("es"));
 		provider = providerService.createProvider();
 		provider.setName("Tolosaldea provider");

@@ -19,6 +19,10 @@
 		<to>/schema/$1</to>
 	</rule>
 	
+	<rule>
+		<from>/_ah/**</from>
+		<to>/_ah/$1</to>
+	</rule>
 	
 	<rule>
 		<from>/login</from>
