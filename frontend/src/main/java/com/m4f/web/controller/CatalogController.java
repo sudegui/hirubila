@@ -16,7 +16,9 @@ import com.m4f.utils.StackTraceUtil;
 @Controller
 @RequestMapping("/catalog")
 public class CatalogController extends BaseController {
+	
 	private static final Logger LOGGER = Logger.getLogger(CatalogController.class.getName());
+	private static final String ORDERING_PROPERTY = "id";
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getIndex() {
@@ -35,8 +37,8 @@ public class CatalogController extends BaseController {
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/reglated/course/list");
 			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setSize(this.serviceLocator.getCatalogService().countCourseCatalog(true, locale));
-			paginator.setCollection(this.serviceLocator.getCatalogService().getCoursesCatalog(true, "title", locale, 
-					paginator.getStart(), paginator.getEnd()));
+			paginator.setCollection(this.serviceLocator.getCatalogService().getCoursesCatalog(true, 
+					"-" + ORDERING_PROPERTY, locale, paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("type", "reglated");
 		} catch(Exception e) {
@@ -56,8 +58,8 @@ public class CatalogController extends BaseController {
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/non-reglated/course/list");
 			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setSize(this.serviceLocator.getCatalogService().countCourseCatalog(false, locale));
-			paginator.setCollection(this.serviceLocator.getCatalogService().getCoursesCatalog(false, "title", locale, 
-					paginator.getStart(), paginator.getEnd()));
+			paginator.setCollection(this.serviceLocator.getCatalogService().getCoursesCatalog(false, 
+					"-" + ORDERING_PROPERTY, locale, paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("type", "non-reglated");
 		} catch(Exception e) {
