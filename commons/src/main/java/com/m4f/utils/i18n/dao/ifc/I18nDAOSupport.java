@@ -37,7 +37,7 @@ public interface I18nDAOSupport {
 	
 	<T extends BaseEntity> List<T> findAll(Class<T> clazz, Locale locale, String ordering) throws Exception;
     
-    <T extends BaseEntity> Collection<T> findEntities(Class<T> entityClass, Locale locale, String filter, String params, Object[] values, String ordering);
+    <T extends BaseEntity> Collection<T> findEntities(Class<T> clazz, Locale locale, String filter, String params, Object[] values, String ordering);
     
     <T extends BaseEntity> Collection<T> findEntitiesByRange(Class<T> entityClass, Locale locale, int init, int end, String ordering);
 	

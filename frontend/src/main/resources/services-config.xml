@@ -9,6 +9,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 	
+	<aop:aspectj-autoproxy/>
 	
 	<bean id="beanManager" class="com.m4f.utils.beans.BeanManager"/>
 	
@@ -111,10 +112,7 @@
 	
 	
 	<!-- A service interceptor that intercepts other services with methods annotated. -->
-    <bean id="multilanguageTranslator" class="com.m4f.utils.i18n.MultilanguageInterceptor">
-    	<constructor-arg index="0" ref="i18nService"/>
-    	<constructor-arg index="1" ref="beanManager"/>
-    </bean>
+    <bean id="multilanguageTranslator" class="com.m4f.utils.i18n.MultilanguageInterceptor"/>
     
     <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
     <bean id="cacheInterceptor" class="com.m4f.utils.cache.CacheInterceptor"/>
@@ -123,32 +121,9 @@
 	<bean id="cronTaskReport" class="com.m4f.business.service.impl.CronTaskReportServiceImpl">
 		<constructor-arg index="0" ref="jdoDAO"/>
 	</bean>
-	
-    
-   	<aop:aspectj-autoproxy/>
-   
+
+
     <aop:config>
-    	
-        <aop:aspect ref="multilanguageTranslator">           
-            <aop:pointcut id="putMethods" expression="execution (* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.saveOrUpdate*(..)) and args(entity,locale)" />
-         	<aop:after-returning pointcut-ref="putMethods" method="putMultilanguage" arg-names="entity,locale"/>
-         	<!--  <aop:pointcut id="putCollectionMethods" expression="execution (* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.saveOrUpdateCollection(..)) and args(entity,locale)" />
-         	<aop:after-returning pointcut-ref="putCollectionMethods" method="putMultilanguage" arg-names="entity,locale"/>-->
-            <aop:pointcut id="loadSingleEntity" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.findById(..)) and args(clazz,locale,..)"/>
-         	<aop:after-returning pointcut-ref="loadSingleEntity" method="loadEntity" returning="retVal" arg-names="clazz,retVal,locale"/>    
-            <aop:pointcut id="loadSingleEntity2" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.findEntity(..)) and args(clazz,locale,..)"/>
-         	<aop:after-returning pointcut-ref="loadSingleEntity2" method="loadEntity" returning="retVal" arg-names="clazz,retVal,locale"/>
-            <aop:pointcut id="loadCollection" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.findAll(..)) and args(clazz,locale,..)" />
-            <aop:after-returning pointcut-ref="loadCollection" method="loadCollection" returning="retVal" arg-names="retVal,locale,clazz"/>
-            <aop:pointcut id="loadCollection2" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.findEntities*(..)) and args(entityClass,locale,..)" />
-            <aop:after-returning pointcut-ref="loadCollection2" method="loadCollection" returning="retVal" arg-names="retVal,locale,entityClass"/>
-            <!--  <aop:pointcut id="loadCollection3" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.findEntitiesByRange(..)) and args(entityClass,locale,..)" />
-            <aop:after-returning pointcut-ref="loadCollection3" method="loadCollection" returning="retVal" arg-names="retVal,locale,entityClass"/>-->
-            <aop:pointcut id="deleteMethods" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.delete(..))" />
-            <aop:around pointcut-ref="deleteMethods" method="deleteMultilanguage"/>
-           	<aop:pointcut id="deleteCollection" expression="execution(* com.m4f.utils.i18n.dao.ifc.I18nDAOSupport.delete(java.util.Collection,java.util.Locale)) and args(objs,locale)" />
-            <aop:after-returning pointcut-ref="deleteCollection" method="deleteCollection" arg-names="objs,locale"/>                   
-        </aop:aspect>
           
           <aop:aspect ref="cacheInterceptor">
          	<aop:pointcut id="cacheAble" expression="@annotation(com.m4f.utils.cache.annotations.Cacheable)" />
