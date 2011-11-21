@@ -125,11 +125,6 @@
 	</error-page>
 	
 	<error-page>
-        <exception-type>org.springframework.web.multipart.MultipartException</exception-type>
-        <location>/app/error/upload-error</location>
-    </error-page>
-    
-	<error-page>
         <exception-type>java.lang.Throwable</exception-type>
         <location>/error.html</location>
     </error-page>
