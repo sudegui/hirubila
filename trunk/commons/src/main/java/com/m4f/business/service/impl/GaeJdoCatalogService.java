@@ -69,6 +69,15 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 		return this.DAO.count(CourseCatalog.class, filter);
 	}
 
+	@Override
+	@Cacheable(cacheName="coursesCatalog")
+	public long countCourseCatalog(boolean reglated, Locale locale)
+			throws Exception {
+		Map<String, Object> filter = new HashMap<String, Object>();
+		filter.put("lang", locale.getLanguage());
+		filter.put("regulated", reglated);
+		return this.DAO.count(CourseCatalog.class, filter);
+	}
 	
 	@Override
 	@Cacheable(cacheName="coursesCatalog")
@@ -80,15 +89,6 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 				new Object[]{locale.getLanguage()}, ordering, init, end);
 	}
 	
-	@Override
-	@Cacheable(cacheName="coursesCatalog")
-	public long countCourseCatalog(boolean reglated, Locale locale)
-			throws Exception {
-		Map<String, Object> filter = new HashMap<String, Object>();
-		filter.put("lang", locale.getLanguage());
-		filter.put("regulated", reglated);
-		return this.DAO.count(CourseCatalog.class, filter);
-	}
 
 	@Override
 	@Cacheable(cacheName="coursesCatalog")
