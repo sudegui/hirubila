@@ -8,6 +8,7 @@ import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.service.ifc.ICatalogService;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
+import com.m4f.utils.cache.annotations.CatalogCacheable;
 import com.m4f.utils.dao.ifc.DAOSupport;
 
 public class GaeJdoCatalogService extends DAOBaseService implements ICatalogService {
@@ -91,7 +92,7 @@ public class GaeJdoCatalogService extends DAOBaseService implements ICatalogServ
 	
 
 	@Override
-	@Cacheable(cacheName="coursesCatalog")
+	@CatalogCacheable(cacheName="coursesCatalog")
 	public Collection<CourseCatalog> getCoursesCatalog(boolean reglated,
 			String ordering, Locale locale, int init, int end) {
 		String filter = "lang == langParam && regulated == reglatedParam"; 

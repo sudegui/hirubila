@@ -117,6 +117,9 @@
     <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
     <bean id="cacheInterceptor" class="com.m4f.utils.cache.CacheInterceptor"/>
     
+    <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
+    <bean id="catalogCacheInterceptor" class="com.m4f.utils.cache.CatalogCacheInterceptor"/>
+    
     <!-- CronTaskReport Service -->
 	<bean id="cronTaskReport" class="com.m4f.business.service.impl.CronTaskReportServiceImpl">
 		<constructor-arg index="0" ref="jdoDAO"/>
@@ -124,13 +127,17 @@
 
 
     <aop:config>
-          
           <aop:aspect ref="cacheInterceptor">
          	<aop:pointcut id="cacheAble" expression="@annotation(com.m4f.utils.cache.annotations.Cacheable)" />
             <aop:around pointcut-ref="cacheAble" method="cacheAble"/>
             <aop:pointcut id="cacheFlush" expression="@annotation(com.m4f.utils.cache.annotations.Cacheflush)" />
             <aop:around pointcut-ref="cacheFlush" method="cacheFlush"/>
-         </aop:aspect> 
+         </aop:aspect>
+         
+          <aop:aspect ref="catalogCacheInterceptor">
+         	<aop:pointcut id="catalogCacheAble" expression="@annotation(com.m4f.utils.cache.annotations.CatalogCacheable)" />
+            <aop:around pointcut-ref="catalogCacheAble" method="cacheAble"/>
+         </aop:aspect>  
          
     </aop:config>
 	
