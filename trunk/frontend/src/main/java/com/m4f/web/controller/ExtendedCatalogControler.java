@@ -1,43 +1,33 @@
-package com.m4f.web.controller.extended;
+package com.m4f.web.controller;
 
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.m4f.business.domain.extended.ExtendedCourse;
 import com.m4f.business.domain.extended.ExtendedSchool;
 import com.m4f.business.domain.extended.FeedCourses;
 import com.m4f.business.domain.extended.FeedSchools;
 import com.m4f.business.domain.extended.Town;
 import com.m4f.utils.StackTraceUtil;
-import com.m4f.web.controller.BaseController;
 
 
 @Controller
 @RequestMapping("/extended")
-public class ExtendedHomeControler extends BaseController {
-	private static final Logger LOGGER = Logger.getLogger(ExtendedHomeControler.class.getName());
-	
-	
-	@Secured("ROLE_MANUAL_MEDIATOR")
-	@RequestMapping(method=RequestMethod.GET)
-	public String home() {
-		return "extended.home";
-	}
+public class ExtendedCatalogControler extends BaseController {
+	private static final Logger LOGGER = Logger.getLogger(ExtendedCatalogControler.class.getName());
 	
 	/*
 	 * Public FEEDs methods
 	 */
 	@RequestMapping(value="/public/school/feed/{providerId}", method=RequestMethod.GET)
-	public void getSchoolFeed(@PathVariable Long providerId, HttpServletResponse response, Locale locale, Model model) {
+	public void getSchoolFeed(@PathVariable Long providerId, 
+			HttpServletResponse response, Locale locale, Model model) {
 		try {
 			FeedSchools feed = this.serviceLocator.getInternalFeedService().getLastFeedSchools(providerId);
 			byte[] content = feed != null &&  feed.getContent() != null ? feed.getContent().getBytes() : null;
@@ -55,7 +45,9 @@ public class ExtendedHomeControler extends BaseController {
 	}
 	
 	@RequestMapping(value="/public/course/feed/{providerId}/{schoolId}", method=RequestMethod.GET)
-	public void getCoursesFeed(@PathVariable Long providerId, @PathVariable Long schoolId, HttpServletResponse response, Locale locale, Model model) {
+	public void getCoursesFeed(@PathVariable Long providerId, 
+			@PathVariable Long schoolId, HttpServletResponse response, 
+			Locale locale, Model model) {
 		try {
 			FeedCourses feed = this.serviceLocator.getInternalFeedService().getLastFeedCourses(providerId, schoolId);
 			byte[] content = feed != null && feed.getContent() != null? feed.getContent().getBytes() : null;
