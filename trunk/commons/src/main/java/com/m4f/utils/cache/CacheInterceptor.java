@@ -17,8 +17,8 @@ import com.m4f.utils.cache.annotations.Cacheflush;
 
 
 public class CacheInterceptor {
-	private static final Logger LOGGER = Logger.getLogger(CacheInterceptor.class.getName());
-	private static Cache cache;
+	protected static final Logger LOGGER = Logger.getLogger(CacheInterceptor.class.getName());
+	protected static Cache cache;
 	
 	public CacheInterceptor() {
 	}
@@ -92,7 +92,7 @@ public class CacheInterceptor {
 		pjp.proceed();
 	}
 	
-	private InternalCache getCache(String name) {
+	protected InternalCache getCache(String name) {
 		if(cache == null) {
 			initCacheService();
 		}
@@ -105,7 +105,7 @@ public class CacheInterceptor {
 		}
 	}
 	
-	private void addCache(String name, InternalCache internalCache) {
+	protected void addCache(String name, InternalCache internalCache) {
 		if(cache == null) {
 			initCacheService();
 		}
@@ -113,7 +113,7 @@ public class CacheInterceptor {
 		cache.put(name, internalCache);
 	}
 	
-	private Method getInterceptedMethod(ProceedingJoinPoint pjp) throws SecurityException, NoSuchMethodException {
+	protected Method getInterceptedMethod(ProceedingJoinPoint pjp) throws SecurityException, NoSuchMethodException {
 		MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
 	    Method method = methodSignature.getMethod();
 	    Object target = pjp.getTarget();
@@ -123,7 +123,7 @@ public class CacheInterceptor {
 		return m;
     }
 	
-	private Object getMethodKey(String methodName, Object[] args) {
+	protected Object getMethodKey(String methodName, Object[] args) {
 		// TODO Improve this way to generate unique keys for cache
 		StringBuffer key = new StringBuffer(methodName.trim().replace(" ", ".")).append(".");
 		for(Object o : args) {
@@ -133,7 +133,7 @@ public class CacheInterceptor {
 		return key.toString();
 	}
 	
-	private void initCacheService() {
+	protected void initCacheService() {
 		try {
 			LOGGER.log(Level.INFO, "No cache, initializing cache service...");
 	        CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
