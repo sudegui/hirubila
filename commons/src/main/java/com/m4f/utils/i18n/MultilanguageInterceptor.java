@@ -10,16 +10,13 @@ import java.util.Set;
 import java.util.logging.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.Collection;
 import java.lang.reflect.Field;
 import com.google.appengine.api.datastore.Text;
-import com.m4f.business.domain.BaseEntity;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.beans.BeanManager;
 import com.m4f.utils.i18n.annotations.Multilanguage;
@@ -34,14 +31,12 @@ import com.google.appengine.api.datastore.Category;
 public class MultilanguageInterceptor {
 	
 	private static final Logger LOGGER = Logger.getLogger(MultilanguageInterceptor.class.getName());
-	
-	@Autowired
 	private I18nService i18nService;
-	@Autowired
 	private BeanManager beanManager;
 	
 	public MultilanguageInterceptor(){}
 	
+	@Autowired
 	public MultilanguageInterceptor(I18nService i18n, BeanManager bManager){
 		this.i18nService = i18n;
 		this.beanManager = bManager;

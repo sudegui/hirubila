@@ -112,7 +112,7 @@
 	
 	
 	<!-- A service interceptor that intercepts other services with methods annotated. -->
-    <bean id="multilanguageTranslator" class="com.m4f.utils.i18n.MultilanguageInterceptor"/>
+    <bean id="multilanguageTranslator" class="com.m4f.utils.i18n.MultilanguageInterceptor" autowire="constructor"/>
     
     <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
     <bean id="cacheInterceptor" class="com.m4f.utils.cache.CacheInterceptor"/>
