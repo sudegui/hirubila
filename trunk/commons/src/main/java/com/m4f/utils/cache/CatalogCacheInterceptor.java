@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 
+import com.google.appengine.api.memcache.MemcacheService;
 import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.service.impl.GaeJdoCatalogService;
 import com.m4f.utils.StackTraceUtil;
@@ -40,14 +41,15 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 		if(this.isCatalogCollection(method.getName(), pjp.getArgs())) cacheCollection = true;
 		
 		Object key = this.getMethodKey(method.toGenericString(), pjp.getArgs());
+		
 		Object result = null;
-		InternalCache internalCache = this.getCache(cacheName);
-		if(internalCache == null) {
-			LOGGER.info("NO CACHE! with name -> " + cacheName);
-			LOGGER.info("NO CACHE! Creating cache with name -> " + cacheName);
-			internalCache = new InternalCache();
+		//InternalCache internalCache = this.getCache(cacheName);
+		MemcacheService syncCache = this.getCache(cacheName);
+		
+		if(syncCache == null) {
+			LOGGER.severe("NO CACHE!!!!! Executing the method with no cache!!");
 		} else {
-			result = internalCache.get(key);
+			result = syncCache.get(key);
 		}
 		
 		if(result != null) {
@@ -57,11 +59,11 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 			try {
 				LOGGER.info("NO CACHE! Invoking the method!");
 				result =  pjp.proceed();
-				if(cacheCollection) this.cacheCollection(result, pjp.getArgs(), internalCache);
+				if(cacheCollection) this.cacheCollection(result, pjp.getArgs(), syncCache);
 				LOGGER.info("NO CACHE! Inserting result into internal cache with key: " + key);
-				internalCache.put(key, result);
+				syncCache.put(key, result);
 				LOGGER.info("NO CACHE! Adding to cache internal cache with name: " + cacheName);
-				this.addCache(cacheName, internalCache);
+				//this.addCache(cacheName, internalCache);
 			} catch(Exception e) {
 				LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			}
@@ -111,7 +113,7 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 	 * @param args
 	 * @param cache
 	 */
-	private void cacheCollection(Object result, Object[] args, InternalCache cache) {
+	private void cacheCollection(Object result, Object[] args, MemcacheService cache) {
 		if(result instanceof Collection) {
 			Collection collection = (Collection) result;
 			Iterator it = collection.iterator();

@@ -1,15 +1,20 @@
 package com.m4f.utils.cache;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.cache.Cache;
-import javax.cache.CacheException;
-import javax.cache.CacheFactory;
-import javax.cache.CacheManager;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+
+import com.google.appengine.api.NamespaceManager;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
@@ -41,13 +46,13 @@ public class CacheInterceptor {
 				
 		Object key = this.getMethodKey(method.toGenericString(),pjp.getArgs());
 		Object result = null;
-		InternalCache internalCache = this.getCache(cacheName);
-		if(internalCache == null) {
-			LOGGER.info("NO CACHE! with name -> " + cacheName);
-			LOGGER.info("NO CACHE! Creating cache with name -> " + cacheName);
-			internalCache = new InternalCache();
+		//InternalCache internalCache = this.getCache(cacheName);
+		MemcacheService syncCache = this.getCache(cacheName);
+		
+		if(syncCache == null) {
+			LOGGER.severe("NO CACHE!!!!! Executing the method with no cache!!");
 		} else {
-			result = internalCache.get(key);
+			result = syncCache.get(key);
 		}
 		
 		if(result != null) {
@@ -58,9 +63,9 @@ public class CacheInterceptor {
 				LOGGER.info("NO CACHE! Invoking the method!");
 				result =  pjp.proceed();
 				LOGGER.info("NO CACHE! Inserting result into internal cache with key: " + key);
-				internalCache.put(key, result);
+				syncCache.put(key, result);
 				LOGGER.info("NO CACHE! Adding to cache internal cache with name: " + cacheName);
-				this.addCache(cacheName, internalCache);
+				//this.addCache(cacheName, internalCache);
 			} catch(Exception e) {
 				LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			}
@@ -81,18 +86,37 @@ public class CacheInterceptor {
 			cacheName = "default";
 		}
 		
-		InternalCache internalCache = this.getCache(cacheName);
-		if(internalCache == null) {
+		//InternalCache internalCache = this.getCache(cacheName);
+		MemcacheService syncCache = this.getCache(cacheName);
+		syncCache.clearAll();
+		/*if(internalCache == null) {
 			LOGGER.log(Level.INFO, "NO CACHE TO FLUSH! with name -> " + cacheName);
 		} else {
 			LOGGER.log(Level.INFO, "Flushing cache with name -> " + cacheName);
 			this.addCache(cacheName, null);
-		}
+		}*/
 		
 		pjp.proceed();
 	}
 	
-	protected InternalCache getCache(String name) {
+	protected MemcacheService getCache(String name) {
+		InternalCache cache = null;
+		String oldNameSpace = NamespaceManager.get();
+		String namespace = !"".equals(oldNameSpace)? oldNameSpace +"."+name : oldNameSpace;
+		
+		MemcacheService syncCache = null;
+		try {
+			syncCache = MemcacheServiceFactory.getMemcacheService(namespace);
+		} catch(Exception e) {
+			LOGGER.severe("Error getting cache with namespace: " + namespace);
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+		} finally {
+			NamespaceManager.set(oldNameSpace);
+		}
+				
+		return syncCache;
+	}
+	/*protected InternalCache getCache(String name) {
 		if(cache == null) {
 			initCacheService();
 		}
@@ -111,7 +135,7 @@ public class CacheInterceptor {
 		}
 		LOGGER.log(Level.INFO, "Adding new Cache to cacheTable with name: " + name);
 		cache.put(name, internalCache);
-	}
+	}*/
 	
 	protected Method getInterceptedMethod(ProceedingJoinPoint pjp) throws SecurityException, NoSuchMethodException {
 		MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
@@ -130,17 +154,33 @@ public class CacheInterceptor {
 			if(o != null)	key.append(o.hashCode());
 		}
 		LOGGER.log(Level.INFO, "Generation key ->" + key.toString());
-		return key.toString();
+		
+		String keyString = "";
+		try {
+			
+			MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+			messageDigest.reset();
+			messageDigest.update(key.toString().getBytes(Charset.forName("UTF8")));
+			final byte[] resultByte = messageDigest.digest();
+			final String result = new String(resultByte);
+			keyString = result;
+		} catch (NoSuchAlgorithmException e) {
+			LOGGER.severe("No hash generated for method key! " + StackTraceUtil.getStackTrace(e));
+			keyString = key.toString();
+		}
+		return keyString;
 	}
 	
-	protected void initCacheService() {
+	/*protected void initCacheService() {
 		try {
 			LOGGER.log(Level.INFO, "No cache, initializing cache service...");
+			MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+
 	        CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
 	        cache = cacheFactory.createCache(Collections.emptyMap());
 	       
 	    } catch (CacheException e) {
 	    	LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
 	    }
-	}
+	}*/
 }
