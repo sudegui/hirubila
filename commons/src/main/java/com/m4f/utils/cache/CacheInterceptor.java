@@ -101,8 +101,8 @@ public class CacheInterceptor {
 	
 	protected MemcacheService getCache(String name) {
 		InternalCache cache = null;
-		String oldNameSpace = NamespaceManager.get();
-		String namespace = !"".equals(oldNameSpace)? oldNameSpace +"."+name : oldNameSpace;
+		String oldNameSpace = NamespaceManager.get() != null ? NamespaceManager.get() : "";
+		String namespace = !"".equals(oldNameSpace)? oldNameSpace +"."+name : name;
 		
 		MemcacheService syncCache = null;
 		try {
