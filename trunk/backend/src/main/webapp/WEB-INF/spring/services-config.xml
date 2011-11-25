@@ -143,6 +143,9 @@
 	<bean id="schoolStorage" class="com.m4f.utils.feeds.parser.impl.SchoolStore" scope="prototype"/>
 	<bean id="courseStorage" class="com.m4f.utils.feeds.parser.impl.CourseStore" scope="prototype"/>
 	
+	<bean id="schoolImporter" class="com.m4f.utils.feeds.importer.SchoolImporter"/>
+	<bean id="providerImporter" class="com.m4f.utils.feeds.importer.ProviderImporter"/>
+	
 	
 	<!-- Aspects -->
 	<bean id="contentOptimizerAspect" class="com.m4f.utils.feeds.parser.aspect.FeedContentOptimizer"/>

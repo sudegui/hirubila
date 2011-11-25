@@ -101,6 +101,13 @@ ol li
 	z-index:-1;
 }
 
+#catalog_header
+{ 
+  height: 5px;
+  margin-bottom: 30px;
+	z-index:-1;
+}
+
 #logo
 { 
   width: 878px;

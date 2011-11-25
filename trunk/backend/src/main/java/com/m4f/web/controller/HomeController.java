@@ -31,7 +31,10 @@ public class HomeController extends BaseController {
 		provider.setName("Mungialdea provider");
 		provider.setFeed("http://www.ikasizhazi.com/feeds/mungialdea.xml");
 		providerService.save(provider, new Locale("es"));
-		
+		provider = providerService.createProvider();
+		provider.setName("Durangaldea provider");
+		provider.setFeed("http://hirubila.appspot.com/es/extended/public/school/feed/290008");
+		providerService.save(provider, new Locale("es"));
 	}
 	
 	

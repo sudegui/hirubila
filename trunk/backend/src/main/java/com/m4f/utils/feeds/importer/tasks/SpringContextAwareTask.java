@@ -1,4 +1,4 @@
-package com.m4f.utils.feeds.tasks;
+package com.m4f.utils.feeds.importer.tasks;
 
 import org.springframework.web.context.ContextLoader;
 

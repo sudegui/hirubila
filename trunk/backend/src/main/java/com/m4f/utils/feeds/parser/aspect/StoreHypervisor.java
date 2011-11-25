@@ -12,7 +12,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.FieldError;
-
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -21,9 +20,8 @@ import com.m4f.business.domain.School;
 import com.m4f.business.domain.Course;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.business.service.ifc.IAppConfigurationService;
-import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
-import com.m4f.utils.feeds.tasks.GenerateSchoolCatalog;
+import com.m4f.utils.feeds.importer.tasks.GenerateSchoolCatalog;
 import com.m4f.utils.seo.ifc.SeoCatalogBuilder;
 
 @Aspect

@@ -1,4 +1,4 @@
-package com.m4f.utils.feeds.tasks;
+package com.m4f.utils.feeds.importer.tasks;
 
 import java.util.List;
 import java.util.Locale;
@@ -9,6 +9,7 @@ import com.m4f.business.domain.Course;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.StackTraceUtil;
+import com.m4f.utils.feeds.importer.SchoolImporter;
 import com.m4f.utils.feeds.parser.ifc.ICourseStorage;
 import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
 
@@ -29,16 +30,10 @@ public class LoadSchoolCoursesTask extends SpringContextAwareTask implements Def
 	@Override
 	public void run() {
 		try {
-			ICourseStorage courseStorage = this.getCurrentWebApplicationContext().getBean(ICourseStorage.class);
-			ICoursesParser coursesParser = this.getCurrentWebApplicationContext().getBean(ICoursesParser.class);
-			Map<String, List<Course>> parsedCourses = coursesParser.getCourses(school);
-			for(String lang : parsedCourses.keySet()) {
-				courseStorage.store(parsedCourses.get(lang), new Locale(lang), school, provider);
-			}
+			SchoolImporter.importCourses(provider, school);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}
-		
 	}
 
 }
