@@ -16,14 +16,15 @@
 <body>
 
 <div id="main">
-    
-    <div id="catalog_header">
+
+    <div id="catalog_header"/>
       
     </div>
-  
+    
     <div id="content_header"></div>
     
     <div id="site_content">
+      
       
       <div id="content_1col">
         <tiles:insertAttribute name="body" />

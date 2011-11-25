@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE tiles-definitions PUBLIC
-       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
-       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN" "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
 <tiles-definitions>
   
 	<definition name="base.definition">
@@ -35,6 +33,14 @@
 		<put-attribute name="gsaHeader" value=""/>
 		<put-attribute name="menu" value=""/>
 		<put-attribute name="sidebar" value="" />
+	</definition>
+	
+	<definition name="extended.catalog.base" template="/WEB-INF/views/catalog/extended_catalog_layout_1col.jsp" extends="base.definition">
+		<put-attribute name="header" value="/WEB-INF/views/common/catalog_header.jsp"/>
+		<put-attribute name="menuId" value="catalogMenu"/>
+		<put-attribute name="menu" value=""/>
+		<put-attribute name="sidebar" value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/common/catalog_footer.jsp" />
 	</definition>
 	
 	<definition name="mediation.base" extends="base.1col.definition">
@@ -494,12 +500,12 @@
 	
 	
 	
-	<definition name="extended.public.school" extends="extended.school.base">
+	<definition name="extended.public.school" extends="extended.catalog.base">
 		<put-attribute name="title" value="school.detail.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/extended/public/school.jsp" />
 	</definition>
 	
-	<definition name="extended.public.course" extends="extended.school.base">
+	<definition name="extended.public.course" extends="extended.catalog.base">
 		<put-attribute name="title" value="course.detail.section.title"/>
 		<put-attribute name="body" value="/WEB-INF/views/extended/public/course.jsp" />
 	</definition>

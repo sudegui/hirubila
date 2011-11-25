@@ -19,6 +19,7 @@ import com.m4f.utils.cache.annotations.CatalogCacheable;
 
 
 public class CatalogCacheInterceptor extends CacheInterceptor {
+	
 	protected static final Logger LOGGER = Logger.getLogger(CatalogCacheInterceptor.class.getName());
 	
 	public Object cacheAble(ProceedingJoinPoint pjp) throws Throwable {
@@ -66,6 +67,8 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 				//this.addCache(cacheName, internalCache);
 			} catch(Exception e) {
 				LOGGER.severe(StackTraceUtil.getStackTrace(e));
+				LOGGER.severe("Memcache KBs: " + 
+						syncCache.getStatistics().getTotalItemBytes() / 1024);
 			}
 		}
 		return result;
@@ -122,14 +125,18 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 				if(o instanceof CourseCatalog) {
 					CourseCatalog course = (CourseCatalog) o;
 					try {
-					Method goalMethod = GaeJdoCatalogService.class.getMethod("getCourseCatalogByCourseId", new Class[]{Long.class, Locale.class});
-					String detailMethodName = goalMethod.toGenericString();
-					Object[] params = new Object[] {course.getCourseId(), args[2]};
-					
-					Object key = this.getMethodKey(detailMethodName, params);
-					cache.put(key, course);
+						Method goalMethod = 
+								GaeJdoCatalogService.class.getMethod("getCourseCatalogByCourseId", new Class[]{Long.class, Locale.class});
+						String detailMethodName = goalMethod.toGenericString();
+						Object[] params = new Object[] {course.getCourseId(), args[2]};
+						Object key = this.getMethodKey(detailMethodName, params);
+						cache.put(key, course);
 					} catch(NoSuchMethodException e) {
 						LOGGER.severe(StackTraceUtil.getStackTrace(e));
+					} catch(Exception e) {
+						LOGGER.severe(StackTraceUtil.getStackTrace(e));
+						LOGGER.severe("Memcache KBs: " + 
+								cache.getStatistics().getTotalItemBytes() / 1024);
 					}
 				}
 			}

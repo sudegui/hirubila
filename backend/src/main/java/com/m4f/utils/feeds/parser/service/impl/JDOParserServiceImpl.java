@@ -30,8 +30,6 @@ public class JDOParserServiceImpl extends JdoBaseService implements IParserServi
 		Set<LoadEvent> loadEvents = new TreeSet<LoadEvent>();
 		if(feed.getLoadEvents()!=null)
 			loadEvents.addAll(this.DAO.findCollectionById(LoadEvent.class, feed.getLoadEvents()));
-			//loadEvents.addAll(this.DAO.findAll(LoadEvent.class));
-			
 		return loadEvents;
 	}
 

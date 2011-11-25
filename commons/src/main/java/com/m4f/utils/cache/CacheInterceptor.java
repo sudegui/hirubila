@@ -64,10 +64,13 @@ public class CacheInterceptor {
 				result =  pjp.proceed();
 				LOGGER.info("NO CACHE! Inserting result into internal cache with key: " + key);
 				syncCache.put(key, result);
+				LOGGER.info("(PutCache) Current Namespace: " + syncCache.getNamespace());
 				LOGGER.info("NO CACHE! Adding to cache internal cache with name: " + cacheName);
 				//this.addCache(cacheName, internalCache);
 			} catch(Exception e) {
 				LOGGER.severe(StackTraceUtil.getStackTrace(e));
+				LOGGER.severe("Memcache KBs: " + 
+						syncCache.getStatistics().getTotalItemBytes() / 1024);
 			}
 		}
 		return result;
@@ -102,8 +105,8 @@ public class CacheInterceptor {
 	protected MemcacheService getCache(String name) {
 		InternalCache cache = null;
 		String oldNameSpace = NamespaceManager.get() != null ? NamespaceManager.get() : "";
-		String namespace = !"".equals(oldNameSpace)? oldNameSpace +"."+name : name;
-		
+		String namespace = !"".equals(oldNameSpace)? oldNameSpace + "." + name : name;
+		LOGGER.info("(getCache)Cache namespace: " + namespace);
 		MemcacheService syncCache = null;
 		try {
 			syncCache = MemcacheServiceFactory.getMemcacheService(namespace);
@@ -154,10 +157,8 @@ public class CacheInterceptor {
 			if(o != null)	key.append(o.hashCode());
 		}
 		LOGGER.log(Level.INFO, "Generation key ->" + key.toString());
-		
 		String keyString = "";
 		try {
-			
 			MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 			messageDigest.reset();
 			messageDigest.update(key.toString().getBytes(Charset.forName("UTF8")));
