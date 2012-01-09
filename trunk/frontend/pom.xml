@@ -22,13 +22,7 @@
 	
   
   	<dependencies>
-  		<!-- Scala dependencies 
-  		<dependency>
-      		<groupId>org.scala-lang</groupId>
-      		<artifactId>scala-library</artifactId>
-      		<version>${scala.version}</version>
-    	</dependency>
-    	-->
+  		
   		<!-- Hirubila commons -->
 		  <dependency>
       		<groupId>com.m4f</groupId>
@@ -254,13 +248,13 @@
   		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
-  			<version>1.4.2</version>
+  			<version>1.7.0</version>
   		</dependency>
   		
   		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
-  			<version>1.4.2</version>
+  			<version>1.7.0</version>
   		</dependency>
   		
   		<!-- Application's used frameworks -->
@@ -290,15 +284,6 @@
             <version>3.1.0</version>
         </dependency>
   		
-  		<!-- XML libs 
-  		
-  		<dependency>
-    		<groupId>org.jdom</groupId>
-    		<artifactId>jdom</artifactId>
-    		<version>1.1</version>
-		</dependency>
-		-->
-  		
   	</dependencies>
   
   <build>
@@ -324,11 +309,6 @@
                         <buildCommand>
                                 <name>com.google.appengine.eclipse.core.enhancerbuilder</name>
                         </buildCommand>
-                         <!--  
-                         <buildCommand>
-                         		<name>ch.epfl.lamp.sdt.core.scalabuilder</name>
-                         </buildCommand>
-                         -->
                 </additionalBuildcommands>
                 <additionalProjectnatures>
                         <projectnature>org.eclipse.jdt.core.javanature</projectnature>

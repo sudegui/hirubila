@@ -1,66 +1,97 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
-<!-- above set at the top of the file will set     -->
-<!-- the browser's rendering engine into           -->
-<!-- "Quirks Mode". Replacing this declaration     -->
-<!-- with a "Standards Mode" doctype is supported, -->
-<!-- but may lead to some differences in layout.   -->
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<style type="text/css">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-
-		body {
-			font-family: verdana, helvetica, "sans-serif";
-     		
-     		background-image: url(/static/img/interfaz/fondo.jpg);
-     	 	vertical-align: baseline
-	}
+	<title>En breve volveremos a estar en funcionamiento</title>
+	<link rel="stylesheet" href="error/style.css" type="text/css" charset="utf-8" />
+	<link rel="stylesheet" href="error/ie.css" type="text/css" charset="utf-8" />
+	<script language="Javascript" type="text/javascript" src="error/js/jquery-1.4.4.js"></script>
+	<script language="Javascript" type="text/javascript" src="error/js/jquery.lwtCountdown-1.0.js"></script>
+	<script language="Javascript" type="text/javascript" src="error/js/misc.js"></script>
+ 
+</head>
+<body>
+	<div id="wrapper">
+		<div id="logo">
+		</div> <!-- end of logo -->
 		
-	</style>
-    <title>Championship framework</title>
-  </head>
+		<div id="main">
 
-  <body>
-  <br/>
-    <br/>
-    <br/>
-    <br/>
-    
-    <h2>ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</h2>
-    
-    <table width="100%">
-    	<tr>
-    		<td></td>
-    		<td align="center">
-    			<img src="/static/img/interfaz/under-construction.png" alt="Play" />
-    		</td>
-    		<td></td>
-    	</tr>
-    </table>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-   
-    <br/>
-   
+			<div id="text">
+				<div class="bottom-text">
+				Estamos realizando unos pequeños ajustes, en breve estaremos de vuelta.
+				</div>
+			</div>
+			
+			<div id="countdown">
+				
+					<div class="dash weeks_dash">
+						<span class="dash_title">semanas</span>
+						<div class="digit">0</div>
+						<div class="digit">0</div>
+					</div>
 
-    
-    
-    <table align="right" width="50%">
-    	<tr>
-    		<td align="right"><h3>Powered by</h3></td>
-    		<td align="left">
-    			<a href="http://www.m4f.es">
-    			<img width="150px" src="/static/img/interfaz/logo_m4f.jpg" alt="Play" />
-    			</a>
-    		</td>
-    		<td></td>
-    	</tr>
-    </table>
-    
-  </body>
+					<div class="dash days_dash">
+						<span class="dash_title">días</span>
+						<div class="digit">0</div>
+						<div class="digit">0</div>
+					</div>
+
+					<div class="dash hours_dash">
+						<span class="dash_title">horas</span>
+						<div class="digit">0</div>
+						<div class="digit">0</div>
+					</div>
+
+					<div class="dash minutes_dash">
+						<span class="dash_title">minutos</span>
+						<div class="digit">0</div>
+						<div class="digit">0</div>
+					</div>
+
+					<div class="dash seconds_dash">
+						<span class="dash_title">segundos</span>
+						<div class="digit">0</div>
+						<div class="digit">0</div>
+					</div>
+
+				
+					
+			</div> <!-- end of countdown -->
+			
+			<div id="bottom">
+				
+							
+			</div> <!-- end of bottom div -->
+	
+	
+		</div> <!-- end of main -->
+		<!-- start of the javascript code that handles the countdown -->
+		<script language="javascript" type="text/javascript">
+			jQuery(document).ready(function() {
+				$('#countdown').countDown({
+					targetDate: {
+						'day': 		10,
+						'month': 	1,
+						'year': 	2014,
+						'hour': 	04,
+						'min': 		0,
+						'sec': 		0
+					}
+				});
+							
+				$('#email_field').focus(email_focus).blur(email_blur);
+				$('#subscribe_form').bind('submit', function() { return false; });
+				
+			});
+		</script>
+		<!-- end of the javascript code that handles the countdown -->
+		
+		
+	</div> <!-- end of wrapper -->
+	
+</body>
 </html>
