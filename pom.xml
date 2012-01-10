@@ -16,7 +16,7 @@
       <datanucleus.version>1.1.5</datanucleus.version>
       <spring.version>3.0.5.RELEASE</spring.version>
       <version.aspectj>1.6.5</version.aspectj>
-      <gae.version>1.5.5</gae.version>
+      <gae.version>1.6.0</gae.version>
 	</properties>
 	
 	<repositories>
