@@ -99,16 +99,6 @@
  <build> 
   	
     <plugins>
-  	<!--  
-  	<plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <includes>
-              <include>**/*</include>
-            </includes>
-          </configuration>
-    </plugin>
-  	-->
   	
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
