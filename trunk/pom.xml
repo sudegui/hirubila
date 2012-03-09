@@ -20,11 +20,13 @@
 	</properties>
 	
 	<repositories>
-	
+	 
+	   <!--
 		<repository>
   			<id>nammok-mvn</id>
   			<url>http://nammok.com/repository/maven2/</url>
 		</repository>
+		-->
 		<!-- Google Data APIs -->
     		<repository>
   			<id>mandubian-mvn</id>
