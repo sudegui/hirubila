@@ -46,7 +46,7 @@ public class StoreHypervisor {
 			argNames="objs,locale,provider,retVal", returning= "retVal")
 	public void createCatalogRequest(Collection<School> objs, Locale locale, 
 			Provider provider, Map<School, List<FieldError>> retVal) {
-		List<School> validSchools = new ArrayList<School>();
+	/*	List<School> validSchools = new ArrayList<School>();
 		List<School> problematicSchools = new ArrayList<School>();
 		for(School school : retVal.keySet()) {
 			if(retVal!=null && retVal.get(school).size()==0) {
@@ -59,7 +59,7 @@ public class StoreHypervisor {
 			processValidSchools(validSchools,provider,locale);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-		}
+		}*/
 	}
 	
 	
@@ -68,7 +68,7 @@ public class StoreHypervisor {
 			argNames="objs,locale,school,provider,retVal", returning= "retVal")
 	public void createCatalogEntries(Collection<Course> objs, Locale locale, School school, 
 			Provider provider, Map<Course, List<FieldError>> retVal) {
-		LOGGER.info("Registering CourseStoreHypervisor");
+	/*	LOGGER.info("Registering CourseStoreHypervisor");
 		List<Course> validCourses = new ArrayList<Course>();
 		List<Course> problematicCourses = new ArrayList<Course>();
 		for(Course course : retVal.keySet()) {
@@ -82,7 +82,7 @@ public class StoreHypervisor {
 			validCourses(validCourses, school, provider, locale);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-		}
+		}*/
 	}
 	
 	private void processValidSchools(Collection<School> schools, 

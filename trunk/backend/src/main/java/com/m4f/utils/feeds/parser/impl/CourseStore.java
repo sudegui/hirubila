@@ -1,5 +1,6 @@
 package com.m4f.utils.feeds.parser.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -10,6 +11,8 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.logging.Logger;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
 import com.m4f.business.domain.Course;
@@ -17,10 +20,15 @@ import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.beans.exception.NotSameClassException;
 import com.m4f.utils.feeds.parser.ifc.ICourseStorage;
+import com.m4f.utils.seo.ifc.SeoCatalogBuilder;
 
 public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 	
 	private static final Logger LOGGER = Logger.getLogger(CourseStore.class.getName());
+	private List<Course> entities  = new ArrayList<Course>();
+	
+	@Autowired
+	protected SeoCatalogBuilder catalogBuilder;
 	
 	private class CourseComparator implements Comparator<Course> {
 
@@ -35,6 +43,7 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 	@Override
 	public Map<Course , List<FieldError>> store(Collection<Course> courses, 
 			Locale locale, School school, Provider provider) throws Exception {
+		this.entities = new ArrayList<Course>(); 
 		Map<Course , List<FieldError>> executions = new HashMap<Course , List<FieldError>>();
 		for(Course course : courses) {
 			course.setRegulated(provider.getRegulated());
@@ -47,6 +56,9 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 			}
 		}
 		this.flush(locale);
+		
+		// CREANDO EL CATALOGO!!!!
+		catalogBuilder.buildSeo(this.entities, school, provider, locale);
 		return executions;
 	}
 	
@@ -55,8 +67,8 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 			newCourse.setCreated(Calendar.getInstance(new Locale("es")).getTime());
 			newCourse.setUpdated(newCourse.getCreated());	
 			Course oldCourse = this.courseService.getCourseByExternalId(newCourse.getExternalId(), locale);
-			if(oldCourse == null) {
-				/*Alta nueva: el curso no estaba registrado en la base de datos.*/
+			if(oldCourse == null) { // Alta nueva: el curso no estaba registrado en la base de datos.
+				
 				newCourse.setActive(true);
 				this.entities.add(newCourse);
 			} else if(!oldCourse.equals(newCourse) || !oldCourse.isTranslated()) {
@@ -89,7 +101,7 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 
 	@Override
 	protected void flush(Locale locale) throws Exception  {
-		courseService.save(entities, locale);
+		courseService.save(this.entities, locale);
 	}
 	
 }

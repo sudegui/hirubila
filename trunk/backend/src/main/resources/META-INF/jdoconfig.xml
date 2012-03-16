@@ -13,6 +13,7 @@
         <property name="datanucleus.DetachOnClose" value="true"/>
         <!--  --> 
         <property name="javax.jdo.option.Multithreaded" value="true"/>
+        
     </persistence-manager-factory>
     
 </jdoconfig>

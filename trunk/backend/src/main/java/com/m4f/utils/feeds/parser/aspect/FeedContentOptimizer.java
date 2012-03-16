@@ -35,7 +35,7 @@ public class FeedContentOptimizer {
 	pointcut = "execution(* com.m4f.utils.content.ifc.ContentAcquirer.*(..)) && args(source)",
 	argNames="source,retVal", returning= "retVal")
 	public void optimize(URI source, ByteArrayOutputStream retVal) {
-		try {	
+		/*try {	
 			Feed persistContent = this.getStoreContent(source);
 			LoadEvent loadEvent = this.dao.createInstance(LoadEvent.class);
 			loadEvent.setFullContent(retVal.toByteArray());
@@ -58,7 +58,7 @@ public class FeedContentOptimizer {
 			this.dao.saveOrUpdate(persistContent);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-		}
+		}*/
 	}
 	
 	

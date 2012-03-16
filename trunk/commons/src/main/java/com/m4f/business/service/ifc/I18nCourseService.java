@@ -2,13 +2,17 @@ package com.m4f.business.service.ifc;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.google.appengine.api.datastore.Category;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.domain.School;
+import com.m4f.utils.cache.annotations.Cacheable;
+import com.m4f.utils.cache.annotations.CatalogCacheable;
 
 public interface I18nCourseService {
 	
@@ -39,4 +43,13 @@ public interface I18nCourseService {
 	long countCoursesBySchool(School school) throws Exception;
 	long countCoursesByProvider(Long providerId) throws Exception;
 	List<Category> getCoursesTags(Locale locale) throws Exception;
+	
+	
+	/**
+	 * DAVID TEST!
+	 */
+
+	public long countCourses(boolean reglated, Locale locale) throws Exception;
+	public Collection<Course> getCourses(boolean reglated, String ordering, Locale locale, int init, int end);
+	
 }

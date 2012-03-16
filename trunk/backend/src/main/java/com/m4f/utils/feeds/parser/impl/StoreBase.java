@@ -20,9 +20,7 @@ public abstract class StoreBase<T extends BaseEntity> {
 	protected Validator validator;
 	@Autowired
 	protected BeanManager beanManager;
-	
-	protected List<T> entities = new ArrayList<T>();
-	
+		
 	protected abstract void flush(Locale locale) throws Exception;
 	
 }

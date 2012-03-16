@@ -27,7 +27,7 @@
 		
 <c:forEach items="${paginator.collection}" var="course">
 	<p>
-	 	<a href="<c:url value='/${rc.locale.language}/catalog/${type}/course/detail/${course.courseId}'/>" title="${course.title}">
+	 	<a href="<c:url value='/${rc.locale.language}/catalog/${type}/course/detail/${course.id}'/>" title="${course.title}">
 			${course.title}
 		</a> 
 		<%-- <a href="<c:url value='/courseCatalog?courseId=${course.courseId}&lang=${rc.locale.language}'/>" title="<fmt:message key="${course.title}"/>">

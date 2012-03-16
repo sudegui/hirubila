@@ -54,4 +54,9 @@
         <property name="user" direction="asc"/>
         <property name="created" direction="desc"/>
     </datastore-index>
+    
+     <datastore-index kind="Course" ancestor="false" source="manual">
+        <property name="regulated" direction="asc"/>
+        <property name="__key__" direction="desc"/>
+    </datastore-index>
 </datastore-indexes>
