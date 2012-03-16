@@ -12,10 +12,12 @@ import java.util.Set;
 import java.util.logging.Logger;
 import com.google.appengine.api.datastore.Category;
 import com.m4f.business.domain.Course;
+import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.domain.School;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
+import com.m4f.utils.cache.annotations.CatalogCacheable;
 import com.m4f.utils.i18n.dao.ifc.I18nDAOSupport;
 
 public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseService {
@@ -273,5 +275,25 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 		String params = "java.lang.Long providerParam";
 		return this.DAO.findEntities(Course.class, locale, filter, 
 				params, new Long[] {providerId}, ordering);
+	}
+	
+	
+	@Override
+	@Cacheable(cacheName="coursesCatalog")
+	public long countCourses(boolean reglated, Locale locale) throws Exception {
+		Map<String, Object> filter = new HashMap<String, Object>();
+		filter.put("regulated", reglated);
+		return this.DAO.count(Course.class, filter);
+	}
+	
+	@Override
+	@CatalogCacheable(cacheName="coursesCatalog")
+	public Collection<Course> getCourses(boolean reglated,
+			String ordering, Locale locale, int init, int end) {
+		String filter = "regulated == reglatedParam"; 
+		String params = "java.lang.Boolean reglatedParam";
+		
+		return this.DAO.findEntitiesByRange(Course.class, locale, filter, 
+				params, new Object[] {reglated}, init, end, ordering);
 	}
 }

@@ -6,7 +6,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-	<title><spring:escapeBody htmlEscape="true">${course.title} - (${course.schoolName})</spring:escapeBody></title>
+	<title><spring:escapeBody htmlEscape="true">${course.title} - (${school.name})</spring:escapeBody></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<tiles:insertAttribute name="gsa_metadata"/>
 	<link href="<c:url value='/static/search/css/estilo.css'/>" rel="stylesheet" type="text/css" />
@@ -25,19 +25,19 @@
 	});
 
 	function initialize() {
-		var latitud = '${course.schoolGeoLocation.latitude}';
-		var longitud = '${course.schoolGeoLocation.longitude}';
+		var latitud = '${school.geoLocation.latitude}';
+		var longitud = '${school.geoLocation.longitude}';
 		var myLatlng = null;
 		
 		if(latitud != null && '' != latitud && longitud != null && '' != longitud) {
 			myLatlng = new google.maps.LatLng(latitud, longitud);
 			doMap(myLatlng);
 		} else {
-			var address = '${course.schoolInfo.streetAddress}';
-		    var city = '${course.schoolInfo.city}';
-		    var town = '${course.schoolInfo.city}';
-		    var country = '${course.schoolInfo.country}';
-		    var addresParam = address + ", " + '${course.schoolInfo.zipCode}' + ", " + city;
+			var address = '${school.contactInfo.streetAddress}';
+		    var city = '${school.contactInfo.city}';
+		    var town = '${school.contactInfo.city}';
+		    var country = '${school.contactInfo.country}';
+		    var addresParam = address + ", " + '${school.contactInfo.zipCode}' + ", " + city;
 		    var geocoder = new google.maps.Geocoder();
 		    if(town != '' && address != '') {
 		    	geocoder.geocode( { 'address': addresParam, 'region' : 'es'}, function(results, status) {
@@ -64,12 +64,12 @@
 			var marker = new google.maps.Marker({  
 				position: myLatlng,  
 				map: map,  
-				title: '${course.schoolName}'  
+				title: '${school.name}'  
 			});  
 	
 			var infowindow = new google.maps.InfoWindow({  
-				content: '<strong>${course.schoolName}</strong><br><br>${course.schoolInfo.streetAddress}<br>${course.schoolInfo.city}<br>' +
-					'${course.schoolInfo.telephone}<br>${course.schoolInfo.email}<br>${course.schoolInfo.webSite}'   
+				content: '<strong>${school.name}</strong><br><br>${school.contactInfo.streetAddress}<br>${school.contactInfo.city}<br>' +
+					'${school.contactInfo.telephone}<br>${school.contactInfo.email}<br>${school.contactInfo.webSite}'   
 			});  
 	
 			google.maps.event.addListener(marker, 'click', function() {  
@@ -110,7 +110,7 @@
             <table>
             	<tr>
             	<td width="80%">
-            		<h2><fmt:message key="catalog.course.detail.message.provider"/>: ${course.providerName}</h2>
+            		<h2><fmt:message key="catalog.course.detail.message.provider"/>: ${provider.name}</h2>
             	</td>
             	<td align="right">
             		<a href="<c:url value='/${rc.locale.language}/search/'/>">
@@ -187,27 +187,27 @@
             
             <div id="warning_info" style=" margin-top:10px;margin-left:15px;"><strong><fmt:message key="message.map.warning.noexactLocation"/></strong></div>
             </div>
-            <h2><fmt:message key="catalog.course.detail.message.school"/>:&nbsp;${course.schoolName}</h2>
-            	<c:if test="${not empty course.schoolInfo.city}">
-            		<p><strong><fmt:message key="contactInfo.fields.city"/>:</strong>&nbsp <script>document.write(wordToUpper('${course.schoolInfo.city}'));</script></p>
+            <h2><fmt:message key="catalog.course.detail.message.school"/>:&nbsp;${school.name}</h2>
+            	<c:if test="${not empty school.contactInfo.city}">
+            		<p><strong><fmt:message key="contactInfo.fields.city"/>:</strong>&nbsp <script>document.write(wordToUpper('${school.contactInfo.city}'));</script></p>
             	</c:if>
-            	<c:if test="${not empty course.schoolInfo.telephone}">
-			  		<p> <strong><fmt:message key="contactInfo.fields.telephone"/>:</strong>&nbsp;${course.schoolInfo.telephone}</p>
+            	<c:if test="${not empty school.contactInfo.telephone}">
+			  		<p> <strong><fmt:message key="contactInfo.fields.telephone"/>:</strong>&nbsp;${school.contactInfo.telephone}</p>
 			  	</c:if>
-			  	<c:if test="${not empty course.schoolInfo.fax}">
-			   		<p><strong><fmt:message key="contactInfo.fields.fax"/>:</strong>&nbsp;${course.schoolInfo.fax} </p>
+			  	<c:if test="${not empty school.contactInfo.fax}">
+			   		<p><strong><fmt:message key="contactInfo.fields.fax"/>:</strong>&nbsp;${school.contactInfo.fax} </p>
 			   	</c:if>
-			   	<c:if test="${not empty course.schoolInfo.zipCode}">
-			   		<p><strong><fmt:message key="contactInfo.fields.zipCode"/>:</strong>&nbsp;${course.schoolInfo.zipCode} </p>
+			   	<c:if test="${not empty school.contactInfo.zipCode}">
+			   		<p><strong><fmt:message key="contactInfo.fields.zipCode"/>:</strong>&nbsp;${school.contactInfo.zipCode} </p>
 			   	</c:if>
-			   	<c:if test="${not empty course.schoolInfo.email}">
-			   		<p><strong><fmt:message key="contactInfo.fields.email"/>:</strong>&nbsp;<a href="mailto:${course.schoolInfo.email}">${course.schoolInfo.email}</a></p>
+			   	<c:if test="${not empty school.contactInfo.email}">
+			   		<p><strong><fmt:message key="contactInfo.fields.email"/>:</strong>&nbsp;<a href="mailto:${school.contactInfo.email}">${school.contactInfo.email}</a></p>
 			   	</c:if>
-			   	<c:if test="${not empty course.schoolInfo.streetAddress}">
-			   		<p><strong><fmt:message key="contactInfo.fields.streetAddress"/>:</strong>&nbsp;${course.schoolInfo.streetAddress} </p>
+			   	<c:if test="${not empty school.contactInfo.streetAddress}">
+			   		<p><strong><fmt:message key="contactInfo.fields.streetAddress"/>:</strong>&nbsp;${school.contactInfo.streetAddress} </p>
 			   	</c:if>
-			   	<c:if test="${not empty course.schoolInfo.webSite}">
-			   		<p><strong><fmt:message key="contactInfo.fields.webSite"/>:</strong>&nbsp;<a href="${course.schoolInfo.webSite}">${course.schoolInfo.webSite}</a></p>
+			   	<c:if test="${not empty school.contactInfo.webSite}">
+			   		<p><strong><fmt:message key="contactInfo.fields.webSite"/>:</strong>&nbsp;<a href="${school.contactInfo.webSite}">${school.contactInfo.webSite}</a></p>
 			   	</c:if>
 			<br/>
             <br/>

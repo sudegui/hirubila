@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 	
-	
+	<context:annotation-config />
 	<aop:aspectj-autoproxy/>
 	
 	<bean id="beanManager" class="com.m4f.utils.beans.BeanManager"/>
@@ -143,9 +143,10 @@
 	<bean id="schoolStorage" class="com.m4f.utils.feeds.parser.impl.SchoolStore" scope="prototype"/>
 	<bean id="courseStorage" class="com.m4f.utils.feeds.parser.impl.CourseStore" scope="prototype"/>
 	
-	<bean id="schoolImporter" class="com.m4f.utils.feeds.importer.SchoolImporter"/>
-	<bean id="providerImporter" class="com.m4f.utils.feeds.importer.ProviderImporter"/>
-	
+	<bean id="schoolImporter" class="com.m4f.utils.feeds.importer.SchoolImporter" scope="prototype"/>
+		
+    <bean id="providerImporter" class="com.m4f.utils.feeds.importer.ProviderImporter" scope="prototype" />
+		
 	
 	<!-- Aspects -->
 	<bean id="contentOptimizerAspect" class="com.m4f.utils.feeds.parser.aspect.FeedContentOptimizer"/>
@@ -153,7 +154,7 @@
 	<bean id="storeHypervisor" class="com.m4f.utils.feeds.parser.aspect.StoreHypervisor"/>
 	<bean id="multilanguageTranslator" class="com.m4f.utils.i18n.MultilanguageInterceptor"/>
 	
-    <aop:config>
+<!--     <aop:config>
         
         <aop:aspect ref="cacheInterceptor">
             <aop:pointcut id="cacheFlush" expression="@annotation(com.m4f.utils.cache.annotations.Cacheflush)" />
@@ -161,5 +162,5 @@
          </aop:aspect>
          
     </aop:config>
-	
+ -->	
 </beans>

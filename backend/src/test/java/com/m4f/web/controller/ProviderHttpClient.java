@@ -15,7 +15,7 @@ public class ProviderHttpClient {
 	public void loadProviderFeed() throws HttpException, IOException {
     	HttpClient httpclient = new HttpClient();
     	PostMethod post = new PostMethod("http://localhost:8889/es/provider/feed");
-    	NameValuePair[] data = {new NameValuePair("providerId", "7596")};
+    	NameValuePair[] data = {new NameValuePair("providerId", "1")};
     	post.setRequestBody(data);        
     	httpclient.executeMethod(post);
         String resultado = post.getResponseBodyAsString();
@@ -26,7 +26,7 @@ public class ProviderHttpClient {
 	public void loadProviderSchools() throws HttpException, IOException {
     	HttpClient httpclient = new HttpClient();
     	PostMethod post = new PostMethod("http://localhost:8889/es/provider/schools");
-    	NameValuePair[] data = {new NameValuePair("providerId", "7596")};
+    	NameValuePair[] data = {new NameValuePair("providerId", "1")};
     	post.setRequestBody(data);        
     	httpclient.executeMethod(post);
         String resultado = post.getResponseBodyAsString();

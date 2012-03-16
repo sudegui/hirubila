@@ -14,21 +14,21 @@ import com.m4f.utils.seo.ifc.SeoCatalogBuilder;
 public abstract class Importer {
 	
 	@Autowired
-	protected static I18nSchoolService schoolService;
+	protected I18nSchoolService schoolService;
 	@Autowired
-	protected static IAppConfigurationService configurationService;
+	protected IAppConfigurationService configurationService;
 	@Autowired
-	protected static ISchoolsParser schoolsParser;
+	protected ISchoolsParser schoolsParser;
 	@Autowired
-	protected static ISchoolStorage schoolStorage;
+	protected ISchoolStorage schoolStorage;
 	@Autowired
-	protected static ICourseStorage courseStorage;
+	protected ICourseStorage courseStorage;
 	@Autowired
-	protected static ICoursesParser coursesParser;
+	protected ICoursesParser coursesParser;
 	@Autowired
-	protected static I18nCourseService courseService;
+	protected I18nCourseService courseService;
 	@Autowired
-	protected static SeoCatalogBuilder catalogBuilder;
-	protected static final int RANGE = 100;
+	protected SeoCatalogBuilder catalogBuilder;
+	public static final int RANGE = 100;
 	
 }

@@ -5,8 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.xml.sax.SAXException;
+
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
@@ -14,15 +17,17 @@ import com.m4f.utils.PageManager;
 
 public class SchoolImporter extends Importer {
 	
-	public static void importCourses(Provider provider, School school) 
+	public void importCourses(Provider provider, School school) 
 			throws ParserConfigurationException, SAXException, IOException, Exception {
 		Map<String, List<Course>> parsedCourses = coursesParser.getCourses(school);
+		
 		for(String lang : parsedCourses.keySet()) {
 			courseStorage.store(parsedCourses.get(lang), new Locale(lang), school, provider);
 		}
+		
 	}
 	
-	public static void createCoursesCatalog(Provider provider, 
+	public void createCoursesCatalog(Provider provider, 
 			School school, Locale locale) throws Exception {
 		final int RANGE = 300;
 		PageManager<Course> paginator = new PageManager<Course>();

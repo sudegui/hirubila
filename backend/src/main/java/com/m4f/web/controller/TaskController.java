@@ -54,6 +54,7 @@ public class TaskController extends BaseController  {
 	private static final Logger LOGGER = Logger.getLogger(TaskController.class.getName());
 	private static final String EMAIL_DOMAIN_SUFFIX = "@hirubila.appspotmail.com";
 	
+
 	
 	@RequestMapping(value="/updatecourses", method=RequestMethod.POST)
 	public String updateCourses(@RequestParam(required=true) Long schoolId,
