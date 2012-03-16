@@ -169,7 +169,7 @@ public class CatalogController extends BaseController {
 	private String redirectToCourseDetail(HttpServletResponse response, 
 		Long courseId, Model model, Locale locale) throws GenericException {
 		try {
-			
+
 			Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
 			School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
 			Provider provider = this.serviceLocator.getProviderService().getProviderById(school.getProvider(), locale);
@@ -178,14 +178,15 @@ public class CatalogController extends BaseController {
 					school.getContactInfo().getCity() != null ? 
 					school.getContactInfo().getCity() : "";
 			
-			
+
 			Town town = this.getTownByName(townName, locale);
+
 			Province province = new Province();
 			Region region = new Region();
 			
 			if(town != null && town.getId() != null) {
-				region = this.getRegionsMap().get(locale.getLanguage()).get(town.getRegion());
-				province = this.getProvincesMap().get(locale.getLanguage()).get(town.getProvince());
+				region = this.serviceLocator.getTerritorialService().getRegionsMap(locale).get(town.getRegion());
+				province = this.serviceLocator.getTerritorialService().getProvincesMap(locale).get(town.getProvince());
 			} else {
 				town = new Town();
 			}
@@ -220,24 +221,8 @@ public class CatalogController extends BaseController {
 		return "common.error";
 	}
 	
-	/* 
-	 * Methods for caching territorial data
-	 */
-	private Map<String, Map<Long, Province>> getProvincesMap() throws Exception {
-		Map<String, Map<Long,Province>> provincesMap = new HashMap<String, Map<Long,Province>>();	
-		for(Locale locale :  this.serviceLocator.getAppConfigurationService().getLocales()) {
-			provincesMap.put(locale.getLanguage(), this.serviceLocator.getTerritorialService().getProvincesMap(locale));
-		}
-		return provincesMap;
-	}
 	
-	private Map<String, Map<Long, Region>> getRegionsMap() throws Exception {
-		Map<String, Map<Long,Region>> regionsMap = new HashMap<String, Map<Long,Region>>();
-		for(Locale locale : this.serviceLocator.getAppConfigurationService().getLocales()) {
-			regionsMap.put(locale.getLanguage(), this.serviceLocator.getTerritorialService().getRegionsMap(locale));
-		}
-		return regionsMap;
-	}
+	
 	
 	public Town getTownByName(String name, Locale locale) throws Exception {
 		HashMap<Locale, HashMap<String, Town>> towns;
@@ -262,9 +247,9 @@ public class CatalogController extends BaseController {
 		}
 		
 		Town town = townsByName.get(name);
-		if(town == null) {
+		if(town == null) {			
 			List<Town> all = this.serviceLocator.getTerritorialService().findTownsByName(name, locale);
-			if(towns != null && towns.size() > 0) {
+			if(towns != null && all.size() > 0) {
 				town = all.get(0);
 				townsByName.put(name, town);
 				towns.put(locale, townsByName);
