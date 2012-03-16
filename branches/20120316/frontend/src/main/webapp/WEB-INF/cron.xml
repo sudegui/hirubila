@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+<!--  
+  <cron>
+  	<url>/launcher/loadprovider</url>
+  	<description>Generate in a round-robin method the of a provider school feed.</description>
+  	<schedule>every 80 minutes</schedule>
+  </cron>
+  <cron>
+  	<url>/launcher/internalfeedgeneration</url>
+  	<description>Generate in a round-robin method all internal feeds.</description>
+  	<schedule>every 90 minutes</schedule>
+  </cron>
+ 
+ <cron>
+  	<url>/ping</url>
+  	<description>to keep alive dynamic instance</description>
+  	<schedule>every 5 minutes</schedule>
+ </cron>
+ 
+ 
+  <cron>
+    <url>/_ah/sessioncleanup?clear</url>
+    <description>Clean up sessions</description>
+    <schedule>every 90 minutes</schedule>
+  </cron>
+  -->
+  
+</cronentries>

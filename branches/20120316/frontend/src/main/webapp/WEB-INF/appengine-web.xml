@@ -1,0 +1,16 @@
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+  <!-- Replace this with your application id from http://appengine.google.com -->
+  <application>hirubila</application>
+  <version>2</version>
+  <system-properties>
+    <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+  </system-properties>  
+  <threadsafe>true</threadsafe>
+  <precompilation-enabled>true</precompilation-enabled>
+  <warmup-requests-enabled>false</warmup-requests-enabled>
+  <sessions-enabled>true</sessions-enabled>
+  <async-session-persistence enabled="true" queue-name="provider"/>
+  <static-files>
+  	<include path="/static/**" />
+ </static-files>
+</appengine-web-app>
