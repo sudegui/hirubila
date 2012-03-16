@@ -125,7 +125,7 @@
             </c:if>
             
             <c:if test="${not empty course.tags}">
-            	<p><strong><fmt:message key="course.fields.tags"/>:&nbsp;</strong><script type="text/javascript">document.write(cutLastChar('${course.tags}'));</script></p>
+            	<p><strong><fmt:message key="course.fields.tags"/>:&nbsp;</strong><script type="text/javascript">document.write(cutLastChar('${tags}'));</script></p>
             </c:if>
             
             
