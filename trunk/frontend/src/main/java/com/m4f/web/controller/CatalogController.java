@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,8 @@ import com.m4f.business.domain.School;
 import com.m4f.business.domain.extended.Province;
 import com.m4f.business.domain.extended.Region;
 import com.m4f.business.domain.extended.Town;
+import com.m4f.business.service.exception.ContextNotActiveException;
+import com.m4f.business.service.exception.ServiceNotFoundException;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import org.springframework.http.HttpStatus;
@@ -170,7 +173,7 @@ public class CatalogController extends BaseController {
 		Long courseId, Model model, Locale locale) throws GenericException {
 		try {
 
-			Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
+			/*Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
 			School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
 			Provider provider = this.serviceLocator.getProviderService().getProviderById(school.getProvider(), locale);
 			
@@ -196,15 +199,17 @@ public class CatalogController extends BaseController {
 			StringBuffer keyWords = new StringBuffer();
 			for(Category tag : course.getTags()) {
 				keyWords.append(tag.getCategory()).append(",");
-			}
+			} */
+			HashMap<String, Object> courseData = this.getDataFromCache(courseId, locale);
+			Course course = (Course) courseData.get("course");
 			
-			model.addAttribute("provider", provider);
-			model.addAttribute("school", school);
+			model.addAttribute("provider", courseData.get("provider"));
+			model.addAttribute("school", courseData.get("school"));
 			model.addAttribute("course", course);
-			model.addAttribute("province", province);
-			model.addAttribute("region", region);
-			model.addAttribute("town", town);
-			model.addAttribute("tags", keyWords.toString());
+			model.addAttribute("province", courseData.get("province"));
+			model.addAttribute("region", courseData.get("region"));
+			model.addAttribute("town", courseData.get("town"));
+			model.addAttribute("tags", courseData.get("tags"));
 			
 			response.addDateHeader("Last-Modified", course.getStart().getTime());
 		} catch(Exception e) {
@@ -263,5 +268,75 @@ public class CatalogController extends BaseController {
 		}
 		
 		return town;
+	}
+	
+	private HashMap<String, Object> getDataFromCache(Long courseId, Locale locale) throws Exception {
+		HashMap<Long, HashMap<String, Object>> courses;
+		HashMap<String, Object> courseData;
+		MemcacheService syncCache = null;
+		boolean cached = false;
+		
+		try {
+			syncCache = MemcacheServiceFactory.getMemcacheService("test-"+locale.getLanguage());
+		} catch(Exception e) {
+			LOGGER.severe("Error getting cache for towns by name map: ");
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+		}
+		
+		courses = (HashMap<Long, HashMap<String, Object>>)syncCache.get("coursesData");
+		if(courses == null) {
+			courses = new HashMap<Long, HashMap<String, Object>>();
+		}
+		
+		courseData = courses.get(courseId);
+		if(courseData == null) {
+			courseData = new HashMap<String, Object>();
+			Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
+			School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
+			Provider provider = this.serviceLocator.getProviderService().getProviderById(school.getProvider(), locale);
+			
+			String townName = school.getContactInfo() != null && 
+					school.getContactInfo().getCity() != null ? 
+					school.getContactInfo().getCity() : "";
+			
+
+			Town town = this.getTownByName(townName, locale);
+
+			Province province = new Province();
+			Region region = new Region();
+			
+			if(town != null && town.getId() != null) {
+				region = this.serviceLocator.getTerritorialService().getRegionsMap(locale).get(town.getRegion());
+				province = this.serviceLocator.getTerritorialService().getProvincesMap(locale).get(town.getProvince());
+			} else {
+				town = new Town();
+			}
+			
+			
+			// Metadata
+			StringBuffer keyWords = new StringBuffer();
+			for(Category tag : course.getTags()) {
+				keyWords.append(tag.getCategory()).append(",");
+			}
+			
+			// Create courseData
+			courseData.put("provider", provider);
+			courseData.put("school", school);
+			courseData.put("course", course);
+			courseData.put("province", province);
+			courseData.put("region", region);
+			courseData.put("town", town);
+			courseData.put("tags", keyWords.toString());
+			
+			courses.put(courseId, courseData);
+			
+			//Store in cache
+			syncCache.put("coursesData", courses);
+			
+		} else {
+			LOGGER.log(Level.INFO, "CourseData from cache!!!!!!!");
+		}
+		
+		return courseData;
 	}
 }
