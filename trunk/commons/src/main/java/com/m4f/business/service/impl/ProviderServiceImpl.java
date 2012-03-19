@@ -1,9 +1,13 @@
 package com.m4f.business.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import com.m4f.business.domain.Course;
 import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.domain.Provider;
@@ -24,12 +28,14 @@ public class ProviderServiceImpl extends I18nDAOBaseService implements I18nProvi
 	@Override
 	public void deleteProvider(Provider provider, Locale locale)
 			throws Exception {
-		this.DAO.delete(provider, locale);
+		provider.setDeleted(Boolean.TRUE);
+		this.DAO.saveOrUpdate(provider, locale);
 	}
 
 	@Override
 	public List<Provider> getAllProviders(Locale locale) throws Exception {
-		return this.DAO.findAll(Provider.class, locale, null);
+		return new ArrayList<Provider>(this.DAO.findEntities(Provider.class, locale, "deleted == deletedParam", 
+				"Boolean deletedParam", new Object[] {Boolean.FALSE }, null));
 	}
 
 	@Override
@@ -46,35 +52,38 @@ public class ProviderServiceImpl extends I18nDAOBaseService implements I18nProvi
 	public Collection<Provider> getAllProviders(Boolean mediator, Locale locale)
 			throws Exception {
 		if(mediator.booleanValue()) {
-			return this.DAO.findEntities(Provider.class, locale, "mediationService != null", 
-					"", new Object[] { }, null);
+			return this.DAO.findEntities(Provider.class, locale, "mediationService != null && deleted == deletedParam", 
+					"Boolean deletedParam", new Object[] {Boolean.FALSE }, null);
 		} else {
 			return this.DAO.findEntities(Provider.class, locale, "mediationService == null", 
-					"", new Object[] { }, null);
+					"Boolean deletedParam", new Object[] {Boolean.FALSE }, null);
 		}
 	}
 
 	@Override
 	public Provider findProviderByMediator(MediationService mediator, Locale locale) throws Exception {
-		return this.DAO.findEntity(Provider.class, locale, "mediationService == mediationServiceParam", 
-				"Long mediationServiceParam", new Object[] {mediator.getId()});
+		return this.DAO.findEntity(Provider.class, locale, "mediationService == mediationServiceParam && deleted == deletedParam", 
+				"Long mediationServiceParam, Boolean deletedParam", new Object[] {mediator.getId(), Boolean.FALSE});
 	}
 	
 	@Override
 	public Provider getProviderByMediationService(Long mediationServiceId, Locale locale) throws Exception {
-		return this.DAO.findEntity(Provider.class, locale, "mediationService == mediationParam", 
-				"java.lang.Long mediationParam", new Object[]{mediationServiceId});
+		return this.DAO.findEntity(Provider.class, locale, "mediationService == mediationParam && deleted == deletedParam", 
+				"java.lang.Long mediationParam, Boolean deletedParam", new Object[]{mediationServiceId, Boolean.FALSE});
 	}
 	
 	@Override
 	public long count() throws Exception {
-		return this.DAO.count(Provider.class);
+		Map<String, Object> filter = new HashMap<String, Object>();
+		
+		filter.put("deleted", Boolean.TRUE);
+		return this.DAO.count(Provider.class, filter);
 	}
 
 	@Override
 	public Collection<Provider> getProviders(String ordering, int init, int end, Locale locale)
 			throws Exception {
-		return this.DAO.findEntitiesByRange(Provider.class, locale, init, end, ordering);
+		return this.DAO.findEntitiesByRange(Provider.class, locale, "deleted == deletedParam", "Boolean deletedParam",  new Object[]{Boolean.FALSE}, init, end, ordering);
 	}
 	
 	@Override

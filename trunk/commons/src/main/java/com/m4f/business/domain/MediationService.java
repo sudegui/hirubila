@@ -69,6 +69,9 @@ public class MediationService extends BaseEntity implements UserSeteable {
 	@Persistent
 	private Long province;
 	
+	@Persistent
+	private Boolean deleted=Boolean.FALSE;
+	
 	@Override
 	public Long getId() {
 		return this.id;
@@ -177,4 +180,11 @@ public class MediationService extends BaseEntity implements UserSeteable {
 		this.province = province;
 	}
 	
+	public Boolean isDeleted() {
+		return this.deleted;
+	}
+	
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }

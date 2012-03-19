@@ -36,6 +36,9 @@ public class Provider extends BaseEntity {
 	@NotNull(message="Is regulated?")
 	private Boolean regulated=Boolean.FALSE;
 	
+	@Persistent
+	private Boolean deleted=Boolean.FALSE;
+	
 	public String getName() {
 		return name;
 	}
@@ -84,5 +87,13 @@ public class Provider extends BaseEntity {
 
 	public void setRegulated(Boolean regulated) {
 		this.regulated = regulated;
+	}
+	
+	public Boolean isDeleted() {
+		return this.deleted;
+	}
+	
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 }
