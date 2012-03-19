@@ -36,6 +36,9 @@ public class InternalUser {
 	@NotNull(message="Yes or Not is admin")
 	private Boolean admin;
 	
+	@Persistent
+	private Boolean deleted=Boolean.FALSE;
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -74,5 +77,13 @@ public class InternalUser {
 
 	public String getName() {
 		return name;
+	}
+	
+	public Boolean isDeleted() {
+		return this.deleted;
+	}
+	
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 }
