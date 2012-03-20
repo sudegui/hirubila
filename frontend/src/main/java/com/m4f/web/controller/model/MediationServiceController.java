@@ -3,8 +3,10 @@ package com.m4f.web.controller.model;
 import java.security.Principal;
 import java.util.Locale;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +32,22 @@ public class MediationServiceController extends BaseModelController {
 	
 	private static final Logger LOGGER = Logger.getLogger(MediationServiceController.class.getName());
 	
-	
+/*	@RequestMapping(value="/convertAll", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void convertAll(Locale locale) {
+		try {
+			Collection<MediationService> mediators = this.serviceLocator.getMediatorService().getAllMediationService(locale);
+			for(MediationService mediator : mediators) {
+				mediator.setDeleted(Boolean.FALSE);
+				this.serviceLocator.getMediatorService().save(mediator, locale);
+			}
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			//return "common.error";
+		}
+		//return "mediation.form";
+	}
+*/	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getView(Principal currentUser, Model model, Locale locale,
 			@RequestHeader(required=false,value="referer") String referer, 
@@ -111,6 +128,7 @@ public class MediationServiceController extends BaseModelController {
 				MediationService mediationOld = this.serviceLocator.getMediatorService().getMediationService(mediationService.getId(), locale);
 				mediationService.setMembers(mediationOld.getMembers());
 			}
+			mediationService.setDeleted(Boolean.FALSE);
 			this.serviceLocator.getMediatorService().save(mediationService, locale);
 			Provider provider = form.getProvider();
 			provider.setName(mediationService.getName());
@@ -167,7 +185,10 @@ public class MediationServiceController extends BaseModelController {
 			}		*/
 			//Se borra el servicio de mediación y el proveedor asociado.
 			//TODO que hacer con los usuarios relacionados con el servicio de mediacion.
-			this.serviceLocator.getMediatorService().delete(mediationService, locale);
+			if(mediationService != null) {
+				this.serviceLocator.getMediatorService().delete(mediationService, locale);
+			}
+			
 		}catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";

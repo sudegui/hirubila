@@ -1,11 +1,9 @@
 package com.m4f.web.controller.model;
 
-import java.net.MalformedURLException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
@@ -30,7 +29,6 @@ import com.m4f.business.domain.School;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
-import com.m4f.web.controller.BaseController;
 
 @Controller
 @Secured({"ROLE_ADMIN"})
@@ -76,6 +74,7 @@ public class ProviderController extends BaseModelController {
 			return "provider.form";
 		}
 		try {
+			provider.setDeleted(Boolean.FALSE);
 			this.serviceLocator.getProviderService().save(provider, locale);
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));

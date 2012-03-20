@@ -76,7 +76,7 @@ public class ProviderServiceImpl extends I18nDAOBaseService implements I18nProvi
 	public long count() throws Exception {
 		Map<String, Object> filter = new HashMap<String, Object>();
 		
-		filter.put("deleted", Boolean.TRUE);
+		filter.put("deleted", Boolean.FALSE);
 		return this.DAO.count(Provider.class, filter);
 	}
 
@@ -88,6 +88,6 @@ public class ProviderServiceImpl extends I18nDAOBaseService implements I18nProvi
 	
 	@Override
 	public List<Long> getAllProviderIds() throws Exception {
-		return this.DAO.getAllIds(Provider.class, null, null, null, null);
+		return this.DAO.getAllIds(Provider.class, null, "deleted == deletedParam", "Boolean deletedParam",  new Object[]{Boolean.FALSE});
 	}
 }

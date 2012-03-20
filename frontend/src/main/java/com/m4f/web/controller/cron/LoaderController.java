@@ -135,6 +135,24 @@ public class LoaderController extends BaseController {
 		}
 	}
 	
+	@RequestMapping(value="/mediation/feeds", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void generateFeed(@RequestParam(required=true) Long mediationId) throws Exception {
+		try {
+			if(mediationId != null) {
+				// Invoke the task with the id obtained
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("mediationId", String.valueOf(mediationId));
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
+						"/feeds/mediation/create", params);
+			}
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			throw e;
+		}
+	}
+	
 	private Long getNextIdCronTaskReport(Long lastId, List<Long> ids) {
 		Long id = null;
 		if(ids != null && ids.size() > 0) {

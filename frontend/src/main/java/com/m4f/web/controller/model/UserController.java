@@ -2,9 +2,11 @@ package com.m4f.web.controller.model;
 
 import java.util.Locale;
 import java.util.logging.Logger;
+
 import javax.cache.CacheException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
 import com.m4f.utils.StackTraceUtil;
@@ -29,6 +32,22 @@ public class UserController extends BaseModelController {
 		super();
 	}
 	
+/*	@RequestMapping(value="/convertAll", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void convertAll(Locale locale) {
+		try {
+			Collection<InternalUser> mediators = this.serviceLocator.getUserService().getAllUser();
+			for(InternalUser mediator : mediators) {
+				mediator.setDeleted(Boolean.FALSE);
+				this.serviceLocator.getUserService().save(mediator);
+			}
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			//return "common.error";
+		}
+		//return "mediation.form";
+	}
+*/	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getForm(Model model, Locale locale,
 			@RequestHeader(required=false, value="referer") String referer, 
@@ -54,6 +73,8 @@ public class UserController extends BaseModelController {
 		// Check if exist an user with this mail
 		try {
 			InternalUser oldUser = this.serviceLocator.getUserService().getUser(form.getUser().getEmail());
+			oldUser.setDeleted(Boolean.FALSE);
+			this.serviceLocator.getUserService().save(oldUser);
 			if(result.hasErrors() || (oldUser != null && form.getUser().getId() == null)) {
 				return "user.form";
 			}
@@ -65,7 +86,7 @@ public class UserController extends BaseModelController {
 					this.serviceLocator.getMediatorService().save(mediationService, locale);
 				}
 			}
-			
+			form.getUser().setDeleted(Boolean.FALSE);
 			this.serviceLocator.getUserService().save(form.getUser());
 			MediationService mediationService = 
 				this.serviceLocator.getMediatorService().getMediationService(form.getMediationService(), locale);
@@ -105,7 +126,9 @@ public class UserController extends BaseModelController {
 			@RequestHeader("Host") String host) {
 		try {
 			InternalUser user = this.serviceLocator.getUserService().getUser(userId);
-			this.serviceLocator.getUserService().delete(user);
+			if(user != null) {
+				this.serviceLocator.getUserService().delete(user);
+			}
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			return "common.error";
