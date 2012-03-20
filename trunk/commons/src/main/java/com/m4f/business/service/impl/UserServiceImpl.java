@@ -1,10 +1,12 @@
 package com.m4f.business.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import com.google.appengine.api.datastore.Category;
 import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.service.ifc.UserService;
@@ -25,12 +27,15 @@ public class UserServiceImpl extends DAOBaseService implements UserService {
 
 	@Override
 	public void delete(InternalUser user) throws Exception {
-		this.DAO.delete(user);
+		user.setDeleted(Boolean.TRUE);
+		this.DAO.saveOrUpdate(user);		
 	}
 
 	@Override
 	public List<InternalUser> getAllUser() throws Exception {
-		return this.DAO.findAll(InternalUser.class);
+		//return this.DAO.findAll(InternalUser.class, null);
+		return  new ArrayList<InternalUser>(this.DAO.findEntities(InternalUser.class, "deleted == deletedParam", 
+				"Boolean deletedParam", new Object[] {Boolean.FALSE }, null)); 
 	}
 
 	@Override
@@ -40,8 +45,8 @@ public class UserServiceImpl extends DAOBaseService implements UserService {
 
 	@Override
 	public InternalUser getUser(String email) throws Exception {
-		return this.DAO.findEntity(InternalUser.class, "email == emailParam", 
-				"String emailParam", new String[]{email});
+		return this.DAO.findEntity(InternalUser.class, "email == emailParam && deleted == deletedParam", 
+				"String emailParam, Boolean deletedParam", new Object[]{email, Boolean.FALSE});
 	}
 
 	@Override
@@ -58,13 +63,17 @@ public class UserServiceImpl extends DAOBaseService implements UserService {
 
 	@Override
 	public long countUsers() throws Exception {
-		return this.DAO.count(InternalUser.class);
+		Map<String, Object> filter = new HashMap<String, Object>();
+		
+		filter.put("deleted", Boolean.FALSE);
+		return this.DAO.count(InternalUser.class, filter);
 	}
 
 	@Override
 	public Collection<InternalUser> getUsersByRange(String ordering, int init, int end)
 			throws Exception {
-		return this.DAO.findEntitiesByRange(InternalUser.class, ordering, init, end);
+		return this.DAO.findEntitiesByRange(InternalUser.class, "deleted == deletedParam", 
+				"Boolean deletedParam", new Object[] {Boolean.FALSE }, ordering, init, end);
 	}
 	
 }

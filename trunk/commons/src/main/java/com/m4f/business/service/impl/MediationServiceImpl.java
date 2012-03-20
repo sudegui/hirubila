@@ -1,10 +1,16 @@
 package com.m4f.business.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
+
+import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
+import com.m4f.business.domain.Provider;
 import com.m4f.business.service.ifc.I18nMediationService;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
@@ -26,7 +32,8 @@ public class MediationServiceImpl extends I18nDAOBaseService implements I18nMedi
 	@Override
 	@Cacheflush(cacheName="mediations")
 	public void delete(MediationService mediator, Locale locale) throws Exception {
-		this.DAO.delete(mediator, locale);		
+		mediator.setDeleted(Boolean.TRUE);
+		this.DAO.saveOrUpdate(mediator, locale);		
 	}
 	
 	@Override
@@ -44,51 +51,58 @@ public class MediationServiceImpl extends I18nDAOBaseService implements I18nMedi
 	@Override
 	@Cacheable(cacheName="mediations")
 	public List<MediationService> getAllMediationService(Locale locale) throws Exception {
-		return this.DAO.findAll(MediationService.class, locale, null);
+		return  new ArrayList<MediationService>(this.DAO.findEntities(MediationService.class, locale, "deleted == deletedParam", 
+				"Boolean deletedParam", new Object[] {Boolean.FALSE }, null)); 
+		//return this.DAO.findAll(MediationService.class, locale, null);
 	}
 	
 	@Override
 	@Cacheable(cacheName="mediations")
 	public Collection<MediationService> getMediationServices(boolean automatic, Locale locale) throws Exception {
 		return this.DAO.findEntities(MediationService.class, locale, 
-				"hasFeed == manualParam", "java.lang.Boolean manualParam", new Object[]{ new Boolean(automatic) }, null);
+				"hasFeed == manualParam && deleted == deletedParam", "java.lang.Boolean manualParam, Boolean deletedParam", new Object[]{ new Boolean(automatic), Boolean.FALSE }, null);
 	}
 
 	@Override
 	public MediationService getMediationServiceByUser(Long idUser, 
 			Locale locale) throws Exception {
 		return this.DAO.findEntity(MediationService.class, locale, 
-				"members == userParam", "Long userParam", new Object[]{ idUser });
+				"members == userParam && deleted == deletedParam", "Long userParam, Boolean deletedParam", new Object[]{ idUser, Boolean.FALSE });
 	}
 
 	@Override
 	@Cacheable(cacheName="mediations")
 	public Collection<MediationService> getMediationServices(String ordering, int init,
 			int end, Locale locale) throws Exception {
-		return this.DAO.findEntitiesByRange(MediationService.class, locale, init, end, ordering);
+		return this.DAO.findEntitiesByRange(MediationService.class, locale, "deleted == deletedParam", 
+				"Boolean deletedParam", new Object[] {Boolean.FALSE }, init, end, ordering);
 	}
 
 	@Override
 	public long count() throws Exception {
-		return this.DAO.count(MediationService.class);
+		Map<String, Object> filter = new HashMap<String, Object>();
+		
+		filter.put("deleted", Boolean.FALSE);
+		return this.DAO.count(MediationService.class, filter);
 	}
 
 	@Override
 	@Cacheable(cacheName="mediations")
 	public Collection<MediationService> getMediationServicesByProvince(Long provinceId, Locale locale) throws Exception {
 		return this.DAO.findEntities(MediationService.class, locale, 
-				"province == provinceParam", "Long provinceParam", new Object[]{ provinceId }, "name");
+				"province == provinceParam && deleted == deletedParam", "Long provinceParam, Boolean deletedParam", new Object[]{ provinceId, Boolean.FALSE }, "name");
 	}
 
 	@Override
 	public List<Long> getAllMediationServiceIds() throws Exception {
-		return this.DAO.getAllIds(MediationService.class, null, null, null, null);
+		return this.DAO.getAllIds(MediationService.class, null, "deleted == deletedParam", 
+				"Boolean deletedParam", new Object[] {Boolean.FALSE });
 	}
 	
 	@Override
 	public List<Long> getAllMediationServiceManualIds() throws Exception {
 		return this.DAO.getAllIds(MediationService.class, "id",
-				"hasFeed == manualParam", "java.lang.Boolean manualParam",  
-				new Object[]{ new Boolean(Boolean.FALSE)});
+				"hasFeed == manualParam && deleted == deletedParam", "java.lang.Boolean manualParam, Boolean deletedParam",  
+				new Object[]{ new Boolean(Boolean.FALSE),Boolean.FALSE});
 	}
 }

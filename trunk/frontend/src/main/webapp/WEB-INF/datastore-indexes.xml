@@ -59,4 +59,10 @@
         <property name="regulated" direction="asc"/>
         <property name="__key__" direction="desc"/>
     </datastore-index>
+    
+    <datastore-index kind="MediationService" ancestor="false" source="manual">
+        <property name="deleted" direction="asc"/>
+        <property name="province" direction="asc"/>
+        <property name="name" direction="asc"/>
+    </datastore-index>
 </datastore-indexes>
