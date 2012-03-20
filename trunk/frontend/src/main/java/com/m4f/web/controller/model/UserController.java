@@ -73,8 +73,7 @@ public class UserController extends BaseModelController {
 		// Check if exist an user with this mail
 		try {
 			InternalUser oldUser = this.serviceLocator.getUserService().getUser(form.getUser().getEmail());
-			oldUser.setDeleted(Boolean.FALSE);
-			this.serviceLocator.getUserService().save(oldUser);
+			
 			if(result.hasErrors() || (oldUser != null && form.getUser().getId() == null)) {
 				return "user.form";
 			}
