@@ -99,7 +99,7 @@ public class LoaderController extends BaseController {
 	/*
 	 * CRON TO EXECUTE IN ORDER AND IN ROUND-ROBIN METHOD THE INTERNAL FEED GENERATION
 	 */
-	@RequestMapping(value="/mediation/feeds", method=RequestMethod.GET)
+/*	@RequestMapping(value="/mediation/feeds", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void internalFeedGeneration(@RequestParam(required=false) Long mediationId) throws Exception {
 		CronTaskReport report = null;
@@ -134,7 +134,7 @@ public class LoaderController extends BaseController {
 			throw e;
 		}
 	}
-	
+*/	
 	@RequestMapping(value="/mediation/feeds", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void generateFeed(@RequestParam(required=true) Long mediationId) throws Exception {
@@ -145,7 +145,7 @@ public class LoaderController extends BaseController {
 				params.put("mediationId", String.valueOf(mediationId));
 				this.serviceLocator.getWorkerFactory().createWorker().addWork(
 						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
-						"/feeds/mediation/create", params);
+						"/_feeds/mediation/create", params);
 			}
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));

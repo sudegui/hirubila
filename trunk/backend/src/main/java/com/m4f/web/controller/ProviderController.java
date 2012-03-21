@@ -28,6 +28,7 @@ import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
+import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.importer.Importer;
 import com.m4f.utils.feeds.importer.ProviderImporter;
 import com.m4f.utils.feeds.importer.SchoolImporter;
@@ -52,42 +53,47 @@ public class ProviderController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     public void loadFeed(@RequestParam Long providerId) 
                     throws ParserConfigurationException, SAXException, IOException, Exception {
-            CronTaskReport report = cronTaskReportService.create();
-            report.setObject_id(providerId);
-            report.setDate(new Date());
-            report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
-            try {
-                Provider provider = this.providerService.getProviderById(providerId, null);
-                providerImporter.importSchools(provider);
-                
-                PageManager<School> paginator = new PageManager<School>();
-    	        long total = schoolService.countSchoolsByProvider(providerId);
-    	        paginator.setOffset(RANGE);
-    	        paginator.setStart(0);
-    	        paginator.setSize(total);
-    	        for (Integer page : paginator.getTotalPagesIterator()) {
-    	                int start = (page - 1) * RANGE;
-    	                int end = (page) * RANGE;
-    	                Collection<School> schools = schoolService.getSchoolsByProvider(providerId, 
-    	                                "updated", null, start, end);
-    	                for(School school : schools) {
-    	                	 providerImporter.createLoadTask(provider, school);
-    	                }
-    	        }
-    	        
-            } catch(Exception e) {
-                    report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
-                    throw e;
-            } finally {
-            	cronTaskReportService.save(report);
-            	String[] cacheNames =  {"courses", "schools", "coursesCatalog"};
-            	for(String cacheName : cacheNames) {
-            		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService(cacheName);
-            		syncCache.clearAll();
-            	}
-            	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-        		syncCache.clearAll();    
-            }
+        CronTaskReport report = cronTaskReportService.create();
+        report.setObject_id(providerId);
+        report.setDate(new Date());
+        report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
+        Dump dump = null;
+        
+        try {
+            Provider provider = this.providerService.getProviderById(providerId, null);
+            providerImporter.importSchools(provider);
+            // Set report description
+			report.setDescription(new StringBuffer("Proveedor: ").append(provider.getName()).toString());
+			
+            PageManager<School> paginator = new PageManager<School>();
+	        long total = schoolService.countSchoolsByProvider(providerId);
+	        paginator.setOffset(RANGE);
+	        paginator.setStart(0);
+	        paginator.setSize(total);
+	        for (Integer page : paginator.getTotalPagesIterator()) {
+	                int start = (page - 1) * RANGE;
+	                int end = (page) * RANGE;
+	                Collection<School> schools = schoolService.getSchoolsByProvider(providerId, 
+	                                "updated", null, start, end);
+	                for(School school : schools) {
+	                	 providerImporter.createLoadTask(provider, school);
+	                }
+	        }
+	        // Set result into report
+			report.setResult("OK");
+        } catch(Exception e) {
+                report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
+                throw e;
+        } finally {
+        	cronTaskReportService.save(report);
+        	String[] cacheNames =  {"courses", "schools", "coursesCatalog"};
+        	for(String cacheName : cacheNames) {
+        		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService(cacheName);
+        		syncCache.clearAll();
+        	}
+        	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+    		syncCache.clearAll();    
+        }
     }
     
     @RequestMapping(value = "/schools", method = {RequestMethod.POST,RequestMethod.GET})
