@@ -166,7 +166,16 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 	@Override
 	@Cacheable(cacheName="courses")
 	public long count() throws Exception {
-		return this.DAO.count(Course.class);
+/*		Map<String, Object> filter = new HashMap<String, Object>();
+
+		filter.put("regulated", Boolean.FALSE);
+		filter.put("regulated", Boolean.TRUE);
+		return this.DAO.count(Course.class, filter);
+*/		
+		long numReglated = this.countCourses(Boolean.TRUE, null);
+		long numNoReglated = this.countCourses(Boolean.FALSE, null);
+		return numReglated + numNoReglated; 
+		//return this.DAO.count(Course.class);
 	}
 	
 	@Override
@@ -181,7 +190,11 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 	@Cacheable(cacheName="courses")
 	public Collection<Course> getCourses(String ordering, Locale locale, int init, int end)
 			throws Exception {
-		return this.DAO.findEntitiesByRange(Course.class, locale, init, end, ordering);
+		String order = "regulated";
+		if(ordering != null && !("").equals(ordering)) {
+			order += ", " + ordering;
+		}
+		return this.DAO.findEntitiesByRange(Course.class, locale, "regulated != null", "", new Object[]{}, init, end, order);
 	}
 
 	@Override

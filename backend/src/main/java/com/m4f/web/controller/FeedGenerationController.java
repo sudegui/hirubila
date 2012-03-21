@@ -9,11 +9,13 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.MediationService;
@@ -25,16 +27,17 @@ import com.m4f.business.domain.extended.FeedSchools;
 import com.m4f.utils.StackTraceUtil;
 
 @Controller
-@RequestMapping("/feeds")
+@RequestMapping("/_feeds")
 public class FeedGenerationController extends BaseController  {
 	private static final Logger LOGGER = Logger.getLogger(FeedGenerationController.class.getName());
 	
 	/*
 	 * This task generates internal feeds for a mediationService
 	 */
-	@RequestMapping(value="/mediation/create", method=RequestMethod.POST)
-	public String generateInternalFeedsByMediationId(@RequestParam(required=true) Long mediationId, 
-			@RequestHeader("host") String host, HttpServletRequest request) throws Exception {
+	@RequestMapping(value="/mediation/create", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseStatus(HttpStatus.OK)
+	public void generateInternalFeedsByMediationId(@RequestParam(required=true) Long mediationId, 
+			@RequestHeader("host") String host) throws Exception {
 		// Create a new CronTaskReport
 		CronTaskReport report = cronTaskReportService.create();
 		report.setObject_id(mediationId);
@@ -73,7 +76,6 @@ public class FeedGenerationController extends BaseController  {
 		} finally {
 			cronTaskReportService.save(report);
 		}
-		return "task.launched";
 	}
 	/**
 	 * END INTERNAL FEED GENERATION
