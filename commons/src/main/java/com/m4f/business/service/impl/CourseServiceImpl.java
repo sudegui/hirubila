@@ -300,6 +300,7 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 	}
 	
 	@Override
+	//@CatalogCacheable(cacheName="coursesCatalog")
 	@CatalogCacheable(cacheName="coursesCatalog")
 	public Collection<Course> getCourses(boolean reglated,
 			String ordering, Locale locale, int init, int end) {
