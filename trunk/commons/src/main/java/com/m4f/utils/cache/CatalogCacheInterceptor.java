@@ -10,7 +10,9 @@ import java.util.logging.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 import com.google.appengine.api.memcache.MemcacheService;
+import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
+import com.m4f.business.service.impl.CourseServiceImpl;
 import com.m4f.business.service.impl.GaeJdoCatalogService;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.cache.annotations.Cacheable;
@@ -83,7 +85,7 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 	private boolean isCatalogCollection(String methodName, Object[] args) {
 		boolean match = true;
 		
-		if("getCoursesCatalog".equals(methodName) && args.length == 5) {
+		if("getCourses".equals(methodName) && args.length == 5) {
 			for(int i = 0; i < args.length && match; i++) {
 				switch(i) {
 				case 0:
@@ -122,13 +124,13 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 			Iterator it = collection.iterator();
 			while(it.hasNext()) {
 				Object o = it.next();
-				if(o instanceof CourseCatalog) {
-					CourseCatalog course = (CourseCatalog) o;
+				if(o instanceof Course) {
+					Course course = (Course) o;
 					try {
 						Method goalMethod = 
-								GaeJdoCatalogService.class.getMethod("getCourseCatalogByCourseId", new Class[]{Long.class, Locale.class});
+								CourseServiceImpl.class.getMethod("getCourse", new Class[]{Long.class, Locale.class});
 						String detailMethodName = goalMethod.toGenericString();
-						Object[] params = new Object[] {course.getCourseId(), args[2]};
+						Object[] params = new Object[] {course.getId(), args[2]};
 						Object key = this.getMethodKey(detailMethodName, params);
 						cache.put(key, course);
 					} catch(NoSuchMethodException e) {

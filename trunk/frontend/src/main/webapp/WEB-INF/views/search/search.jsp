@@ -114,30 +114,7 @@
 <script type="text/javascript">
 
 	$.fx.speeds._default = 1000;
-	$(function() {
-		$( "#dialog" ).dialog({
-			autoOpen: false,
-			height: 250,
-			width: 400,
-			show: "blind",
-			hide: "explode",
-			position: ['right','center'],
-			resizable: false,
-			closeOnEscape: true,
-			buttons: {
-				"<fmt:message key='search.field.examples.close'/>": function() {
-					$( this ).dialog( "close" );
-				}
-			},
-			open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
-			modal: false
-		});
-
-		$( "#opener" ).click(function() {
-			$( "#dialog" ).dialog( "open" );
-			return false;
-		});
-	});
+	
 
 	$(document).ready(function() {	
 		$("#results a").each(function(){
@@ -155,22 +132,9 @@
 
 <body>
 	<div id="contenedor">
-		<div id="conten_izq" class="margin_home">
+		<div id="conten_izq">
 		<!--Menú izquierda-->
-			<div id="nav" >
-		    	<ul>
-		    		
-		        	<li class="red">
-		        	
-		           	<a href="<c:url value='/${rc.locale.language}/search/mediators/'/>"><fmt:message key="search.mediators.net"/></a>
-		           	
-		            </li>
-		            
-		        </ul>
-		        <%-- Actualmente: ${total} cursos indexados --%>
-    		</div>
-    		
-    		
+			    		
     	<!--Caja twitter con los términos de búsqueda "Formación País Vasco"-->
     		
     		<div class="conten_twitter">
@@ -220,35 +184,34 @@
 		
 	<!--Contenido central-->
 	    <div id="conten_central" class="conten_margin_top">
+	    	<div class="conten_cabecera">
 	   		 <h1><img src="<c:url value='/static/search/img/logo_hirubila_${rc.locale.language}.jpg'/>" alt="<fmt:message key='search.site.title'/>"/></h1>
+	   		 <div id="dialog" title='<fmt:message key="search.field.search.example"/>' >
+	   		 <h2><fmt:message key="search.field.search.example"/></h2>
+	   		 	<ul>
+					<li><fmt:message key="search.field.example.1"/></li>
+					<li><fmt:message key="search.field.example.2"/></li>
+					<li><fmt:message key="search.field.example.3"/></li>
+					<li><fmt:message key="search.field.example.4"/></li>
+					<li><fmt:message key="search.field.example.5"/></li>
+					<li><span style="font-size:11px;"><fmt:message key="search.field.example.6"/></span></li>
+				</ul>
+	   		 </div>
+	   		</div>
 	   		 <form:form id="searchForm" commandName="search" method="post" cssClass="buscador_general"> 
 	         	<label for="caja_buscador"><fmt:message key="search.searchBox.label"/></label>
 	            <input type="text" id="caja_buscador" name="query" placeholder="<fmt:message key='search.field.search.message'/>"/>
 	            <form:hidden path="collection"/>
-	            <p class="txt_ejemplo">
-	            	<a href="#" class="medium button yellow" id="opener"><fmt:message key="search.field.search.example"/></a>
-	            </p>
+	           	<p class="resulta_mini" style="margin-bottom:10px;"><fmt:message key='search.results.order.time'/></p>
 	            <p class="barra_submit">
             <input type="submit" value="<fmt:message key='continua.learning.type'/>" title="<fmt:message key='continua.learning.type'/>" onClick="$('#collection').val('hirubila-nonreglated-');"/>
             <input type="submit" value="<fmt:message key='oficial.learning.type'/>" title="<fmt:message key='oficial.learning.type'/>" onClick="$('#collection').val('hirubila-reglated-');return true;"/>
             </p>
 	        </form:form>
 	        <p class="txt_mediador"><fmt:message key="search.footer.message.part1"/> 
-	        	<a href="<c:url value='/${rc.locale.language}/search/mediators/'/>"><fmt:message key="search.footer.message.part2"/></a>.
+	        	<a href="<c:url value='/${rc.locale.language}/search/mediators/'/>"><fmt:message key="search.footer.message.part2"/> <img src="<c:url value='/static/search/img/ikasgida_logo.jpg'/>" alt="<fmt:message key="search.mediators.net"/>" style="vertical-align:bottom; height:35px;" /></a>.
 	        </p>
 	    </div>
-	</div>
-	
-	
-	<div id="dialog" title='<fmt:message key="search.field.search.example"/>' >
-		<ul>
-			<li><fmt:message key="search.field.example.1"/></li>
-			<li><fmt:message key="search.field.example.2"/></li>
-			<li><fmt:message key="search.field.example.3"/></li>
-			<li><fmt:message key="search.field.example.4"/></li>
-			<li><span style="font-size:11px;"><fmt:message key="search.field.example.5"/></span></li>
-		</ul>
-
 	</div>
 </body>
 </html>
