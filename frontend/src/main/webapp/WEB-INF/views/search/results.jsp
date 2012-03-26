@@ -118,24 +118,6 @@
 	
 $.fx.speeds._default = 400;
 $(function() {
-	$( "#dialog" ).dialog({
-		autoOpen: false,
-		height: 250,
-		width: 400,
-		show: "blind",
-		hide: "explode",
-		position: ['right','center'],
-		resizable: false,
-		closeOnEscape: true,
-		buttons: {
-			"<fmt:message key='search.field.examples.close'/>": function() {
-				$( this ).dialog( "close" );
-			}
-		},
-		open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
-		modal: false
-	});
-
 	$( "#opener" ).click(function() {
 		$( "#dialog" ).dialog( "open" );
 		return false;
@@ -200,8 +182,6 @@ $(function() {
 		<span class="fin_caja">&nbsp;</span>
 		
 		<p class="resulta_mini">${paginator.collection.totalResults} <fmt:message key="search.results.total"/></p>
-		
-		<div style="float: right;padding: 10px;"><a href="#" class="medium button yellow" id="opener"><fmt:message key="search.field.search.example"/></a></div>
   	</div>
   	
 <div id="conten_izq">
@@ -222,6 +202,7 @@ $(function() {
     		<br/>		
         	<li class="red">
            	<a href="<c:url value='/${rc.locale.language}/search/mediators/'/>"><fmt:message key="search.mediators.net"/></a>
+           	<p style="font-size: 0.9em;">Consulta al mediador de tu zona</p>
             </li>
             <!--  
             <li class="guiada">
@@ -357,16 +338,5 @@ new TWTR.Widget({
       <p class="txt_mediador"><fmt:message key="search.footer.message.part1"/> <a href="<c:url value='/${rc.locale.language}/search/mediators'/>"><fmt:message key="search.footer.message.part2"/></a>.</p>
     </div>
 </div>
-
-<div id="dialog" title='<fmt:message key="search.field.search.example"/>' >
-		<ul>
-			<li><fmt:message key="search.field.example.1"/></li>
-			<li><fmt:message key="search.field.example.2"/></li>
-			<li><fmt:message key="search.field.example.3"/></li>
-			<li><fmt:message key="search.field.example.4"/></li>
-			<li><span style="font-size:11px;"><fmt:message key="search.field.example.5"/></span></li>
-		</ul>
-
-	</div>
 </body>
 </html>

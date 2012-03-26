@@ -54,7 +54,8 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 	}
 
 	@Override
-	@Cacheable(cacheName="courses")
+	//@Cacheable(cacheName="courses")
+	@CatalogCacheable(cacheName="coursesCatalog")
 	public Course getCourse(Long id, Locale locale) throws Exception {
 		return this.DAO.findById(Course.class, locale, id);
 	}

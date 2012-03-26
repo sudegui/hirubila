@@ -55,9 +55,9 @@
         <property name="created" direction="desc"/>
     </datastore-index>
     
-     <datastore-index kind="Course" ancestor="false" source="manual">
+    <datastore-index kind="Course" ancestor="false" source="manual">
         <property name="regulated" direction="asc"/>
-        <property name="__key__" direction="desc"/>
+        <property name="school" direction="desc"/>
     </datastore-index>
     
     <datastore-index kind="MediationService" ancestor="false" source="manual">

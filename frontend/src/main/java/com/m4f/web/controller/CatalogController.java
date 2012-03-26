@@ -40,7 +40,7 @@ import com.m4f.web.controller.exception.GenericException;
 public class CatalogController extends BaseController {
 	
 	private static final Logger LOGGER = Logger.getLogger(CatalogController.class.getName());
-	private static final String ORDERING_PROPERTY = "id";
+	private static final String ORDERING_PROPERTY = "school";
 	
 	
 	@RequestMapping(method=RequestMethod.GET)
@@ -225,8 +225,6 @@ public class CatalogController extends BaseController {
 		response.sendError(HttpStatus.NOT_FOUND.value());
 		return "common.error";
 	}
-	
-	
 	
 	
 	public Town getTownByName(String name, Locale locale) throws Exception {
