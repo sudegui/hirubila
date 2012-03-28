@@ -7,14 +7,8 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.XmlWebApplicationContext;
-
-import com.google.appengine.api.taskqueue.DeferredTask;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
-import com.m4f.business.service.ifc.IServiceLocator;
 
 @SuppressWarnings("serial")
 public class LazyContextLoaderListener extends ContextLoaderListener implements Serializable {
@@ -40,7 +34,7 @@ public class LazyContextLoaderListener extends ContextLoaderListener implements 
          super.contextDestroyed(ce);
 	}
 	
-	private void createDeferredTaskLoader() {
+	/*private void createDeferredTaskLoader() {
 		LOGGER.severe("+++++ Task by time ........");
 		TaskOptions taskOptions = TaskOptions.Builder.withPayload(new ContextLoaderTask());
 		taskOptions.taskName("" + Calendar.getInstance().getTimeInMillis());
@@ -63,6 +57,6 @@ public class LazyContextLoaderListener extends ContextLoaderListener implements 
 			LOGGER.severe("+++++ Context loading finished........");
 		}
 			
-	}
+	}*/
 	
 }

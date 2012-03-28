@@ -43,7 +43,7 @@ public class CoursesFeedParserTest extends GaeSpringContextTest {
 			System.out.println("No hay centros");
 		}
 		for(School school : schools) {
-			Map<String, List<Course>> courses = coursesParser.getCourses(school);
+			Map<String, List<Course>> courses = coursesParser.getCourses(school, null);
 			for(String lang : courses.keySet() ) {
 				Locale locale = new Locale(lang);
 				Provider provider = providerService.getProviderById(providerId, locale);

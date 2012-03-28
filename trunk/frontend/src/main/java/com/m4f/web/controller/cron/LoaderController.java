@@ -25,7 +25,7 @@ public class LoaderController extends BaseController {
 	 */
 	@RequestMapping(value="/provider/feed", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public void loadProviderFeed(@RequestParam(required=false) Long providerId) throws Exception {
+	public void loadProviderFeed(@RequestParam(required=true) Long providerId) throws Exception {
 		CronTaskReport report = null;
 		try {
 			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_FEED);

@@ -14,12 +14,13 @@ import com.m4f.business.domain.Course;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.PageManager;
+import com.m4f.utils.feeds.events.model.Dump;
 
 public class SchoolImporter extends Importer {
 	
-	public void importCourses(Provider provider, School school) 
+	public void importCourses(Provider provider, School school, Dump dump) 
 			throws ParserConfigurationException, SAXException, IOException, Exception {
-		Map<String, List<Course>> parsedCourses = coursesParser.getCourses(school);
+		Map<String, List<Course>> parsedCourses = coursesParser.getCourses(school, dump);
 		
 		for(String lang : parsedCourses.keySet()) {
 			courseStorage.store(parsedCourses.get(lang), new Locale(lang), school, provider);
