@@ -10,6 +10,6 @@ import com.m4f.utils.feeds.events.model.Dump;
 
 public interface ISchoolsParser {
 	
-	List<School> getSchools(Provider provider) throws ParserConfigurationException, SAXException, IOException, Exception;
+	List<School> getSchools(Provider provider, Dump dump) throws ParserConfigurationException, SAXException, IOException, Exception;
 	
 }

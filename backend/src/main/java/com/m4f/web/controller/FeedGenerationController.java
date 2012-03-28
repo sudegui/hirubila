@@ -37,7 +37,9 @@ public class FeedGenerationController extends BaseController  {
 	@RequestMapping(value="/mediation/create", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseStatus(HttpStatus.OK)
 	public void generateInternalFeedsByMediationId(@RequestParam(required=true) Long mediationId, 
-			@RequestHeader("host") String host) throws Exception {
+			@RequestHeader("host") String host, @RequestHeader("referer") String referer) throws Exception {
+		final String FRONTEND_HOST = "hirubila.appspot.com";
+		LOGGER.info("referer: " + referer);
 		// Create a new CronTaskReport
 		CronTaskReport report = cronTaskReportService.create();
 		report.setObject_id(mediationId);
@@ -51,7 +53,7 @@ public class FeedGenerationController extends BaseController  {
 			report.setDescription(new StringBuffer("Servicio de mediación: ").append(mediationService.getName()).toString());
 			
 			if(!mediationService.getHasFeed()) { // All must be manual mediator, but it's another check.
-				FeedSchools feedSchools = internalFeedService.createFeedSchools(host, provider, mediationService);
+				FeedSchools feedSchools = internalFeedService.createFeedSchools(FRONTEND_HOST, provider, mediationService);
 				internalFeedService.saveFeedSchools(feedSchools);
 				HashMap<Long, ExtendedSchool> schools = new HashMap<Long, ExtendedSchool>();
 				Collection<ExtendedCourse> courses = 
@@ -61,7 +63,7 @@ public class FeedGenerationController extends BaseController  {
 					if(school != null) schools.put(school.getId(), school);
 				}
 				for(ExtendedSchool school : schools.values()) {
-					FeedCourses feedCourse = internalFeedService.createFeedCourses(host, 
+					FeedCourses feedCourse = internalFeedService.createFeedCourses(FRONTEND_HOST, 
 							provider, mediationService, school, this.getAvailableLanguages()); 	
 					internalFeedService.saveFeedCourses(feedCourse);
 				}

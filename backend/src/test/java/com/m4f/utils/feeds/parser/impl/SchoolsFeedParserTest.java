@@ -46,7 +46,7 @@ public class SchoolsFeedParserTest extends GaeSpringContextTest {
 		if(feed!=null) {
 			eventsSizeBefore = parserService.getLoadEvents(feed).size();
 		}
-		List<School> schools = this.schoolsFeedParser.getSchools(provider);
+		List<School> schools = this.schoolsFeedParser.getSchools(provider, null);
 		System.out.println("Parsed schools: " + schools.size());
 		feed = parserService.getFeed(new URI(provider.getFeed()));
 		if(feed!=null) {

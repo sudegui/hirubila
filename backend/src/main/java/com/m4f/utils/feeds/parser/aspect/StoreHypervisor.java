@@ -1,27 +1,22 @@
 package com.m4f.utils.feeds.parser.aspect;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.FieldError;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
+
+import com.m4f.business.domain.Course;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
-import com.m4f.business.domain.Course;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.business.service.ifc.IAppConfigurationService;
-import com.m4f.utils.StackTraceUtil;
-import com.m4f.utils.feeds.importer.tasks.GenerateSchoolCatalog;
 import com.m4f.utils.seo.ifc.SeoCatalogBuilder;
 
 @Aspect
@@ -85,19 +80,19 @@ public class StoreHypervisor {
 		}*/
 	}
 	
-	private void processValidSchools(Collection<School> schools, 
+	/*private void processValidSchools(Collection<School> schools, 
 			Provider provider, Locale locale) throws Exception {
 		for(School school : schools) {
-			/*LOGGER.severe("School: " + school);
+			LOGGER.severe("School: " + school);
 			LOGGER.severe("CreatedDate: " + school.getCreated() + 
-					"-UpdatedDate: " + school.getUpdated());*/
+					"-UpdatedDate: " + school.getUpdated());
 			if(!school.getCreated().equals(school.getUpdated())) {
 				LOGGER.info("Generar todo el catálogo del centro " + school.getName());
-				/**
-				 * Debido a que el feed de centros no viene en dos idiomas la carga sólo
-				 * contempla el idioma por defecto. Por eso en este punto hay que formar
-				 * la creación del catálogo en todos los idiomas disponibles.
-				*/
+				//
+				// Debido a que el feed de centros no viene en dos idiomas la carga sólo
+				// contempla el idioma por defecto. Por eso en este punto hay que formar
+				// la creación del catálogo en todos los idiomas disponibles.
+				//
 				for(Locale systemLocale : this.configurationService.getLocales()) {
 					generateSchoolCatalog(provider, school, systemLocale);
 				}
@@ -118,7 +113,7 @@ public class StoreHypervisor {
 	private void validCourses(Collection<Course> courses, School school, 
 			Provider provider, Locale locale) throws Exception {
 		this.catalogBuilder.buildSeo(courses, school, provider, locale);
-	}
+	}*/
 	
 	
 }

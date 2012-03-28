@@ -73,7 +73,7 @@ public class TaskController extends BaseController  {
 				LOGGER.severe("Dump with id " + dumpId + " doesn's exist.");
 				return "common.error";
 			}
-			Map<String, List<Course>> parsedCourses = coursesParser.getCourses(school);
+			Map<String, List<Course>> parsedCourses = coursesParser.getCourses(school, dump);
 			this.storeCourses(dump, school, parsedCourses);
 		} catch (ParserConfigurationException e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
@@ -130,7 +130,7 @@ public class TaskController extends BaseController  {
 			 * com.m4f.utils.feeds.aop.ParserHypervisor#registerProviderError
 			 * VALIDACI�N DE ESTRUCTURA DEL XML.
 			 */
-			List<School> schools = schoolsParser.getSchools(provider);
+			List<School> schools = schoolsParser.getSchools(provider, dump);
 			/**
 			 * Proceso que realiza el volcado de los centros parseados al modelo de 
 			 * persistencia. Existe un aspecto creado para registrar posibles problemas

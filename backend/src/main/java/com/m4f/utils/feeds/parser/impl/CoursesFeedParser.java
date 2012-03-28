@@ -23,6 +23,7 @@ import com.m4f.business.domain.Course;
 import com.m4f.business.domain.School;
 import com.m4f.business.domain.Topic;
 import com.m4f.utils.content.ifc.ContentAcquirer;
+import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.parser.ifc.ICoursesParser;
 
 public class CoursesFeedParser implements ICoursesParser {
@@ -39,7 +40,7 @@ public class CoursesFeedParser implements ICoursesParser {
 	}
 	
 	@Override
-	public Map<String, List<Course>> getCourses(School school) 
+	public Map<String, List<Course>> getCourses(School school, Dump dump) 
 			throws ParserConfigurationException, SAXException, IOException, Exception {
 		List<Course> courses_es = new ArrayList<Course>();
 		List<Course> courses_eu = new ArrayList<Course>();

@@ -59,7 +59,7 @@ public class CopyOfProviderController extends BaseController {
 		try {
 			Provider provider = this.providerService.getProviderById(providerId, null);
 			report.setDescription("Importing schools from " + provider.getName() + " provider.");	
-			providerImporter.importSchools(provider);
+			providerImporter.importSchools(provider, null);
 			
 			
 			Map<String, String> params = new HashMap<String, String>();
@@ -167,7 +167,7 @@ public class CopyOfProviderController extends BaseController {
 		try {
 			Provider provider = this.providerService.getProviderById(providerId, null);
 			report.setDescription("Importing courses from " + provider.getName() + " provider.");
-			providerImporter.importCourses(provider);
+			providerImporter.importCourses(provider, null);
 			report.setResult("OK");
 			
 			Map<String, String> params = new HashMap<String, String>();
@@ -193,7 +193,7 @@ public class CopyOfProviderController extends BaseController {
 		try {
 			Provider provider = this.providerService.getProviderById(providerId, null);
 			report.setDescription("Creating catalog from " + provider.getName() + " provider.");
-			providerImporter.importCourses(provider);
+			providerImporter.importCourses(provider, null);
 			report.setResult("OK");
 		} catch(Exception e) {
 			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());

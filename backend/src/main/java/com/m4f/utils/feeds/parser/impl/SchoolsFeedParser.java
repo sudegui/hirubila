@@ -15,6 +15,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.m4f.business.domain.ContactInfo;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
+import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.parser.ifc.ISchoolsParser;
 import com.m4f.utils.content.ifc.ContentAcquirer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class SchoolsFeedParser implements ISchoolsParser {
 	}
 
 	@Override
-	public List<School> getSchools(Provider provider) throws ParserConfigurationException, 
+	public List<School> getSchools(Provider provider, Dump dump) throws ParserConfigurationException, 
 		SAXException, IOException, Exception {
 		List<School> schools = new ArrayList<School>();
 		byte[] content = this.contentAcquirer.getContent(new URI(provider.getFeed())).toByteArray();

@@ -58,7 +58,7 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 		this.flush(locale);
 		
 		// CREANDO EL CATALOGO!!!!
-		catalogBuilder.buildSeo(this.entities, school, provider, locale);
+		//catalogBuilder.buildSeo(this.entities, school, provider, locale);
 		return executions;
 	}
 	
@@ -68,16 +68,15 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 			newCourse.setUpdated(newCourse.getCreated());	
 			Course oldCourse = this.courseService.getCourseByExternalId(newCourse.getExternalId(), locale);
 			if(oldCourse == null) { // Alta nueva: el curso no estaba registrado en la base de datos.
-				
 				newCourse.setActive(true);
 				this.entities.add(newCourse);
 			} else if(!oldCourse.equals(newCourse) || !oldCourse.isTranslated()) {
 				CourseComparator comparator = new CourseComparator();
-				if(comparator.compare(newCourse, oldCourse) == 0) {
+				/*if(comparator.compare(newCourse, oldCourse) == 0) {
 					LOGGER.info("Curso existente y NO MODIFICADO");
 					return;
-				}
-				LOGGER.info("Curso existente y NO MODIFICADO");
+				} */
+				LOGGER.info("Curso existente y MODIFICADO");
 				LOGGER.info("OldCourse: " + oldCourse.toString());
 				LOGGER.info("NewCourse: " + newCourse.toString());
 				/*Modificacion: el curso estaba registrado en la base de datos, pero se modifica.*/
@@ -95,6 +94,8 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 				newCourse.setCreated(oldCourse.getCreated());
 				newCourse.setUpdated(oldCourse.getUpdated());
 				this.entities.add(oldCourse);
+			} else {
+				LOGGER.info("Curso existente y NO MODIFICADO");
 			}
 			
 		}

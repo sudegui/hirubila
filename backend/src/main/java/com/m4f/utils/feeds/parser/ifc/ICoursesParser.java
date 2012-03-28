@@ -7,7 +7,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.School;
+import com.m4f.utils.feeds.events.model.Dump;
 
 public interface ICoursesParser {
-	Map<String, List<Course>> getCourses(School school) throws ParserConfigurationException, SAXException, IOException, Exception;
+	Map<String, List<Course>> getCourses(School school, Dump dump) throws ParserConfigurationException, SAXException, IOException, Exception;
 }

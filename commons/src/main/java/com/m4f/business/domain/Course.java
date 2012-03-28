@@ -263,9 +263,6 @@ public class Course extends BaseEntity implements Taggeable {
 			Course c = (Course) obj;
 			// First if obj has id. This attribute will mark if they are equal
 			if(c.getId() != null && c.getId().equals(this.id)) {
-				equal = true;
-			}
-			else {
 				if(this.externalId != null/* && c.getExternalId() != null*/) equal &= this.externalId.equals(c.getExternalId()); 
 				if(this.school != null /*&& c.getSchool() != null*/) equal &= this.school.equals(c.getSchool());
 				if(this.provider != null/* && c.getProvider() != null*/) equal &= this.provider.equals(c.getProvider());
@@ -274,7 +271,10 @@ public class Course extends BaseEntity implements Taggeable {
 				if(this.start != null) equal &= this.start.equals(c.getStart());
 				if(this.end != null) equal &= this.end.equals(c.getEnd());
 				if(this.information != null) equal &= this.information.equals(c.getInformation());
-				//if(tags != null) equal &= this.tags.equals(c.getTags());
+				if(tags != null) equal &= this.tags.equals(c.getTags());
+			}
+			else {
+				equal = false;
 			}
 		} else {
 			equal = false;
