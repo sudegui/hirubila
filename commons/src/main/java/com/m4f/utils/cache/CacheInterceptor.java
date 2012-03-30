@@ -38,7 +38,7 @@ public class CacheInterceptor {
 			Cacheable annotation = method.getAnnotation(Cacheable.class);
 			cacheName = annotation != null ? annotation.cacheName() : "default";
 		} catch(Exception e) {
-			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			cacheName = "default";
 		} finally {
 			
@@ -53,6 +53,7 @@ public class CacheInterceptor {
 			LOGGER.severe("NO CACHE!!!!! Executing the method with no cache!!");
 		} else {
 			result = syncCache.get(key);
+			
 		}
 		
 		if(result != null) {
@@ -85,7 +86,7 @@ public class CacheInterceptor {
 			Cacheflush annotation = method.getAnnotation(Cacheflush.class);
 			cacheName = annotation != null ? annotation.cacheName() : "default";
 		} catch(Exception e) {
-			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			cacheName = "default";
 		}
 		
@@ -156,20 +157,32 @@ public class CacheInterceptor {
 		for(Object o : args) {
 			if(o != null)	key.append(o.hashCode());
 		}
-		LOGGER.log(Level.INFO, "Generation key ->" + key.toString());
-		String keyString = "";
+		LOGGER.info("Generation key ->" + key.toString());
+		//String keyString = "";
 		try {
-			MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+			MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
 			messageDigest.reset();
 			messageDigest.update(key.toString().getBytes(Charset.forName("UTF8")));
 			final byte[] resultByte = messageDigest.digest();
-			final String result = new String(resultByte);
-			keyString = result;
+			
+			String hex = null;
+
+	        for (int i = 0; i < resultByte.length; i++) {
+	            //Convert it to positive integer and then to Hex String
+
+	            hex = Integer.toHexString(0xFF & resultByte[i]);
+
+	            //Append "0" to the String to made it exactly 128 length (SHA-512 alogithm)
+	            if (hex.length() < 2) {
+	            	key.append("0");
+	            }
+            	key.append(hex);
+	        }
 		} catch (NoSuchAlgorithmException e) {
 			LOGGER.severe("No hash generated for method key! " + StackTraceUtil.getStackTrace(e));
-			keyString = key.toString();
 		}
-		return keyString;
+		LOGGER.info("Generation key ->" + key.toString());
+		return new String(key);
 	}
 	
 	/*protected void initCacheService() {

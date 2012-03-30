@@ -4,18 +4,14 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 
 import com.google.appengine.api.memcache.MemcacheService;
 import com.m4f.business.domain.Course;
-import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.service.impl.CourseServiceImpl;
-import com.m4f.business.service.impl.GaeJdoCatalogService;
 import com.m4f.utils.StackTraceUtil;
-import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.CatalogCacheable;
 
 
@@ -33,7 +29,7 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 			CatalogCacheable annotation = method.getAnnotation(CatalogCacheable.class);
 			cacheName = annotation != null ? annotation.cacheName() : "default";
 		} catch(Exception e) {
-			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			cacheName = "default";
 		} finally {
 			
@@ -50,7 +46,7 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 		MemcacheService syncCache = this.getCache(cacheName);
 		
 		if(syncCache == null) {
-			LOGGER.severe("NO CACHE!!!!! Executing the method with no cache!!");
+			LOGGER.info("NO CACHE!!!!! Executing the method with no cache!!");
 		} else {
 			result = syncCache.get(key);
 		}
