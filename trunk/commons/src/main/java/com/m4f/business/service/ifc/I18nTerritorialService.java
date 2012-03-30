@@ -46,6 +46,7 @@ public interface I18nTerritorialService {
 	Collection<Town> getTownsByProvince(Long idRegion, Locale locale, String ordering, int init, int end) throws Exception;
 	Collection<Town> getTownsByProvince(Long idProvince, Locale locale) throws Exception;
 	List<Town> findTownsByName(String name, Locale locale);
+	Map<String, Town> getTownsMap(Locale locale) throws Exception;
 	
 	long countTowns();
 	long countTownsByRegion(Long regionId);

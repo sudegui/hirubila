@@ -193,6 +193,18 @@ public class TerritorialService extends I18nDAOBaseService implements I18nTerrit
 
 	@Override
 	@Cacheable(cacheName="towns")
+	public Map<String, Town> getTownsMap(Locale locale) throws Exception {
+		HashMap<String, Town> townsMap = new HashMap<String, Town>();
+		List<Town> towns = this.getTowns(locale, null);
+		for(Town town : towns) {
+			townsMap.put(town.getName(), town);
+		}
+			
+		return townsMap;
+	}
+	
+	@Override
+	@Cacheable(cacheName="towns")
 	public List<Town> getTowns(Locale locale, String ordering) throws Exception {
 		return this.DAO.findAll(Town.class, locale, ordering);
 	}

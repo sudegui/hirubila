@@ -95,8 +95,11 @@ public class CatalogController extends BaseController {
 			PageManager<Course> paginator = new PageManager<Course>();
 			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/reglated/course/list");
-			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setSize(this.serviceLocator.getCourseService().countCourses(true, locale));
+			if((page-1)*paginator.getOffset() > paginator.getSize()) {
+				throw new GenericException("Paginator Out of Range!!! Size: " + paginator.getSize() + " start: " + (page-1)*paginator.getOffset()); 
+			}
+			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setCollection(this.serviceLocator.getCourseService().getCourses(true, 
 					"-" + ORDERING_PROPERTY, locale, paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
@@ -111,11 +114,15 @@ public class CatalogController extends BaseController {
 	public String listNonReglated(Model model, Locale locale,
 			@RequestParam(defaultValue="1", required=false) Integer page) throws GenericException {
 		try {
+			
 			PageManager<Course> paginator = new PageManager<Course>();
 			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/non-reglated/course/list");
-			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setSize(this.serviceLocator.getCourseService().countCourses(false, locale));
+			if((page-1)*paginator.getOffset() > paginator.getSize()) {
+				throw new GenericException("Paginator Out of Range!!! Size: " + paginator.getSize() + " start: " + (page-1)*paginator.getOffset()); 
+			}
+			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setCollection(this.serviceLocator.getCourseService().getCourses(false, 
 					"-" + ORDERING_PROPERTY, locale, paginator.getStart(), paginator.getEnd()));
 			model.addAttribute("paginator", paginator);
@@ -172,34 +179,6 @@ public class CatalogController extends BaseController {
 	private String redirectToCourseDetail(HttpServletResponse response, 
 		Long courseId, Model model, Locale locale) throws GenericException {
 		try {
-
-			/*Course course = this.serviceLocator.getCourseService().getCourse(courseId, locale);
-			School school = this.serviceLocator.getSchoolService().getSchool(course.getSchool(), locale);
-			Provider provider = this.serviceLocator.getProviderService().getProviderById(school.getProvider(), locale);
-			
-			String townName = school.getContactInfo() != null && 
-					school.getContactInfo().getCity() != null ? 
-					school.getContactInfo().getCity() : "";
-			
-
-			Town town = this.getTownByName(townName, locale);
-
-			Province province = new Province();
-			Region region = new Region();
-			
-			if(town != null && town.getId() != null) {
-				region = this.serviceLocator.getTerritorialService().getRegionsMap(locale).get(town.getRegion());
-				province = this.serviceLocator.getTerritorialService().getProvincesMap(locale).get(town.getProvince());
-			} else {
-				town = new Town();
-			}
-			
-			
-			// Metadata
-			StringBuffer keyWords = new StringBuffer();
-			for(Category tag : course.getTags()) {
-				keyWords.append(tag.getCategory()).append(",");
-			} */
 			HashMap<String, Object> courseData = this.getDataFromCache(courseId, locale);
 			Course course = (Course) courseData.get("course");
 			
@@ -224,48 +203,6 @@ public class CatalogController extends BaseController {
 		LOGGER.severe(StackTraceUtil.getStackTrace(ex));
 		response.sendError(HttpStatus.NOT_FOUND.value());
 		return "common.error";
-	}
-	
-	
-	public Town getTownByName(String name, Locale locale) throws Exception {
-		HashMap<Locale, HashMap<String, Town>> towns;
-		MemcacheService syncCache = null;
-		try {
-			syncCache = MemcacheServiceFactory.getMemcacheService();
-		} catch(Exception e) {
-			LOGGER.severe("Error getting cache for towns by name map: ");
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-		} 
-		
-		boolean cached = false;
-		
-		towns = (HashMap<Locale, HashMap<String, Town>>) syncCache.get("townsByName");
-		if(towns == null) {
-			towns = new HashMap<Locale, HashMap<String, Town>>();
-		}
-		
-		HashMap<String, Town> townsByName = towns.get(locale);
-		if(townsByName == null) {
-			townsByName = new HashMap<String, Town>();
-		}
-		
-		Town town = townsByName.get(name);
-		if(town == null) {			
-			List<Town> all = this.serviceLocator.getTerritorialService().findTownsByName(name, locale);
-			if(towns != null && all.size() > 0) {
-				town = all.get(0);
-				townsByName.put(name, town);
-				towns.put(locale, townsByName);
-			}
-		} else {
-			cached = true;
-		}
-		
-		if(!cached) {
-			syncCache.put("townsByName", towns);
-		}
-		
-		return town;
 	}
 	
 	private HashMap<String, Object> getDataFromCache(Long courseId, Locale locale) throws Exception {
@@ -298,8 +235,10 @@ public class CatalogController extends BaseController {
 					school.getContactInfo().getCity() : "";
 			
 
-			Town town = this.getTownByName(townName, locale);
+			//Town town = this.getTownByName(townName, locale);
 
+			Town town = this.serviceLocator.getTerritorialService().getTownsMap(locale).get(townName);
+			
 			Province province = new Province();
 			Region region = new Region();
 			
