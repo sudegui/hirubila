@@ -190,7 +190,7 @@ public class CatalogController extends BaseController {
 			model.addAttribute("town", courseData.get("town"));
 			model.addAttribute("tags", courseData.get("tags"));
 			
-			response.addDateHeader("Last-Modified", course.getStart().getTime());
+			response.addDateHeader("Last-Modified", course.getStart() != null ? course.getStart().getTime() : course.getUpdated().getTime());
 		} catch(Exception e) {
 			throw new GenericException(e);
 		}
