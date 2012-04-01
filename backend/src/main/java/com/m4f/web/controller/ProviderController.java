@@ -29,6 +29,7 @@ import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.utils.PageManager;
+import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
 import com.m4f.utils.feeds.importer.ProviderImporter;
 import com.m4f.utils.feeds.importer.SchoolImporter;
@@ -93,18 +94,25 @@ public class ProviderController extends BaseController {
                 Collection<School> schools = schoolService.getSchoolsByProvider(providerId, 
                                 "updated", null, start, end);
                 for(School school : schools) {
-                	try {
+                	Map<String, String> params = new HashMap<String, String>();
+                	
+					params.put("providerId", String.valueOf(providerId));
+					params.put("schoolId", String.valueOf(school.getId()));
+					params.put("dumpId", String.valueOf(dump.getId()));
+					
+                	worker.addWork("school", "/provider/school", params);
+                	/*try {
                 		providerImporter.createLoadTask(provider, school, dump);
                 	} catch(Exception e) {
                 		fails.add(school);
-                	}
+                	}*/
                 }
 	        }
 	        
 	        // Retries
-	        for(School school : fails) {
-	        	providerImporter.createLoadTask(provider, school, dump);
-	        }
+	        //for(School school : fails) {
+	        //	providerImporter.createLoadTask(provider, school, dump);
+	        //}
 	        
 	        // Set result into report
 			report.setResult("OK");
@@ -114,13 +122,13 @@ public class ProviderController extends BaseController {
         } finally {
         	cronTaskReportService.save(report);
         	dumpService.save(dump);
-        	String[] cacheNames =  {"courses", "schools", "coursesCatalog"};
+        	/*String[] cacheNames =  {"courses", "schools", "coursesCatalog"};
         	for(String cacheName : cacheNames) {
         		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService(cacheName);
         		syncCache.clearAll();
         	}
         	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-    		syncCache.clearAll();    
+    		syncCache.clearAll();*/    
         }
     }
 	
@@ -153,57 +161,61 @@ public class ProviderController extends BaseController {
 	                                "updated", null, start, end);
 	                for(School school : schools) {
 	                	Map<String, String> params = new HashMap<String, String>();
+	                	
 						params.put("providerId", String.valueOf(providerId));
 						params.put("schoolId", String.valueOf(school.getId()));
 						
 						worker.addWork("school", "/provider/school", params);
 	                }
 	        }
-            /*CronTaskReport report = cronTaskReportService.create();
-            report.setObject_id(providerId);
-            report.setDate(new Date());
-            report.setType(CronTaskReport.TYPE.PROVIDER_SCHOOLS);
-            try {
-                    Provider provider = this.providerService.getProviderById(providerId, null);
-                    report.setDescription("Importing courses from " + provider.getName() + " provider.");
-                    providerImporter.importCourses(provider);
-                    report.setResult("OK");
-            } catch(Exception e) {
-                    report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
-                    throw e;
-            } finally {
-                    cronTaskReportService.save(report);
-            }*/
+            
           
     }
     
-   /* @RequestMapping(value = "/school", method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value = "/school", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)
-    public void importSchool(@RequestParam(required=false) Long providerId, @RequestParam(required=false) Long schoolId) 
+    public void importSchool(@RequestParam(required=true) Long providerId, @RequestParam(required=true) Long schoolId,
+    		@RequestParam(required=true) Long dumpId) 
                     throws ParserConfigurationException, SAXException, IOException, Exception {
-    		School school;
-    		Provider provider;
-    		CronTaskReport report = cronTaskReportService.create(); 
-            try {
-            	
-                 report.setObject_id(providerId);
-                 report.setDate(new Date());
-                 report.setType(CronTaskReport.TYPE.PROVIDER_SCHOOLS);
-                 
-                    provider = this.providerService.getProviderById(providerId, null);
-                    school = this.schoolService.getSchoolByExternalId("1-5", null);
-                    //school = this.schoolService.getSchool(schoolId, null);
-                    report.setDescription("Importing courses from " + provider.getName() + " provider and school: " + school.getName());
-                    providerImporter.createLoadTask(provider, school, null);
-                    report.setResult("OK");
-            } catch(Exception e) {
-                    report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
-                    throw e;
-            } finally {
-                    cronTaskReportService.save(report);
-            }
+    	Provider provider = null;
+    	School school = null;
+		Dump dump = null;
+		CronTaskReport report = null;
+		
+
+		try {
+			provider = providerService.getProviderById(providerId, null);
+			school = schoolService.getSchool(schoolId, null);
+			dump = dumpService.getDump(dumpId);
+			
+			report = cronTaskReportService.create();
+            report.setObject_id(providerId);
+            report.setDate(new Date());
+            report.setType(CronTaskReport.TYPE.PROVIDER_SCHOOLS);
+			report.setDescription(new StringBuffer("School: ").append(provider.getName()).toString());
+			int retries = 5;
+			while(retries > 0) {
+		    	try {
+				   providerImporter.createLoadTask(provider, school, dump);
+			   	} catch(Exception e) {
+			   		LOGGER.info("" + retries + " Fail importing courses: "+school.getName() );
+			   		retries--;
+			   		if(!(retries > 0)) {
+			   			throw e;
+			   		}
+			   	}
+			}    	
+			// Set result into report
+			
+			report.setResult("OK");
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
+			throw e;
+		}
+        
           
-    }  */
+    } 
     
     @RequestMapping(value = "/prueba", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)

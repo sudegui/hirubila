@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
+ <cron>
+  	<url>/loader/manual/feed</url>
+  	<description>Generate in a round-robin method all internal feeds.</description>
+  	<schedule>every day 17:00</schedule>
+  	<timezone>Europe/Madrid</timezone>
+  </cron>
+  
+ <!-- <cron>
+  	<url>/loader/update/provider</url>
+  	<description>Update all provider's information using its feed.</description>
+  	<schedule>every 2 minutes</schedule>
+  	<timezone>Europe/Madrid</timezone>
+  </cron>
+  
+  <cron>
+  	<url>/loader/update/school</url>
+  	<description>Update all school's information using its feed.</description>
+  	<schedule>every 5 minutes</schedule>
+  	<timezone>Europe/Madrid</timezone>
+  </cron>
+ --> 
+   
 <!--  
   <cron>
   	<url>/launcher/loadprovider</url>

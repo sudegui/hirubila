@@ -109,12 +109,12 @@
 	<bean id="acquirer" class="com.m4f.utils.content.impl.GaeHttpAcquirer"/>
 	
     <!-- Schools parser -->
-    <bean id="schoolParser" class="com.m4f.utils.feeds.parser.impl.SchoolsFeedParser" scope="prototype">
+    <bean id="schoolParser" class="com.m4f.utils.feeds.parser.impl.SchoolsFeedParser" scope="singleton">
     	<constructor-arg index="0" ref="acquirer"/>
     </bean>
     
     <!-- Courses parser -->
-    <bean id="courseParser" class="com.m4f.utils.feeds.parser.impl.CoursesFeedParser" scope="prototype">
+    <bean id="courseParser" class="com.m4f.utils.feeds.parser.impl.CoursesFeedParser" scope="singleton">
     	<constructor-arg index="0">
     		<list>
       			<value>yyyy/MM/dd</value>

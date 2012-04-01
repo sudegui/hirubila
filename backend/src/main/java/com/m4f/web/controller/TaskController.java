@@ -45,6 +45,11 @@ import com.m4f.business.domain.extended.FeedSchools;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.utils.feeds.events.model.Dump;
+import com.m4f.utils.feeds.importer.ProviderImporter;
+import com.m4f.utils.feeds.importer.SchoolImporter;
+import com.m4f.utils.worker.impl.AppEngineBackendWorker;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 @Controller
@@ -54,7 +59,167 @@ public class TaskController extends BaseController  {
 	private static final Logger LOGGER = Logger.getLogger(TaskController.class.getName());
 	private static final String EMAIL_DOMAIN_SUFFIX = "@hirubila.appspotmail.com";
 	
+	@Autowired
+	ProviderImporter providerImporter;
+	@Autowired
+	SchoolImporter schoolImporter;
+	@Autowired
+	AppEngineBackendWorker worker;
+	
+	public static final int RANGE = 100;
+	
+	/*
+	 * This task update Provider's information. Its invoked from a cron task in the frontend.
+	 */
+	@RequestMapping(value = "/provider/feed", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseStatus(HttpStatus.OK)
+    public void loadProviderFeed(@RequestParam Long providerId) 
+                    throws ParserConfigurationException, SAXException, IOException, Exception { 
+		LOGGER.info("Updating provider with id: " + providerId);
+		
+		Provider provider = null;
+		CronTaskReport report = null;
+		Dump dump = null;
+		
+        try {
+        	provider = this.providerService.getProviderById(providerId, null);
+        	LOGGER.info("Provider name: " + provider.getName());
+        	
+            // CRON REPORT
+            report = cronTaskReportService.create();
+            report.setObject_id(providerId);
+            report.setDate(new Date());
+            report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
+			report.setDescription(new StringBuffer("Proveedor: ").append(provider.getName()).toString());
+			
+			// DUMP
+			dump = this.dumpService.createDump();
+        	String message = "Proceso de importacion del proveedor: " + provider.getName() + " (" + 
+        			provider.getId() + "-" + " " + ")";
+			dump.setDescription(message);
+			dump.setLaunched(Calendar.getInstance(new Locale("es")).getTime());
+			dump.setOwner(provider.getId());
+			dump.setOwnerClass(Provider.class.getName());
+			this.dumpService.save(dump);
+        	
+			// IMPORT PROVIDER'S SCHOOLS FROM FEED
+			providerImporter.importSchools(provider, dump);
+			
+	        // Set result into report
+			report.setResult("OK");
+        } catch(Exception e) {
+                report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
+                throw e;
+        } finally {
+        	cronTaskReportService.save(report);
+        	dumpService.save(dump);
 
+        }
+    }
+	
+	/*
+	 * This task update Provider's information. Its invoked from a cron task in the frontend.
+	 */
+	@RequestMapping(value = "/school/feed", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseStatus(HttpStatus.OK)
+    public void loadSchoolFeed(@RequestParam Long schoolId) 
+                    throws ParserConfigurationException, SAXException, IOException, Exception { 
+		LOGGER.info("Updating school with id: " + schoolId);
+		
+		Provider provider = null;
+    	School school = null;
+		Dump dump = null;
+		CronTaskReport report = null;
+		
+
+		try {
+			school = schoolService.getSchool(schoolId, null);
+			LOGGER.info("School name: " + school.getName());
+			provider = providerService.getProviderById(school.getProvider(), null);
+			school = schoolService.getSchool(schoolId, null);
+			dump = dumpService.getLastDumpByOwner(school.getProvider());
+			
+			report = cronTaskReportService.create();
+            report.setObject_id(school.getProvider());
+            report.setDate(new Date());
+            report.setType(CronTaskReport.TYPE.PROVIDER_SCHOOLS);
+			report.setDescription(new StringBuffer("School: ").append(provider.getName()).toString());
+			int retries = 5;
+			while(retries > 0) {
+		    	try {
+				   providerImporter.createLoadTask(provider, school, dump);
+			   	} catch(Exception e) {
+			   		LOGGER.info("" + retries + " Fail importing courses: "+school.getName() );
+			   		retries--;
+			   		if(!(retries > 0)) {
+			   			throw e;
+			   		}
+			   	}
+			}    	
+			// Set result into report
+			
+			report.setResult("OK");
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
+			throw e;
+		}
+        
+    }
+	
+	/*
+	 * This task generates internal feeds for a mediationService. Its invoked from a cron task in the frontend.
+	 */
+	@RequestMapping(value="/_feed/mediation/create", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseStatus(HttpStatus.OK)
+	public void generateInternalFeedsByMediationId(@RequestParam(required=true) Long mediationId, 
+			@RequestHeader("host") String host, @RequestHeader("referer") String referer) throws Exception {
+		LOGGER.info("Creating internal feed for manual mediation with id: " + mediationId);
+		
+		final String FRONTEND_HOST = "hirubila.appspot.com";
+		//LOGGER.info("referer: " + referer);
+		// Create a new CronTaskReport
+		CronTaskReport report = cronTaskReportService.create();
+		report.setObject_id(mediationId);
+		report.setDate(new Date());
+		report.setType(CronTaskReport.TYPE.INTERNAL_FEED);
+		try {
+			// Start the process		
+			Provider provider =  providerService.getProviderByMediationService(mediationId, null);		
+			MediationService mediationService = mediatorService.getMediationService(mediationId, null);
+			LOGGER.info("Mediation name: " + mediationService.getName());
+			//Set report description
+			report.setDescription(new StringBuffer("Servicio de mediación: ").append(mediationService.getName()).toString());
+			
+			if(!mediationService.getHasFeed()) { // All must be manual mediator, but it's another check.
+				FeedSchools feedSchools = internalFeedService.createFeedSchools(FRONTEND_HOST, provider, mediationService);
+				internalFeedService.saveFeedSchools(feedSchools);
+				HashMap<Long, ExtendedSchool> schools = new HashMap<Long, ExtendedSchool>();
+				Collection<ExtendedCourse> courses = 
+					extendedCourseService.getCoursesByOwner(mediationService.getId(), null, null);
+				for(ExtendedCourse course : courses) {
+					ExtendedSchool school = extendedSchoolService.getSchool(course.getSchool(), Locale.getDefault());
+					if(school != null) schools.put(school.getId(), school);
+				}
+				for(ExtendedSchool school : schools.values()) {
+					FeedCourses feedCourse = internalFeedService.createFeedCourses(FRONTEND_HOST, 
+							provider, mediationService, school, this.getAvailableLanguages()); 	
+					internalFeedService.saveFeedCourses(feedCourse);
+				}
+				// Set result into report
+				report.setResult("OK");
+			}
+			
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
+			throw e;
+		} finally {
+			cronTaskReportService.save(report);
+		}
+	}
+	
+	//////////////////////////////////////////////////
 	
 	@RequestMapping(value="/updatecourses", method=RequestMethod.POST)
 	public String updateCourses(@RequestParam(required=true) Long schoolId,
