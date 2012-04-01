@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
 import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.business.service.ifc.I18nSchoolService;
@@ -153,6 +155,8 @@ public class SchoolServiceImpl extends I18nDAOBaseService implements I18nSchoolS
 		return this.DAO.count(School.class, filter);
 	}
 	
+	@Override
+	@Cacheable(cacheName="schools")
 	public List<School> getSchoolsByProvider(Long providerId, String name, String ordering, Locale locale) {
 		ArrayList<School> schools = new ArrayList<School>();
 		String hack = name + "\ufffd";
@@ -164,11 +168,19 @@ public class SchoolServiceImpl extends I18nDAOBaseService implements I18nSchoolS
 		return schools;
 	}
 	
+	@Override
+	@Cacheable(cacheName="schools")
 	public List<School> findByName(String name, Locale locale) {
 		ArrayList<School> schools = new ArrayList<School>();
 		String filter = "search.contains(nameParam)";
 		schools.addAll(this.DAO.findEntities(School.class, locale, filter, "java.lang.String nameParam", new Object[]{name}, "name"));
 		return schools;
+	}
+	
+	@Override
+	@Cacheable(cacheName="schools")
+	public List<Long> getAllSchoolIds() throws Exception {
+		return this.DAO.getAllIds(School.class, "id",null, null, null);
 	}
 	
 	/*********************************************************************

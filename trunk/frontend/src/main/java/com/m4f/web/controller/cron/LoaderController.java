@@ -21,6 +21,103 @@ public class LoaderController extends BaseController {
 	private static final Logger LOGGER = Logger.getLogger(LoaderController.class.getName());
 	
 	/*
+	 * Cron task to generate all internal feeds with the last information. Invoke for each manual mediation service a
+	 * backend task to do it.
+	 */
+	@RequestMapping(value="/manual/feed", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void generateManualFeeds() throws Exception {
+		// Get all manual mediation services
+		List<Long> ids = this.serviceLocator.getMediatorService().getAllMediationServiceManualIds();
+		if(ids != null) {
+			// For each one create a backend task.
+			for(Long id : ids) {
+				// Invoke the task with the id obtained
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("mediationId", String.valueOf(id));
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
+						"/task/_feed/mediation/create", params);
+			}
+		}
+	}
+	
+	/*
+	 * Cron task to update a provider's information, using a round-robin method. It invokes a backend task to do it.
+	 */
+	@RequestMapping(value="/update/provider", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void updateProviderInformation() throws Exception {
+		CronTaskReport report = null;
+		try {
+			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_FEED);
+		} catch(Exception e) {
+			LOGGER.severe(new StringBuffer("No se ha podido recuperara el " +
+					"ultimo CronTaskReport").append(StackTraceUtil.getStackTrace(e)).toString());			
+		}
+		try {
+			Long id = null;
+			List<Long> ids = this.serviceLocator.getProviderService().getAllProviderIds();
+			
+			if(ids != null && ids.size() > 0) {
+				id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
+			}
+			if(id != null) {
+				LOGGER.info("Invoking backend task to update provider with ID:" + id);
+				// Invoke the task with the id obtained
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("providerId", String.valueOf(id));
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
+						"/task/provider/feed", params);
+			} else {
+				LOGGER.severe("No provider ID for invokin task in the backend! Update provider's information method");
+			}
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			throw e;
+		}
+	}
+	
+	/*
+	 * Cron task to update a school's information, using a round-robin method. It invokes a backend task to do it.
+	 */
+	@RequestMapping(value="/update/school", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void updateSchoolInformation() throws Exception {
+		CronTaskReport report = null;
+		try {
+			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_SCHOOLS);
+		} catch(Exception e) {
+			LOGGER.severe(new StringBuffer("No se ha podido recuperara el " +
+					"ultimo CronTaskReport").append(StackTraceUtil.getStackTrace(e)).toString());			
+		}
+		try {
+			Long id = null;
+			List<Long> ids = this.serviceLocator.getSchoolService().getAllSchoolIds();
+			
+			if(ids != null && ids.size() > 0) {
+				id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
+			}
+			if(id != null) {
+				LOGGER.info("Invoking backend task to update school with ID:" + id);
+				// Invoke the task with the id obtained
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("schoolId", String.valueOf(id));
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE, 
+						"/task/school/feed", params);
+			} else {
+				LOGGER.severe("No schol ID for invokin task in the backend! Update school's information method");
+			}
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			throw e;
+		}
+	}
+	
+	////////////////////////////////////////////////////////////////
+	/*
 	 * CRON TO EXECUTE IN ORDER AND IN ROUND-ROBIN METHOD THE SCHOOLS AND COURSES FROM THEIR PROVIDER
 	 */
 	@RequestMapping(value="/provider/feed", method=RequestMethod.GET)
