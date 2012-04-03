@@ -36,11 +36,27 @@ public class LoaderController extends BaseController {
 				Map<String, String> params = new HashMap<String, String>();
 				params.put("mediationId", String.valueOf(id));
 				this.serviceLocator.getWorkerFactory().createWorker().addWork(
-						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
 						"/task/_feed/mediation/create", params);
 			}
 		}
 	}
+	
+	/*@RequestMapping(value="/update/providers", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void updateProvidersInformation() throws Exception {
+		this.serviceLocator.getWorkerFactory().createWorker().addWork(
+				this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
+				"/task/update/providers", new HashMap());
+	}
+	
+	@RequestMapping(value="/update/schools", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void updateSchoolsInformation() throws Exception {
+		this.serviceLocator.getWorkerFactory().createWorker().addWork(
+				this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE, 
+				"/task/update/schools", new HashMap());
+	}*/
 	
 	/*
 	 * Cron task to update a provider's information, using a round-robin method. It invokes a backend task to do it.
@@ -82,7 +98,7 @@ public class LoaderController extends BaseController {
 	/*
 	 * Cron task to update a school's information, using a round-robin method. It invokes a backend task to do it.
 	 */
-	@RequestMapping(value="/update/school", method=RequestMethod.GET)
+	/*@RequestMapping(value="/update/school", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void updateSchoolInformation() throws Exception {
 		CronTaskReport report = null;
@@ -114,7 +130,7 @@ public class LoaderController extends BaseController {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			throw e;
 		}
-	}
+	}*/
 	
 	////////////////////////////////////////////////////////////////
 	/*

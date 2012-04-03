@@ -6,13 +6,13 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -22,6 +22,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.xml.sax.SAXException;
+
 import com.m4f.business.domain.Course;
-import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.Inbox;
 import com.m4f.business.domain.MediationService;
@@ -49,9 +52,6 @@ import com.m4f.utils.feeds.importer.ProviderImporter;
 import com.m4f.utils.feeds.importer.SchoolImporter;
 import com.m4f.utils.worker.impl.AppEngineBackendWorker;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-
 @Controller
 @RequestMapping("/task")
 public class TaskController extends BaseController  {
@@ -66,12 +66,121 @@ public class TaskController extends BaseController  {
 	@Autowired
 	AppEngineBackendWorker worker;
 	
-	public static final int RANGE = 100;
+	public static final int RANGE = 900;
+	
+	/*@RequestMapping(value = "/update/providers", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProviders() throws ParserConfigurationException, SAXException, IOException, Exception { 
+		LOGGER.info("Updating providers information");
+		
+		List<Long> providerIds = providerService.getAllProviderIds();
+		for(Long providerId : providerIds) {
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("providerId", String.valueOf(providerId));
+			
+			worker.addWork("provider", "/task/provider/feed", params);
+		}
+    }
+	
+	@RequestMapping(value = "/update/schools", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseStatus(HttpStatus.OK)
+    public void updateSchools() throws ParserConfigurationException, SAXException, IOException, Exception { 
+		LOGGER.info("Updating schools information");
+		PageManager<School> paginator = new PageManager<School>();
+        long total = schoolService.countSchools();
+        paginator.setOffset(RANGE);
+        paginator.setStart(0);
+        paginator.setSize(total);
+        
+        for (Integer page : paginator.getTotalPagesIterator()) {
+        	 int start = (page - 1) * RANGE;
+             int end = (page) * RANGE;
+             Collection<Long> schoolIds = schoolService.getAllSchoolIds(start, end);
+        	
+			for(Long schoolId : schoolIds) {
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("schoolId", String.valueOf(schoolId));
+				
+				worker.addWork("school", "/task/school/feed", params);
+			}
+        }
+    }*/
 	
 	/*
 	 * This task update Provider's information. Its invoked from a cron task in the frontend.
 	 */
 	@RequestMapping(value = "/provider/feed", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseStatus(HttpStatus.OK)
+    public void loadProviderFeed(@RequestParam Long providerId) 
+                    throws ParserConfigurationException, SAXException, IOException, Exception { 
+		LOGGER.info("Updating provider with id: " + providerId);
+		Provider provider = null;
+		CronTaskReport report = null;
+		Dump dump = null;
+		
+        try {
+        	provider = this.providerService.getProviderById(providerId, null);
+            
+            // CRON REPORT
+            report = cronTaskReportService.create();
+            report.setObject_id(providerId);
+            report.setDate(new Date());
+            report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
+			report.setDescription(new StringBuffer("Proveedor: ").append(provider.getName()).toString());
+			
+			// DUMP
+			dump = this.dumpService.createDump();
+        	String message = "Proceso de importacion del proveedor: " + provider.getName() + " (" + 
+        			provider.getId() + "-" + " " + ")";
+			dump.setDescription(message);
+			dump.setLaunched(Calendar.getInstance(new Locale("es")).getTime());
+			dump.setOwner(provider.getId());
+			dump.setOwnerClass(Provider.class.getName());
+			this.dumpService.save(dump);
+        	
+			// IMPORT PROVIDER'S SCHOOLS FROM FEED
+			providerImporter.importSchools(provider, dump);
+			
+			// IMPORT PROVIDER'S COURSES FROM EACH SCHOOL
+            PageManager<School> paginator = new PageManager<School>();
+	        long total = schoolService.countSchoolsByProvider(providerId);
+	        paginator.setOffset(RANGE);
+	        paginator.setStart(0);
+	        paginator.setSize(total);
+	        ArrayList<School> fails = new ArrayList<School>();
+	        for (Integer page : paginator.getTotalPagesIterator()) {
+                int start = (page - 1) * RANGE;
+                int end = (page) * RANGE;
+                Collection<School> schools = schoolService.getSchoolsByProvider(providerId, 
+                                "updated", null, start, end);
+                for(School school : schools) {
+                	try {
+                		providerImporter.createLoadTask(provider, school, dump);
+                	} catch(Exception e) {
+                		LOGGER.warning("Error with school: " + school.getName());
+                		LOGGER.warning(StackTraceUtil.getStackTrace(e));
+                		fails.add(school);
+                	}
+                }
+	        }
+	        
+	        // Retries
+	        for(School school : fails) {
+	        	providerImporter.createLoadTask(provider, school, dump);
+	        }
+	        
+	        // Set result into report
+			report.setResult("OK");
+        } catch(Exception e) {
+                report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
+                throw e;
+        } finally {
+        	cronTaskReportService.save(report);
+        	dumpService.save(dump);
+        }
+	}
+	
+	/*@RequestMapping(value = "/provider/feed", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)
     public void loadProviderFeed(@RequestParam Long providerId) 
                     throws ParserConfigurationException, SAXException, IOException, Exception { 
@@ -115,12 +224,12 @@ public class TaskController extends BaseController  {
         	dumpService.save(dump);
 
         }
-    }
+    }*/
 	
 	/*
 	 * This task update Provider's information. Its invoked from a cron task in the frontend.
 	 */
-	@RequestMapping(value = "/school/feed", method = {RequestMethod.POST,RequestMethod.GET})
+	/*@RequestMapping(value = "/school/feed", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)
     public void loadSchoolFeed(@RequestParam Long schoolId) 
                     throws ParserConfigurationException, SAXException, IOException, Exception { 
@@ -149,6 +258,7 @@ public class TaskController extends BaseController  {
 		    	try {
 				   providerImporter.createLoadTask(provider, school, dump);
 			   	} catch(Exception e) {
+			   		LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			   		LOGGER.info("" + retries + " Fail importing courses: "+school.getName() );
 			   		retries--;
 			   		if(!(retries > 0)) {
@@ -165,7 +275,7 @@ public class TaskController extends BaseController  {
 			throw e;
 		}
         
-    }
+    }*/
 	
 	/*
 	 * This task generates internal feeds for a mediationService. Its invoked from a cron task in the frontend.

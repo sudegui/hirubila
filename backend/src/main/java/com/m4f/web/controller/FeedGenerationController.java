@@ -37,9 +37,9 @@ public class FeedGenerationController extends BaseController  {
 	@RequestMapping(value="/mediation/create", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseStatus(HttpStatus.OK)
 	public void generateInternalFeedsByMediationId(@RequestParam(required=true) Long mediationId, 
-			@RequestHeader("host") String host, @RequestHeader("referer") String referer) throws Exception {
-		final String FRONTEND_HOST = "hirubila.appspot.com";
-		LOGGER.info("referer: " + referer);
+			@RequestHeader("host") String host) throws Exception {
+		final String FRONTEND_HOST = "http://localhost:8888";
+		//LOGGER.info("referer: " + referer);
 		// Create a new CronTaskReport
 		CronTaskReport report = cronTaskReportService.create();
 		report.setObject_id(mediationId);
