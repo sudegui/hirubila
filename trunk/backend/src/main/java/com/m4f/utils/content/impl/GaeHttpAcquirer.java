@@ -8,13 +8,13 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.logging.Logger;
 
+import com.m4f.utils.StackTraceUtil;
+
 public class GaeHttpAcquirer extends BaseAcquirer{
 	private static final Logger LOGGER = Logger.getLogger(GaeHttpAcquirer.class.getName());
 	
 	private int connectTimeout = 1000 * 60; // In milliseconds
 	private int readTimeout = 1000 * 20; // In milliseconds
-	
-	
 	
 	public int getConnectTimeout() {
 		return this.connectTimeout;
@@ -59,6 +59,7 @@ public class GaeHttpAcquirer extends BaseAcquirer{
 					}
 				} catch(Exception e) {
 					LOGGER.warning("----------------------------------");
+					LOGGER.warning(StackTraceUtil.getStackTrace(e));
 					LOGGER.warning("Failed getting soure: " + source);
 					LOGGER.warning("Retries num: " + retries);
 					LOGGER.warning("----------------------------------");

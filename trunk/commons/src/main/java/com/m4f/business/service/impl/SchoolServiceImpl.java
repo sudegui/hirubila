@@ -179,8 +179,8 @@ public class SchoolServiceImpl extends I18nDAOBaseService implements I18nSchoolS
 	
 	@Override
 	@Cacheable(cacheName="schools")
-	public List<Long> getAllSchoolIds() throws Exception {
-		return this.DAO.getAllIds(School.class, "id",null, null, null);
+	public List<Long> getAllSchoolIds(int init, int end) throws Exception {
+		return this.DAO.getAllIds(School.class, "id",null, null, null, init, end);
 	}
 	
 	/*********************************************************************

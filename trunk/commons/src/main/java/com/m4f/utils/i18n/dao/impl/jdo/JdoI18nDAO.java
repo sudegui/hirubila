@@ -51,6 +51,34 @@ public class JdoI18nDAO implements I18nDAOSupport {
 		 return ids;
 	}
 	
+	public <T extends BaseEntity> List<Long> getAllIds(Class<T> clazz, String ordering, String filter, String params, Object[] values, int init, int end) throws Exception {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query q = null;
+		if(filter != null && ("").equals(filter)) {
+			q = pm.newQuery("select id from " + clazz.getName(), filter);
+			q.declareParameters(params);
+		} else {
+			q = pm.newQuery("select id from " + clazz.getName());
+		}
+		 
+		this.setOrdering(q, ordering);
+		if((init<end) && (init>=0)) {
+			q.setRange(init, end);
+		}
+		
+		List<Long> ids = null;
+		
+		if(filter != null && ("").equals(filter)) {
+			ids = (List<Long>) q.executeWithArray(values);
+		} else {
+			ids = (List<Long>) q.execute();
+		}
+		
+		 return ids;
+	}
+	
+	
+	
 	public void saveOrUpdate(BaseEntity entity, Locale locale) throws Exception {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
         try {

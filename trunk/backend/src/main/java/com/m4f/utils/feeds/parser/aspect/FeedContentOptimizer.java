@@ -31,8 +31,8 @@ public class FeedContentOptimizer {
 		this.dao = DAO;
 	}
 	
-	@AfterReturning(
-	pointcut = "execution(* com.m4f.utils.content.ifc.ContentAcquirer.*(..)) && args(source)",
+	/*@AfterReturning(
+	pointcut = "execution(* com.m4f.utils.content.ifc.ContentAcquirer.getContent(..)) && args(source)",
 	argNames="source,retVal", returning= "retVal")
 	public void optimize(URI source, ByteArrayOutputStream retVal) {
 		try {	
@@ -59,7 +59,8 @@ public class FeedContentOptimizer {
 		} catch(Exception e) {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}
-	}
+		
+	}*/
 	
 	
 	private Feed getStoreContent(URI source) {	

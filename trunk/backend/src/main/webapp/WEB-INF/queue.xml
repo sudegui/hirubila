@@ -2,10 +2,10 @@
 <queue-entries>
 	<queue>
 		<name>provider</name>
-		<rate>2/s</rate>
+		<rate>1/s</rate>
 		<max-concurrent-requests>1</max-concurrent-requests>
 		<retry-parameters>
-      		<task-retry-limit>5</task-retry-limit>
+      		<task-retry-limit>2</task-retry-limit>
       		<min-backoff-seconds>30</min-backoff-seconds>
      	 	<max-backoff-seconds>180</max-backoff-seconds>
      		<max-doublings>2</max-doublings>

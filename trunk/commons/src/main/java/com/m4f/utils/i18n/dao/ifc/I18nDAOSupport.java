@@ -15,6 +15,8 @@ public interface I18nDAOSupport {
 	
 	<T extends BaseEntity> List<Long> getAllIds(Class<T> clazz, String order, String filter, String params, Object[] values) throws Exception;
 	
+	<T extends BaseEntity> List<Long> getAllIds(Class<T> clazz, String ordering, String filter, String params, Object[] values, int init, int end) throws Exception;
+	
 	void saveOrUpdate(BaseEntity entity, Locale locale) throws Exception;
 
 	<T extends BaseEntity> void saveOrUpdateCollection(Collection<T> entities, Locale locale) throws Exception; 

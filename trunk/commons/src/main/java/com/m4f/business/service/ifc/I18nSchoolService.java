@@ -25,5 +25,5 @@ public interface I18nSchoolService {
 	
 	List<School> findByName(String name, Locale locale);
 	
-	List<Long> getAllSchoolIds() throws Exception;
+	List<Long> getAllSchoolIds(int init, int end) throws Exception;
 }

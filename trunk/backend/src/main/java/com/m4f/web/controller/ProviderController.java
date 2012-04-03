@@ -94,25 +94,25 @@ public class ProviderController extends BaseController {
                 Collection<School> schools = schoolService.getSchoolsByProvider(providerId, 
                                 "updated", null, start, end);
                 for(School school : schools) {
-                	Map<String, String> params = new HashMap<String, String>();
+                	/*Map<String, String> params = new HashMap<String, String>();
                 	
 					params.put("providerId", String.valueOf(providerId));
 					params.put("schoolId", String.valueOf(school.getId()));
-					params.put("dumpId", String.valueOf(dump.getId()));
+					params.put("dumpId", String.valueOf(dump.getId())); 
 					
-                	worker.addWork("school", "/provider/school", params);
-                	/*try {
+                	worker.addWork("school", "/provider/school", params); */
+                	try {
                 		providerImporter.createLoadTask(provider, school, dump);
                 	} catch(Exception e) {
                 		fails.add(school);
-                	}*/
+                	}
                 }
 	        }
 	        
 	        // Retries
-	        //for(School school : fails) {
-	        //	providerImporter.createLoadTask(provider, school, dump);
-	        //}
+	        for(School school : fails) {
+	        	providerImporter.createLoadTask(provider, school, dump);
+	        }
 	        
 	        // Set result into report
 			report.setResult("OK");
