@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
-<!-- 
  <cron>
   	<url>/loader/manual/feed</url>
-  	<description>Generate in a round-robin method all internal feeds.</description>
+  	<description>Generate all internal feeds.</description>
   	<schedule>every day 17:00</schedule>
   	<timezone>Europe/Madrid</timezone>
   </cron>
-   
+ <!--   
  <cron>
   	<url>/loader/update/providers</url>
   	<description>Update all provider's information using its feed.</description>

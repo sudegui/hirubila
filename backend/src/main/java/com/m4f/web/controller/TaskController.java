@@ -299,9 +299,9 @@ public class TaskController extends BaseController  {
 			MediationService mediationService = mediatorService.getMediationService(mediationId, null);
 			LOGGER.info("Mediation name: " + mediationService.getName());
 			//Set report description
-			report.setDescription(new StringBuffer("Servicio de mediación: ").append(mediationService.getName()).toString());
+			report.setDescription(new StringBuffer("Internal feed para Srv. mediacion: ").append(mediationService.getName()).toString());
 			
-			if(!mediationService.getHasFeed()) { // All must be manual mediator, but it's another check.
+			if(!mediationService.getHasFeed() && provider != null) { // All must be manual mediator, but it's another check.
 				FeedSchools feedSchools = internalFeedService.createFeedSchools(FRONTEND_HOST, provider, mediationService);
 				internalFeedService.saveFeedSchools(feedSchools);
 				HashMap<Long, ExtendedSchool> schools = new HashMap<Long, ExtendedSchool>();
