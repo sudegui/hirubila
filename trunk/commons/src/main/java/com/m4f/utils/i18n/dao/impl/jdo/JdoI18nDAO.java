@@ -32,8 +32,8 @@ public class JdoI18nDAO implements I18nDAOSupport {
 	public <T extends BaseEntity> List<Long> getAllIds(Class<T> clazz, String ordering, String filter, String params, Object[] values) throws Exception {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = null;
-		if(filter != null && ("").equals(filter)) {
-			q = pm.newQuery("select id from " + clazz.getName(), filter);
+		if(filter != null && !("").equals(filter)) {
+			q = pm.newQuery("select id from " + clazz.getName(), " where " + filter);
 			q.declareParameters(params);
 		} else {
 			q = pm.newQuery("select id from " + clazz.getName());
@@ -42,7 +42,7 @@ public class JdoI18nDAO implements I18nDAOSupport {
 		this.setOrdering(q, ordering);
 		List<Long> ids = null;
 		
-		if(filter != null && ("").equals(filter)) {
+		if(filter != null && !("").equals(filter)) {
 			ids = (List<Long>) q.executeWithArray(values);
 		} else {
 			ids = (List<Long>) q.execute();
@@ -54,7 +54,7 @@ public class JdoI18nDAO implements I18nDAOSupport {
 	public <T extends BaseEntity> List<Long> getAllIds(Class<T> clazz, String ordering, String filter, String params, Object[] values, int init, int end) throws Exception {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = null;
-		if(filter != null && ("").equals(filter)) {
+		if(filter != null && !("").equals(filter)) {
 			q = pm.newQuery("select id from " + clazz.getName(), filter);
 			q.declareParameters(params);
 		} else {
@@ -68,7 +68,7 @@ public class JdoI18nDAO implements I18nDAOSupport {
 		
 		List<Long> ids = null;
 		
-		if(filter != null && ("").equals(filter)) {
+		if(filter != null && !("").equals(filter)) {
 			ids = (List<Long>) q.executeWithArray(values);
 		} else {
 			ids = (List<Long>) q.execute();

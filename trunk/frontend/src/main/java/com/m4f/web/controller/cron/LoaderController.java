@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import com.m4f.business.domain.CronTaskReport;
+import com.m4f.business.domain.MediationService;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.web.controller.BaseController;
 
@@ -28,16 +29,19 @@ public class LoaderController extends BaseController {
 	@ResponseStatus(HttpStatus.OK)
 	public void generateManualFeeds() throws Exception {
 		// Get all manual mediation services
-		List<Long> ids = this.serviceLocator.getMediatorService().getAllMediationServiceManualIds();
-		if(ids != null) {
+		List<MediationService> mediations = this.serviceLocator.getMediatorService().getAllMediationService(null);
+		if(mediations != null) {
 			// For each one create a backend task.
-			for(Long id : ids) {
-				// Invoke the task with the id obtained
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("mediationId", String.valueOf(id));
-				this.serviceLocator.getWorkerFactory().createWorker().addWork(
-						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
-						"/task/_feed/mediation/create", params);
+			for(MediationService mediation : mediations) {
+				if(!mediation.getHasFeed()) { // If its a manual mediation service
+					LOGGER.info("Manual mediation service: " + mediation.getName());
+					// Invoke the task with the id obtained
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("mediationId", String.valueOf(mediation.getId()));
+					this.serviceLocator.getWorkerFactory().createWorker().addWork(
+							this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
+							"/task/_feed/mediation/create", params);
+				}
 			}
 		}
 	}
@@ -63,7 +67,7 @@ public class LoaderController extends BaseController {
 	 */
 	@RequestMapping(value="/update/provider", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public void updateProviderInformation() throws Exception {
+	public void updateProviderInformation(@RequestParam(required=false) Long providerId) throws Exception {
 		CronTaskReport report = null;
 		try {
 			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_FEED);
@@ -73,11 +77,16 @@ public class LoaderController extends BaseController {
 		}
 		try {
 			Long id = null;
-			List<Long> ids = this.serviceLocator.getProviderService().getAllProviderIds();
-			
-			if(ids != null && ids.size() > 0) {
-				id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
+		
+			if(providerId == null) {
+				List<Long> ids = this.serviceLocator.getProviderService().getAllProviderIds();
+				if(ids != null && ids.size() > 0) {
+					id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
+				}
+			} else {
+				id = providerId;
 			}
+			
 			if(id != null) {
 				LOGGER.info("Invoking backend task to update provider with ID:" + id);
 				// Invoke the task with the id obtained
