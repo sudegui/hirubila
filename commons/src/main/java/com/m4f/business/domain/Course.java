@@ -262,20 +262,17 @@ public class Course extends BaseEntity implements Taggeable {
 		if(obj != null && obj instanceof Course) {
 			Course c = (Course) obj;
 			// First if obj has id. This attribute will mark if they are equal
-			if(c.getId() != null && c.getId().equals(this.id)) {
-				if(this.externalId != null/* && c.getExternalId() != null*/) equal &= this.externalId.equals(c.getExternalId()); 
-				if(this.school != null /*&& c.getSchool() != null*/) equal &= this.school.equals(c.getSchool());
-				if(this.provider != null/* && c.getProvider() != null*/) equal &= this.provider.equals(c.getProvider());
-				if(this.title != null /*&& c.getTitle() != null*/) equal &= this.title.equals(c.getTitle());
-				if(this.url != null /*&& c.getUrl() != null*/) equal &= this.url.equals(c.getUrl());
-				if(this.start != null) equal &= this.start.equals(c.getStart());
-				if(this.end != null) equal &= this.end.equals(c.getEnd());
-				if(this.information != null) equal &= this.information.equals(c.getInformation());
-				if(tags != null) equal &= this.tags.equals(c.getTags());
-			}
-			else {
-				equal = false;
-			}
+			if(c.getId() != null) equal &= this.id.equals(c.getId()); 
+			if(this.externalId != null/* && c.getExternalId() != null*/) equal &= this.externalId.equals(c.getExternalId()); 
+			if(this.school != null /*&& c.getSchool() != null*/) equal &= this.school.equals(c.getSchool());
+			if(this.provider != null/* && c.getProvider() != null*/) equal &= this.provider.equals(c.getProvider());
+			if(this.title != null /*&& c.getTitle() != null*/) equal &= this.title.equals(c.getTitle());
+			if(this.url != null /*&& c.getUrl() != null*/) equal &= this.url.equals(c.getUrl());
+			if(this.start != null) equal &= this.start.equals(c.getStart());
+			if(this.end != null) equal &= this.end.equals(c.getEnd());
+			if(this.information != null) equal &= this.information.equals(c.getInformation());
+			if(tags != null) equal &= this.tags.equals(c.getTags());
+			
 		} else {
 			equal = false;
 		}

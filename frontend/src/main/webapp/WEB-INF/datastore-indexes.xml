@@ -60,6 +60,11 @@
         <property name="school" direction="desc"/>
     </datastore-index>
     
+    <datastore-index kind="Course" ancestor="false" source="manual">
+        <property name="reglated" direction="asc"/>
+        <property name="updated" direction="asc"/>
+    </datastore-index>
+    
     <datastore-index kind="MediationService" ancestor="false" source="manual">
         <property name="deleted" direction="asc"/>
         <property name="province" direction="asc"/>

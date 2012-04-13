@@ -100,6 +100,7 @@ public class ProviderServiceImpl extends I18nDAOBaseService implements I18nProvi
 	@Override
 	@Cacheable(cacheName="providers")
 	public List<Long> getAllProviderIds() throws Exception {
+		//return this.DAO.getAllIds(Provider.class, null, null, null,  null);
 		return this.DAO.getAllIds(Provider.class, "id", "deleted == deletedParam", "Boolean deletedParam",  new Object[]{Boolean.FALSE});
 	}
 }

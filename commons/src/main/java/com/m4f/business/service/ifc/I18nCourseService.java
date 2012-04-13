@@ -31,8 +31,8 @@ public interface I18nCourseService {
 	void deleteLogicBySchool(Long schoolId, Locale locale) throws Exception;
 	Collection<Course> getNewCourses(String ordering, Locale locale, int init, int end);
 	long countNewCourses();
-	Collection<Course> getUpdatedCourses(Date from, String ordering, Locale locale, int init, int end);
-	long countUpdatedCourses(Date from);
+	Collection<Course> getUpdatedCourses(Date from, Boolean reglated, String ordering, Locale locale, int init, int end);
+	long countUpdatedCourses(Date from, Boolean reglated);
 	Collection<Course> getCoursesBySchool(Long schoolId, String ordering, Locale locale);
 	Collection<Course> getCoursesBySchool(School school, String ordering, Locale locale);
 	Collection<Course> getCoursesBySchool(Long schoolId, String ordering, Locale locale, int init, int end);

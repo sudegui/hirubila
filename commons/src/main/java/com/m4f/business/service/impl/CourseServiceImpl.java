@@ -1,6 +1,7 @@
 package com.m4f.business.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import com.google.appengine.api.datastore.Category;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.domain.School;
@@ -18,6 +20,7 @@ import com.m4f.business.service.ifc.I18nCourseService;
 import com.m4f.utils.cache.annotations.Cacheable;
 import com.m4f.utils.cache.annotations.Cacheflush;
 import com.m4f.utils.cache.annotations.CatalogCacheable;
+import com.m4f.utils.dao.GaeFilter;
 import com.m4f.utils.i18n.dao.ifc.I18nDAOSupport;
 
 public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseService {
@@ -120,27 +123,35 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 	
 	@Override
 	@Cacheable(cacheName="courses")
-	public Collection<Course> getUpdatedCourses(Date from, String ordering, Locale locale, int init, int end) {
+	public Collection<Course> getUpdatedCourses(Date from, Boolean reglated, String ordering, Locale locale, int init, int end) {
 		if(from != null) { 
-			return this.DAO.findEntitiesByRange(Course.class, locale, "updated >= fromDate && active == activeParam", 
-				"java.util.Date fromDate, java.lang.Boolean activeParam", new Object[] {from, Boolean.TRUE}, init, end, ordering);
+			return this.DAO.findEntitiesByRange(Course.class, locale, "updated >= fromDate && regulated == reglatedParam && active == activeParam", 
+				"java.util.Date fromDate,  java.lang.Boolean reglatedParam, java.lang.Boolean activeParam", new Object[] {from, reglated, Boolean.TRUE}, init, end, ordering);
 		} else {
-			return this.DAO.findEntitiesByRange(Course.class, locale, "active == activeParam", 
-					"java.lang.Boolean activeParam", new Object[] {Boolean.TRUE}, init, end, ordering);
+			return this.DAO.findEntitiesByRange(Course.class, locale, "regulated == reglatedParam && active == activeParam", 
+					"java.lang.Boolean reglatedParam, java.lang.Boolean activeParam", new Object[] {reglated, Boolean.TRUE}, init, end, ordering);
 		}
 	}
 	
 	@Override
 	@Cacheable(cacheName="courses")
-	public long countUpdatedCourses(Date from) {
-		Map<String, Object> filter = new HashMap<String, Object>();
+	public long countUpdatedCourses(Date from, Boolean reglated) {
+		ArrayList<GaeFilter> filters = new ArrayList<GaeFilter>();
 		if(from != null) {
-			filter.put("updated", from);
-		} 
+			GaeFilter filter = new GaeFilter("updated", FilterOperator.GREATER_THAN_OR_EQUAL, from);
+			filters.add(filter);
+		}
 		
-		filter.put("active", Boolean.TRUE);
-		return this.DAO.count(Course.class, filter);
+		if(reglated != null) {
+			if(reglated) {
+				GaeFilter filter = new GaeFilter("reglated", FilterOperator.EQUAL, reglated);
+				filters.add(filter);
+			}
+		}
+		
+		return this.DAO.count(Course.class, filters);
 	}
+	
 	
 	@Override
 	@Cacheable(cacheName="courses")

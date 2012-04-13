@@ -52,8 +52,9 @@ public class LoaderController extends BaseController {
 		this.serviceLocator.getWorkerFactory().createWorker().addWork(
 				this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
 				"/task/update/providers", new HashMap());
-	}
+	}*/
 	
+	/*
 	@RequestMapping(value="/update/schools", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void updateSchoolsInformation() throws Exception {
@@ -103,6 +104,43 @@ public class LoaderController extends BaseController {
 			throw e;
 		}
 	}
+	/*
+	@RequestMapping(value="/update/provider/schools", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void loadProviderSchools(@RequestParam(required=false) Long providerId) throws Exception {
+		CronTaskReport report = null;
+		try {
+			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_SCHOOLS);
+		} catch(Exception e) {
+			LOGGER.severe(new StringBuffer("No se ha podido recuperara el " +
+					"ultimo CronTaskReport").append(StackTraceUtil.getStackTrace(e)).toString());			
+		}
+		try {
+			// Get a list with all manual mediation service ids.
+			Long id = null;
+			if(providerId != null) {
+				id = providerId;
+			}
+			else {
+				List<Long> ids = this.serviceLocator.getProviderService().getAllProviderIds();
+				
+				if(ids != null && ids.size() > 0) {
+					id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
+				}
+			}
+			if(id != null) {
+				// Invoke the task with the id obtained
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("providerId", String.valueOf(id));
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE, 
+						"/task/provider/schools", params);
+			}
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			throw e;
+		}
+	}*/
 	
 	/*
 	 * Cron task to update a school's information, using a round-robin method. It invokes a backend task to do it.
@@ -140,140 +178,6 @@ public class LoaderController extends BaseController {
 			throw e;
 		}
 	}*/
-	
-	////////////////////////////////////////////////////////////////
-	/*
-	 * CRON TO EXECUTE IN ORDER AND IN ROUND-ROBIN METHOD THE SCHOOLS AND COURSES FROM THEIR PROVIDER
-	 */
-	@RequestMapping(value="/provider/feed", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public void loadProviderFeed(@RequestParam(required=true) Long providerId) throws Exception {
-		CronTaskReport report = null;
-		try {
-			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_FEED);
-		} catch(Exception e) {
-			LOGGER.severe(new StringBuffer("No se ha podido recuperara el " +
-					"ultimo CronTaskReport").append(StackTraceUtil.getStackTrace(e)).toString());			
-		}
-		try {
-			// Get a list with all manual mediation service ids.
-			Long id = null;
-			if(providerId != null) {
-				id = providerId;
-			} else {
-				List<Long> ids = this.serviceLocator.getProviderService().getAllProviderIds();
-				
-				if(ids != null && ids.size() > 0) {
-					id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
-				}
-			}
-			if(id != null) {
-				// Invoke the task with the id obtained
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("providerId", String.valueOf(id));
-				this.serviceLocator.getWorkerFactory().createWorker().addWork(
-						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
-						"/provider/feed", params);
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			throw e;
-		}
-	}
-	
-	@RequestMapping(value="/provider/schools", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public void loadProviderSchools(@RequestParam(required=false) Long providerId) throws Exception {
-		CronTaskReport report = null;
-		try {
-			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_SCHOOLS);
-		} catch(Exception e) {
-			LOGGER.severe(new StringBuffer("No se ha podido recuperara el " +
-					"ultimo CronTaskReport").append(StackTraceUtil.getStackTrace(e)).toString());			
-		}
-		try {
-			// Get a list with all manual mediation service ids.
-			Long id = null;
-			if(providerId != null) {
-				id = providerId;
-			}
-			else {
-				List<Long> ids = this.serviceLocator.getProviderService().getAllProviderIds();
-				
-				if(ids != null && ids.size() > 0) {
-					id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
-				}
-			}
-			if(id != null) {
-				// Invoke the task with the id obtained
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("providerId", String.valueOf(id));
-				this.serviceLocator.getWorkerFactory().createWorker().addWork(
-						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
-						"/provider/schools", params);
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			throw e;
-		}
-	}
-	
-	/*
-	 * CRON TO EXECUTE IN ORDER AND IN ROUND-ROBIN METHOD THE INTERNAL FEED GENERATION
-	 */
-/*	@RequestMapping(value="/mediation/feeds", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public void internalFeedGeneration(@RequestParam(required=false) Long mediationId) throws Exception {
-		CronTaskReport report = null;
-		try {
-			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.INTERNAL_FEED);
-		} catch(Exception e) {
-			LOGGER.severe(new StringBuffer("No se ha podido recuperara el ultimo CronTaskReport").append(StackTraceUtil.getStackTrace(e)).toString());			
-		}
-		try {
-			// Get a list with all manual mediation service ids.
-			Long id = null;
-			if(mediationId != null) {
-				id = mediationId;
-			}
-			else {
-				List<Long> ids = this.serviceLocator.getMediatorService().getAllMediationServiceManualIds();
-				LOGGER.severe("Ids: " + ids);
-				if(ids != null && ids.size() > 0) {
-					id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
-				}
-			}
-			if(id != null) {
-				// Invoke the task with the id obtained
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("mediationId", String.valueOf(id));
-				this.serviceLocator.getWorkerFactory().createWorker().addWork(
-						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
-						"/mediation/feeds", params);
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			throw e;
-		}
-	}
-*/	
-	@RequestMapping(value="/mediation/feeds", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public void generateFeed(@RequestParam(required=true) Long mediationId) throws Exception {
-		try {
-			if(mediationId != null) {
-				// Invoke the task with the id obtained
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("mediationId", String.valueOf(mediationId));
-				this.serviceLocator.getWorkerFactory().createWorker().addWork(
-						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
-						"/_feeds/mediation/create", params);
-			}
-		} catch(Exception e) {
-			LOGGER.severe(StackTraceUtil.getStackTrace(e));
-			throw e;
-		}
-	}
 	
 	private Long getNextIdCronTaskReport(Long lastId, List<Long> ids) {
 		Long id = null;
