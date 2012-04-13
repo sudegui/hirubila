@@ -14,9 +14,11 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.m4f.business.domain.BaseEntity;
 import com.m4f.business.domain.ifc.Taggeable;
 import com.m4f.business.persistence.PMF;
+import com.m4f.utils.dao.GaeFilter;
 import com.m4f.utils.i18n.annotations.DeleteMultilanguage;
 import com.m4f.utils.i18n.dao.ifc.I18nDAOSupport;
 
@@ -33,7 +35,7 @@ public class JdoI18nDAO implements I18nDAOSupport {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = null;
 		if(filter != null && !("").equals(filter)) {
-			q = pm.newQuery("select id from " + clazz.getName(), " where " + filter);
+			q = pm.newQuery("select id from " + clazz.getName() + " where " + filter);
 			q.declareParameters(params);
 		} else {
 			q = pm.newQuery("select id from " + clazz.getName());
@@ -231,6 +233,20 @@ public class JdoI18nDAO implements I18nDAOSupport {
 			q.addFilter(propertyName, 
 					com.google.appengine.api.datastore.Query.FilterOperator.EQUAL, 
 					propertyMap.get(propertyName));
+		}
+		PreparedQuery pq = datastore.prepare(q);
+		return pq.countEntities(FetchOptions.Builder.withLimit(100000));
+	}
+	
+	public <T extends BaseEntity> long count(Class<T> entityClass, List<GaeFilter> filters) {
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		// The Query interface assembles a query
+		com.google.appengine.api.datastore.Query q = 
+			new com.google.appengine.api.datastore.Query(entityClass.getSimpleName());
+		if(filters != null) {
+			for(GaeFilter filter : filters) {
+				q.addFilter(filter.getField(), filter.getOperator(), filter.getValue());
+			}
 		}
 		PreparedQuery pq = datastore.prepare(q);
 		return pq.countEntities(FetchOptions.Builder.withLimit(100000));

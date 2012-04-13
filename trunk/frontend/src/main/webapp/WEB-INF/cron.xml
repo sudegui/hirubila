@@ -6,14 +6,14 @@
   	<schedule>every day 17:00</schedule>
   	<timezone>Europe/Madrid</timezone>
   </cron>
- <!--   
+ 
  <cron>
-  	<url>/loader/update/providers</url>
-  	<description>Update all provider's information using its feed.</description>
-  	<schedule>every day 20:00</schedule>
+  	<url>/loader/update/provider</url>
+  	<description>Update provider's information using its feed. Round-robin update</description>
+  	<schedule>every 120 minutes</schedule>
   	<timezone>Europe/Madrid</timezone>
   </cron>
-  
+ <!--   
   <cron>
   	<url>/loader/update/schools</url>
   	<description>Update all school's information using its feed.</description>

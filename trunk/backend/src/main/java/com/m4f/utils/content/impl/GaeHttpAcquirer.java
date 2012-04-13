@@ -34,7 +34,7 @@ public class GaeHttpAcquirer extends BaseAcquirer{
 	
 	@Override
 	public ByteArrayOutputStream getContent(URI source)  throws Exception {
-		int retries = 5;
+		int retries = 3;
 		HttpURLConnection connection = null;
 		ByteArrayOutputStream content = null;
 		InputStream in = null;
@@ -52,7 +52,7 @@ public class GaeHttpAcquirer extends BaseAcquirer{
 						while ((b = in.read()) != -1) {
 							content.write(b);
 						}
-					    retries = -1; 
+					    retries = -1; // Break the loop
 					} else {
 						throw new IOException("Error stablishing connection, code " + 
 								connection.getResponseCode());

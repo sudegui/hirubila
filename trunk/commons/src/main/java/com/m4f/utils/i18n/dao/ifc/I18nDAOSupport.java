@@ -6,8 +6,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.google.appengine.api.datastore.Category;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.m4f.business.domain.BaseEntity;
 import com.m4f.business.domain.ifc.Taggeable;
+import com.m4f.utils.dao.GaeFilter;
 
 public interface I18nDAOSupport {
 	
@@ -34,6 +36,8 @@ public interface I18nDAOSupport {
 	<T extends BaseEntity> long count(Class<T> entityClass);
 	
 	<T extends BaseEntity> long count(Class<T> entityClass, Map<String, Object> propertyMap);
+	
+	<T extends BaseEntity> long count(Class<T> entityClass, List<GaeFilter> filters);
 	
 	Collection<Category> getCategories(Class<? extends Taggeable> clazz, String fieldName, Locale locale);
 	
