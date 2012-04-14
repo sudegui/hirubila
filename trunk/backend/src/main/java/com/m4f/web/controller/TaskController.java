@@ -155,7 +155,7 @@ public class TaskController extends BaseController  {
 			// IMPORT PROVIDER'S SCHOOLS FROM FEED
 			providerImporter.importSchools(provider, dump);
     		
-			// Create task to update provider´s schools from other task.
+			// Create task to update providerï¿½s schools from other task.
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("providerId", String.valueOf(provider.getId()));
     		worker.addWork("school", "/task/provider/schools", params);
@@ -170,7 +170,8 @@ public class TaskController extends BaseController  {
 	        for (Integer page : paginator.getTotalPagesIterator()) {
                 int start = (page - 1) * RANGE;
                 int end = (page) * RANGE;
-                Collection<School> schools = schoolService.getSchoolsByProvider(providerId, 
+                Collection<Long> schoolsIds = 
+                /*Collection<School> schools = schoolService.getSchoolsByProvider(providerId, 
                                 "updated", null, start, end);
                 for(School school : schools) {
                 	try {
@@ -200,7 +201,7 @@ public class TaskController extends BaseController  {
 	}
 	
 	/*
-	 * This task create a task for each provider´s schools, to update their information.
+	 * This task create a task for each providerï¿½s schools, to update their information.
 	 */
 	@RequestMapping(value = "/provider/schools", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)
