@@ -279,4 +279,21 @@ public class Course extends BaseEntity implements Taggeable {
 		
 		return equal;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer("[ ");
+		sb.append("ID: ").append(this.id).append(" ").
+			append("EID: ").append(this.externalId).append(" ").
+			append("TITLE: ").append(this.title).append(" ").
+			append("START: ").append(this.start).append(" ").
+			append("END: ").append(this.end).append(" ").
+			append("INFO: ").append(this.information).append(" ").
+			append("URL: ").append(this.url).append(" ").
+			append("CREATED: ").append(this.created).append(" ").
+			append("UPDATED: ").append(this.updated).append(" ").
+			append("]");
+		
+		return sb.toString();
+	}
 }

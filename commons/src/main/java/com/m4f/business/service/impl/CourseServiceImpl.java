@@ -177,6 +177,16 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 	
 	@Override
 	@Cacheable(cacheName="courses")
+	public Collection<Course> getCoursesByExternalId(String externalId, Locale locale) {
+		String filter = "externalId == externalIdParam";
+		String params = "java.lang.String externalIdParam";
+		Collection<Course> course = this.DAO.findEntities(Course.class, locale, filter, 
+				params, new Object[] {externalId}, "id");
+		return course;
+	}
+	
+	@Override
+	@Cacheable(cacheName="courses")
 	public long count() throws Exception {
 /*		Map<String, Object> filter = new HashMap<String, Object>();
 
