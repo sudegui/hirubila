@@ -103,7 +103,7 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 				//newCourse.setUpdated(oldCourse.getUpdated());
 				this.entities.add(oldCourse);
 			} else {
-				LOGGER.info("Curso existente y NO MODIFICADO");
+				LOGGER.info("Curso existente y NO MODIFICADO ID:" + oldCourse.getId());
 			}
 			
 		}
