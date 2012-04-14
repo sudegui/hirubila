@@ -69,6 +69,7 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 			Course oldCourse = this.courseService.getCourseByExternalId(newCourse.getExternalId(), locale);
 			if(oldCourse == null) { // Alta nueva: el curso no estaba registrado en la base de datos.
 				LOGGER.info("Curso NO existente: (" + locale.getLanguage() + ")" + newCourse.getTitle());
+				LOGGER.info("NewCourse: " + newCourse.toString());
 				newCourse.setActive(true);
 				this.entities.add(newCourse);
 			} else if(!oldCourse.equals(newCourse) || !oldCourse.isTranslated()) {
@@ -81,7 +82,7 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 				LOGGER.info("OldCourse: " + oldCourse.toString());
 				LOGGER.info("NewCourse: " + newCourse.toString());
 				/*Modificacion: el curso estaba registrado en la base de datos, pero se modifica.*/
-				Set<String> properties = new HashSet<String>();
+				/*Set<String> properties = new HashSet<String>();
 				properties.add("externalId");
 				properties.add("title");
 				properties.add("url");
@@ -89,11 +90,17 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 				properties.add("end");
 				properties.add("information");
 				properties.add("active");
-				this.beanManager.mergeObjects(newCourse, oldCourse, properties);
+				this.beanManager.mergeObjects(newCourse, oldCourse, properties);*/
+				oldCourse.setTitle(newCourse.getTitle());
+				oldCourse.setUrl(newCourse.getUrl());
+				oldCourse.setStart(newCourse.getStart());
+				oldCourse.setEnd(newCourse.getEnd());
+				oldCourse.setInformation(newCourse.getInformation());
+				oldCourse.setActive(true);
 				if(oldCourse.isTranslated()) oldCourse.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
-				newCourse.setId(oldCourse.getId());
-				newCourse.setCreated(oldCourse.getCreated());
-				newCourse.setUpdated(oldCourse.getUpdated());
+				//newCourse.setId(oldCourse.getId());
+				//newCourse.setCreated(oldCourse.getCreated());
+				//newCourse.setUpdated(oldCourse.getUpdated());
 				this.entities.add(oldCourse);
 			} else {
 				LOGGER.info("Curso existente y NO MODIFICADO");
