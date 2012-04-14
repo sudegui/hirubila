@@ -1,15 +1,23 @@
 package com.m4f.web.controller.cron;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.MediationService;
 import com.m4f.utils.StackTraceUtil;
@@ -20,6 +28,72 @@ import com.m4f.web.controller.BaseController;
 public class LoaderController extends BaseController {
 	
 	private static final Logger LOGGER = Logger.getLogger(LoaderController.class.getName());
+	
+	@RequestMapping(value="/update/school", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void testSchool(@RequestParam(required=true) Long schoolId) throws Exception {
+		// Invoke the task with the id obtained
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("schoolId", String.valueOf(schoolId));
+		this.serviceLocator.getWorkerFactory().createWorker().addWork(
+				this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
+				"/task/school/feed", params);
+	}
+	
+	@RequestMapping(value="/school/information", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void infoSchool(@RequestParam(required=true) Long schoolId, HttpServletResponse response) throws Exception {
+		// Invoke the task with the id obtained
+		
+		Collection<Course> coursesEs = this.serviceLocator.getCourseService().getCoursesBySchool(schoolId, "id", new Locale("es"));
+		Collection<Course> coursesEu = this.serviceLocator.getCourseService().getCoursesBySchool(schoolId, "id", new Locale("eu"));
+		StringBuffer sbEs = new StringBuffer();
+		StringBuffer sbEu = new StringBuffer();
+		
+		for(Course c: coursesEs) {
+			sbEs.append("Id: ").append(c.getId()).
+				append(" eId: ").append(c.getExternalId()).
+				append(" title: ").append(c.getTitle()).
+				append("\n");
+		}
+		
+		for(Course c: coursesEu) {
+			sbEu.append("Id: ").append(c.getId()).
+				append(" eId: ").append(c.getExternalId()).
+				append(" title: ").append(c.getTitle()).
+				append("\n");
+		}
+		
+		response.getWriter().write(sbEs.toString() + "\n" + sbEu.toString());
+		
+	}
+	
+	@RequestMapping(value="/course/information", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void infoSchool(@RequestParam(required=true) String eId, HttpServletResponse response) throws Exception {
+		// Invoke the task with the id obtained
+		Collection<Course> cEs = this.serviceLocator.getCourseService().getCoursesByExternalId(eId, new Locale("es"));
+		Collection<Course> cEu = this.serviceLocator.getCourseService().getCoursesByExternalId(eId, new Locale("eu"));
+		StringBuffer sb = new StringBuffer();
+		sb.append("Numero de cursos ES: ").append(cEs.size()).append(" EU:").append(cEu.size());
+		
+		for(Course c: cEs) {
+			sb.append("Id: ").append(c.getId()).
+				append(" eId: ").append(c.getExternalId()).
+				append(" title: ").append(c.getTitle()).
+				append("\n");
+		}
+		
+		for(Course c: cEu) {
+			sb.append("Id: ").append(c.getId()).
+				append(" eId: ").append(c.getExternalId()).
+				append(" title: ").append(c.getTitle()).
+				append("\n");
+		}
+		
+		response.getWriter().write(sb.toString());
+		
+	}
 	
 	/*
 	 * Cron task to generate all internal feeds with the last information. Invoke for each manual mediation service a
