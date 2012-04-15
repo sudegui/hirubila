@@ -97,7 +97,13 @@ public class LastCatalogController extends BaseController {
 			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/lastcatalog/reglated/course/list");
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.DAY_OF_YEAR,1);
+			if(calendar.get(Calendar.MONTH) > 0) { // Check that the month is not January
+				calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) -1 );
+			} else { // If its January, set one year before and december month
+				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
+				calendar.set(Calendar.MONDAY, Calendar.DECEMBER);
+			}
+			calendar.set(Calendar.DAY_OF_MONTH,1);
 			paginator.setSize(this.serviceLocator.getCourseService().countUpdatedCourses(calendar.getTime(), true));
 			if((page-1)*paginator.getOffset() > paginator.getSize()) {
 				throw new GenericException("Paginator Out of Range!!! Size: " + paginator.getSize() + " start: " + (page-1)*paginator.getOffset()); 
@@ -123,7 +129,13 @@ public class LastCatalogController extends BaseController {
 			PageManager<Course> paginator = new PageManager<Course>();
 			paginator.setOffset(this.getPageSize());
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.DAY_OF_YEAR,1);
+			if(calendar.get(Calendar.MONTH) > 0) { // Check that the month is not January
+				calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) -1 );
+			} else { // If its January, set one year before and december month
+				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
+				calendar.set(Calendar.MONDAY, Calendar.DECEMBER);
+			}
+			calendar.set(Calendar.DAY_OF_MONTH,1);
 			paginator.setSize(this.serviceLocator.getCourseService().countUpdatedCourses(calendar.getTime(), false));
 			if((page-1)*paginator.getOffset() > paginator.getSize()) {
 				throw new GenericException("Paginator Out of Range!!! Size: " + paginator.getSize() + " start: " + (page-1)*paginator.getOffset()); 
