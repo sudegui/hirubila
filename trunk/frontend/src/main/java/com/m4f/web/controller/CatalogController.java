@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.datastore.Category;
+import com.google.appengine.api.memcache.InvalidValueException;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.m4f.business.domain.Course;
@@ -206,8 +207,8 @@ public class CatalogController extends BaseController {
 	}
 	
 	private HashMap<String, Object> getDataFromCache(Long courseId, Locale locale) throws Exception {
-		HashMap<Long, HashMap<String, Object>> courses;
-		HashMap<String, Object> courseData;
+		HashMap<Long, HashMap<String, Object>> courses = null;
+		HashMap<String, Object> courseData = null;
 		MemcacheService syncCache = null;
 		boolean cached = false;
 		
@@ -218,7 +219,12 @@ public class CatalogController extends BaseController {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}
 		
-		courses = (HashMap<Long, HashMap<String, Object>>)syncCache.get("coursesData");
+		try {
+			courses = (HashMap<Long, HashMap<String, Object>>)syncCache.get("coursesData");
+		} catch(InvalidValueException e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+		}
+		
 		if(courses == null) {
 			courses = new HashMap<Long, HashMap<String, Object>>();
 		}
