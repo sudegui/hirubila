@@ -143,7 +143,7 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 		}
 		
 		if(reglated != null) {
-			GaeFilter filter = new GaeFilter("reglated", FilterOperator.EQUAL, reglated);
+			GaeFilter filter = new GaeFilter("regulated", FilterOperator.EQUAL, reglated);
 			filters.add(filter);
 		}
 		
