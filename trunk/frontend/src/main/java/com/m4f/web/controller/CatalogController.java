@@ -37,7 +37,7 @@ import org.springframework.http.HttpStatus;
 import com.m4f.web.controller.exception.GenericException;
 
 @Controller
-@RequestMapping("/catalog")
+@RequestMapping("/allcatalog")
 public class CatalogController extends BaseController {
 	
 	private static final Logger LOGGER = Logger.getLogger(CatalogController.class.getName());

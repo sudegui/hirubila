@@ -2,12 +2,14 @@ package com.m4f.utils.cache;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 
+import com.google.appengine.api.memcache.InvalidValueException;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.m4f.business.domain.Course;
 import com.m4f.business.service.impl.CourseServiceImpl;
@@ -48,7 +50,11 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 		if(syncCache == null) {
 			LOGGER.info("NO CACHE!!!!! Executing the method with no cache!!");
 		} else {
-			result = syncCache.get(key);
+			try {
+				result = syncCache.get(key);
+			} catch(InvalidValueException e) {
+	            LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			}
 		}
 		
 		if(result != null) {
@@ -101,7 +107,31 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 					break;
 				}
 			}
-		} else {
+		} else if("getUpdatedCourses".equals(methodName) && args.length == 6) {
+			for(int i = 0; i < args.length && match; i++) {
+				switch(i) {
+				case 0:
+					match = match && (args[i].getClass().equals(Date.class));
+					break;
+				case 1:
+					match = match && (args[i].getClass().equals(Boolean.class));
+					break;
+				case 2:
+					match = match && (args[i].getClass().equals(String.class));
+					break;
+				case 3:
+					match = match && (args[i].getClass().equals(Locale.class));
+					break;
+				case 4:
+					match = match && (args[i].getClass().equals(Integer.class));
+					break;
+				case 5:
+					match = match && (args[i].getClass().equals(Integer.class));
+					break;
+				}
+			}
+		}  
+		else {
 			match = false;
 		}
 		
@@ -126,7 +156,7 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 						Method goalMethod = 
 								CourseServiceImpl.class.getMethod("getCourse", new Class[]{Long.class, Locale.class});
 						String detailMethodName = goalMethod.toGenericString();
-						Object[] params = new Object[] {course.getId(), args[2]};
+						Object[] params = new Object[] {course.getId(), getLocaleArg(args)};
 						Object key = this.getMethodKey(detailMethodName, params);
 						cache.put(key, course);
 					} catch(NoSuchMethodException e) {
@@ -139,5 +169,12 @@ public class CatalogCacheInterceptor extends CacheInterceptor {
 				}
 			}
 		}
+	}
+	
+	private Object getLocaleArg(Object[] args) {
+		for(Object o : args) {
+			if(o instanceof Locale)  return o;
+		}
+		return null;
 	}
 }

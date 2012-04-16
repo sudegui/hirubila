@@ -13,6 +13,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import com.google.appengine.api.NamespaceManager;
+import com.google.appengine.api.memcache.InvalidValueException;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.m4f.utils.StackTraceUtil;
@@ -52,8 +53,11 @@ public class CacheInterceptor {
 		if(syncCache == null) {
 			LOGGER.severe("NO CACHE!!!!! Executing the method with no cache!!");
 		} else {
-			result = syncCache.get(key);
-			
+			try {
+				result = syncCache.get(key);
+			} catch(InvalidValueException e) {
+	            LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			}
 		}
 		
 		if(result != null) {
