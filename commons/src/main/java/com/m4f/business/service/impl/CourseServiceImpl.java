@@ -122,7 +122,7 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 	}
 	
 	@Override
-	@Cacheable(cacheName="courses")
+	@CatalogCacheable(cacheName="coursesCatalog")
 	public Collection<Course> getUpdatedCourses(Date from, Boolean reglated, String ordering, Locale locale, int init, int end) {
 		if(from != null) { 
 			return this.DAO.findEntitiesByRange(Course.class, locale, "updated >= fromDate && regulated == reglatedParam && active == activeParam", 
@@ -134,7 +134,7 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 	}
 	
 	@Override
-	@Cacheable(cacheName="courses")
+	@CatalogCacheable(cacheName="coursesCatalog")
 	public long countUpdatedCourses(Date from, Boolean reglated) {
 		ArrayList<GaeFilter> filters = new ArrayList<GaeFilter>();
 		if(from != null) {

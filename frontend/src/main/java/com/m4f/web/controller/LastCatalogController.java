@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.datastore.Category;
+import com.google.appengine.api.memcache.InvalidValueException;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.m4f.business.domain.Course;
@@ -37,7 +38,7 @@ import org.springframework.http.HttpStatus;
 import com.m4f.web.controller.exception.GenericException;
 
 @Controller
-@RequestMapping("/lastcatalog")
+@RequestMapping("/catalog")
 public class LastCatalogController extends BaseController {
 	
 	private static final Logger LOGGER = Logger.getLogger(LastCatalogController.class.getName());
@@ -90,20 +91,29 @@ public class LastCatalogController extends BaseController {
 		return "catalog.course.list";
 	}*/
 	@RequestMapping(value="/reglated/course/list", method=RequestMethod.GET)
-	public String listReglated(Model model, Locale locale,
+	public String listReglated(Model model, Locale locale, HttpServletResponse response,
 			@RequestParam(defaultValue="1", required=false) Integer page) throws GenericException {
 		try {
 			PageManager<Course> paginator = new PageManager<Course>();
 			paginator.setOffset(this.getPageSize());
-			paginator.setUrlBase("/" + locale.getLanguage()+ "/lastcatalog/reglated/course/list");
+			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/reglated/course/list");
+			
 			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.DAY_OF_MONTH, 1); // First day in the month
+			calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
+			calendar.set(Calendar.MINUTE, 0); // 0 minutes
+			calendar.set(Calendar.SECOND, 0); // 0 seconds
+			calendar.set(Calendar.MILLISECOND, 0); // O miliseconds
+			
 			if(calendar.get(Calendar.MONTH) > 0) { // Check that the month is not January
 				calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) -1 );
 			} else { // If its January, set one year before and december month
 				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
-				calendar.set(Calendar.MONDAY, Calendar.DECEMBER);
+				calendar.set(Calendar.MONTH, Calendar.DECEMBER);
 			}
-			calendar.set(Calendar.DAY_OF_MONTH,1);
+			
+			LOGGER.info("Date: " + calendar.getTime());
+			
 			paginator.setSize(this.serviceLocator.getCourseService().countUpdatedCourses(calendar.getTime(), true));
 			if((page-1)*paginator.getOffset() > paginator.getSize()) {
 				throw new GenericException("Paginator Out of Range!!! Size: " + paginator.getSize() + " start: " + (page-1)*paginator.getOffset()); 
@@ -115,6 +125,8 @@ public class LastCatalogController extends BaseController {
 					"-" + ORDERING_PROPERTY, locale, paginator.getStart(), paginator.getEnd())); */
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("type", "reglated");
+			
+			response.addDateHeader("Last-Modified", calendar.getTimeInMillis());
 		} catch(Exception e) {
 			throw new GenericException(e);
 		}
@@ -122,20 +134,30 @@ public class LastCatalogController extends BaseController {
 	}
 	
 	@RequestMapping(value="/non-reglated/course/list", method=RequestMethod.GET)
-	public String listNonReglated(Model model, Locale locale,
+	public String listNonReglated(Model model, Locale locale, HttpServletResponse response,
 			@RequestParam(defaultValue="1", required=false) Integer page) throws GenericException {
 		try {
 			
 			PageManager<Course> paginator = new PageManager<Course>();
 			paginator.setOffset(this.getPageSize());
+			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/non-reglated/course/list");
+			
 			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.DAY_OF_MONTH, 1); // First day in the month
+			calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
+			calendar.set(Calendar.MINUTE, 0); // 0 minutes
+			calendar.set(Calendar.SECOND, 0); // 0 seconds
+			calendar.set(Calendar.MILLISECOND, 0); // O miliseconds
+			
 			if(calendar.get(Calendar.MONTH) > 0) { // Check that the month is not January
 				calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) -1 );
 			} else { // If its January, set one year before and december month
 				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
-				calendar.set(Calendar.MONDAY, Calendar.DECEMBER);
+				calendar.set(Calendar.MONTH, Calendar.DECEMBER);
 			}
-			calendar.set(Calendar.DAY_OF_MONTH,1);
+			
+			LOGGER.info("Date: " + calendar.getTime());
+			
 			paginator.setSize(this.serviceLocator.getCourseService().countUpdatedCourses(calendar.getTime(), false));
 			if((page-1)*paginator.getOffset() > paginator.getSize()) {
 				throw new GenericException("Paginator Out of Range!!! Size: " + paginator.getSize() + " start: " + (page-1)*paginator.getOffset()); 
@@ -147,6 +169,8 @@ public class LastCatalogController extends BaseController {
 					"-" + ORDERING_PROPERTY, locale, paginator.getStart(), paginator.getEnd())); */
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("type", "non-reglated");
+			
+			response.addDateHeader("Last-Modified", calendar.getTimeInMillis());
 		} catch(Exception e) {
 			throw new GenericException(e);
 		}
@@ -226,8 +250,8 @@ public class LastCatalogController extends BaseController {
 	}
 	
 	private HashMap<String, Object> getDataFromCache(Long courseId, Locale locale) throws Exception {
-		HashMap<Long, HashMap<String, Object>> courses;
-		HashMap<String, Object> courseData;
+		HashMap<Long, HashMap<String, Object>> courses = null;
+		HashMap<String, Object> courseData = null;
 		MemcacheService syncCache = null;
 		boolean cached = false;
 		
@@ -238,7 +262,12 @@ public class LastCatalogController extends BaseController {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 		}
 		
-		courses = (HashMap<Long, HashMap<String, Object>>)syncCache.get("coursesData");
+		try {
+            courses = (HashMap<Long, HashMap<String, Object>>)syncCache.get("coursesData");
+	    } catch(InvalidValueException e) {
+	           LOGGER.severe(StackTraceUtil.getStackTrace(e));
+	    }
+		
 		if(courses == null) {
 			courses = new HashMap<Long, HashMap<String, Object>>();
 		}

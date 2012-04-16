@@ -1,12 +1,10 @@
 package com.m4f.web.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -34,7 +32,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.xml.sax.SAXException;
 
-import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.Inbox;
 import com.m4f.business.domain.MediationService;
@@ -68,55 +65,68 @@ public class TaskController extends BaseController  {
 	
 	public static final int RANGE = 900;
 	
-	@RequestMapping(value = "/update/providers", method = {RequestMethod.POST,RequestMethod.GET})
-    @ResponseStatus(HttpStatus.OK)
-    public void updateProviders() throws ParserConfigurationException, SAXException, IOException, Exception { 
-		LOGGER.info("Updating providers information");
+	/*
+	 * This task generates internal feeds for a mediationService. Its invoked from a cron task in the frontend.
+	 */
+	@RequestMapping(value="/_feed/mediation/create", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseStatus(HttpStatus.OK)
+	public void generateInternalFeedsByMediationId(@RequestParam(required=true) Long mediationId, 
+			@RequestHeader("host") String host) throws Exception {
+		LOGGER.info("Creating internal feed for manual mediation with id: " + mediationId);
 		
-		List<Long> providerIds = providerService.getAllProviderIds();
-		for(Long providerId : providerIds) {
-			Map<String, String> params = new HashMap<String, String>();
-			params.put("providerId", String.valueOf(providerId));
+		final String FRONTEND_HOST = "hirubila.appspot.com";
+		//LOGGER.info("referer: " + referer);
+		// Create a new CronTaskReport
+		Provider provider = null;
+		CronTaskReport report = cronTaskReportService.create();
+		report.setObject_id(mediationId);
+		report.setDate(new Date());
+		report.setType(CronTaskReport.TYPE.INTERNAL_FEED);
+		try {
+			// Start the process		
+			provider =  providerService.getProviderByMediationService(mediationId, null);		
+			MediationService mediationService = mediatorService.getMediationService(mediationId, null);
+			LOGGER.info("Mediation name: " + mediationService.getName());
+			//Set report description
+			report.setDescription(new StringBuffer("Internal feed para Srv. mediacion: ").append(mediationService.getName()).toString());
 			
-			worker.addWork("provider", "/task/provider/feed", params);
-		}
-		
-		/*
-		 LOGGER.info("Updating providers information");
-		
-		List<Provider> providers = providerService.getAllProviders(null);
-		for(Provider provider : providers) {
-			Map<String, String> params = new HashMap<String, String>();
-			params.put("providerId", String.valueOf(provider.getId()));
-			
-			worker.addWork("provider", "/task/provider/feed", params);
-		}
-		 */
-    }
-	
-	/*@RequestMapping(value = "/update/schools", method = {RequestMethod.POST,RequestMethod.GET})
-    @ResponseStatus(HttpStatus.OK)
-    public void updateSchools() throws ParserConfigurationException, SAXException, IOException, Exception { 
-		LOGGER.info("Updating schools information");
-		PageManager<School> paginator = new PageManager<School>();
-        long total = schoolService.countSchools();
-        paginator.setOffset(RANGE);
-        paginator.setStart(0);
-        paginator.setSize(total);
-        
-        for (Integer page : paginator.getTotalPagesIterator()) {
-        	 int start = (page - 1) * RANGE;
-             int end = (page) * RANGE;
-             Collection<Long> schoolIds = schoolService.getAllSchoolIds(start, end);
-        	
-			for(Long schoolId : schoolIds) {
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("schoolId", String.valueOf(schoolId));
+			if(!mediationService.getHasFeed() && provider != null) { // All must be manual mediator, but it's another check.
+				FeedSchools feedSchools = internalFeedService.createFeedSchools(FRONTEND_HOST, provider, mediationService);
+				internalFeedService.saveFeedSchools(feedSchools);
+				HashMap<Long, ExtendedSchool> schools = new HashMap<Long, ExtendedSchool>();
+				Collection<ExtendedCourse> courses = 
+					extendedCourseService.getCoursesByOwner(mediationService.getId(), null, null);
+				for(ExtendedCourse course : courses) {
+					ExtendedSchool school = extendedSchoolService.getSchool(course.getSchool(), Locale.getDefault());
+					if(school != null) schools.put(school.getId(), school);
+				}
+				for(ExtendedSchool school : schools.values()) {
+					FeedCourses feedCourse = internalFeedService.createFeedCourses(FRONTEND_HOST, 
+							provider, mediationService, school, this.getAvailableLanguages()); 	
+					internalFeedService.saveFeedCourses(feedCourse);
+				}
+				// Set result into report
+				report.setResult("OK");
 				
-				worker.addWork("school", "/task/school/feed", params);
+				// Invoke to update this provider information.
+				if(provider != null) {
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("providerId", String.valueOf(provider.getId()));
+					
+					worker.addWork("provider", "/task/provider/feed", params);
+				}
 			}
-        }
-    }*/
+			
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
+			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
+			throw e;
+		} finally {
+			cronTaskReportService.save(report);
+		}
+	}
+	
+	
 	
 	/*
 	 * This task update Provider's information. Its invoked from a cron task in the frontend.
@@ -297,6 +307,45 @@ public class TaskController extends BaseController  {
         
     }
 	
+	/* @RequestMapping(value = "/update/providers", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProviders() throws ParserConfigurationException, SAXException, IOException, Exception { 
+		LOGGER.info("Updating providers information");
+		
+		List<Long> providerIds = providerService.getAllProviderIds();
+		for(Long providerId : providerIds) {
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("providerId", String.valueOf(providerId));
+			
+			worker.addWork("provider", "/task/provider/feed", params);
+		}
+    }
+	
+	
+	@RequestMapping(value = "/update/schools", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseStatus(HttpStatus.OK)
+    public void updateSchools() throws ParserConfigurationException, SAXException, IOException, Exception { 
+		LOGGER.info("Updating schools information");
+		PageManager<School> paginator = new PageManager<School>();
+        long total = schoolService.countSchools();
+        paginator.setOffset(RANGE);
+        paginator.setStart(0);
+        paginator.setSize(total);
+        
+        for (Integer page : paginator.getTotalPagesIterator()) {
+        	 int start = (page - 1) * RANGE;
+             int end = (page) * RANGE;
+             Collection<Long> schoolIds = schoolService.getAllSchoolIds(start, end);
+        	
+			for(Long schoolId : schoolIds) {
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("schoolId", String.valueOf(schoolId));
+				
+				worker.addWork("school", "/task/school/feed", params);
+			}
+        }
+    }*/
+	
 	/*@RequestMapping(value = "/provider/feed", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)
     public void loadProviderFeed(@RequestParam Long providerId) 
@@ -345,57 +394,7 @@ public class TaskController extends BaseController  {
 	
 
 	
-	/*
-	 * This task generates internal feeds for a mediationService. Its invoked from a cron task in the frontend.
-	 */
-	@RequestMapping(value="/_feed/mediation/create", method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseStatus(HttpStatus.OK)
-	public void generateInternalFeedsByMediationId(@RequestParam(required=true) Long mediationId, 
-			@RequestHeader("host") String host) throws Exception {
-		LOGGER.info("Creating internal feed for manual mediation with id: " + mediationId);
-		
-		final String FRONTEND_HOST = "hirubila.appspot.com";
-		//LOGGER.info("referer: " + referer);
-		// Create a new CronTaskReport
-		CronTaskReport report = cronTaskReportService.create();
-		report.setObject_id(mediationId);
-		report.setDate(new Date());
-		report.setType(CronTaskReport.TYPE.INTERNAL_FEED);
-		try {
-			// Start the process		
-			Provider provider =  providerService.getProviderByMediationService(mediationId, null);		
-			MediationService mediationService = mediatorService.getMediationService(mediationId, null);
-			LOGGER.info("Mediation name: " + mediationService.getName());
-			//Set report description
-			report.setDescription(new StringBuffer("Internal feed para Srv. mediacion: ").append(mediationService.getName()).toString());
-			
-			if(!mediationService.getHasFeed() && provider != null) { // All must be manual mediator, but it's another check.
-				FeedSchools feedSchools = internalFeedService.createFeedSchools(FRONTEND_HOST, provider, mediationService);
-				internalFeedService.saveFeedSchools(feedSchools);
-				HashMap<Long, ExtendedSchool> schools = new HashMap<Long, ExtendedSchool>();
-				Collection<ExtendedCourse> courses = 
-					extendedCourseService.getCoursesByOwner(mediationService.getId(), null, null);
-				for(ExtendedCourse course : courses) {
-					ExtendedSchool school = extendedSchoolService.getSchool(course.getSchool(), Locale.getDefault());
-					if(school != null) schools.put(school.getId(), school);
-				}
-				for(ExtendedSchool school : schools.values()) {
-					FeedCourses feedCourse = internalFeedService.createFeedCourses(FRONTEND_HOST, 
-							provider, mediationService, school, this.getAvailableLanguages()); 	
-					internalFeedService.saveFeedCourses(feedCourse);
-				}
-				// Set result into report
-				report.setResult("OK");
-			}
-			
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, StackTraceUtil.getStackTrace(e));
-			report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
-			throw e;
-		} finally {
-			cronTaskReportService.save(report);
-		}
-	}
+	
 	
 	//////////////////////////////////////////////////
 	
