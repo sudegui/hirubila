@@ -18,7 +18,7 @@
 	        theme_advanced_statusbar_location : "bottom",
 	        force_p_newlines : true,
 	        editor_selector : "mceAdvanced",
-	        theme_advanced_resizing : true,
+	        theme_advanced_resizing : true
 		});
 		
 		$(function(){
@@ -56,7 +56,7 @@
 						function() {
 							$('#tags-dialog').dialog('close');
 						}
-					},
+					}
 			});
 			
 			$('#tagsOpenner').click(function(){
@@ -94,7 +94,7 @@
 					function() {
 						$('#schools-dialog').dialog('close');
 					}
-				},
+				}
 		});
 		
 		$('#schoolsOpenner').click(function(){
