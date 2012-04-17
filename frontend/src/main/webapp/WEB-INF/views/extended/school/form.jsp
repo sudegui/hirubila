@@ -75,7 +75,7 @@
                    $("#town").val('');
                }	 	
                return false;		
-           },
+           }
 		}).data( "autocomplete" )._renderItem = function( ul, item ) {
 			return $( "<li></li>" )
 			.data( "item.autocomplete", item )
@@ -113,7 +113,7 @@
 		            title: name
 		        });
 		        var infowindow = new google.maps.InfoWindow({  
-					content: '<strong>' + name + '</strong><br>',   
+					content: '<strong>' + name + '</strong><br>'
 				});  
 		        infowindow.open(map, marker);  
 		      } else {
