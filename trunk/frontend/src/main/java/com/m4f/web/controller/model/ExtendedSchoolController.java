@@ -64,6 +64,9 @@ public class ExtendedSchoolController extends BaseModelController {
 			return "extended.school.form";
 		}
 		try {
+			if(school.getTown() == null) {
+				this.serviceLocator.getTerritorialService().getTownsMap(locale).get(school.getContactInfo().getCity());
+			}
 			school.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
 			this.serviceLocator.getExtendedSchoolService().save(school, locale);
 		} catch(Exception e) {
