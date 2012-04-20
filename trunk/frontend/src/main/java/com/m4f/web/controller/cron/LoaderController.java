@@ -140,7 +140,7 @@ public class LoaderController extends BaseController {
 	/*
 	 * Cron task to update a provider's information, using a round-robin method. It invokes a backend task to do it.
 	 */
-	@RequestMapping(value="/update/provider", method=RequestMethod.GET)
+	/*@RequestMapping(value="/update/provider", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void updateProviderInformation(@RequestParam(required=false) Long providerId) throws Exception {
 		CronTaskReport report = null;
@@ -155,6 +155,62 @@ public class LoaderController extends BaseController {
 		
 			if(providerId == null) {
 				List<Long> ids = this.serviceLocator.getProviderService().getAllProviderIds();
+				if(ids != null && ids.size() > 0) {
+					id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
+				}
+			} else {
+				id = providerId;
+			}
+			
+			if(id != null) {
+				LOGGER.info("Invoking backend task to update provider with ID:" + id);
+				// Invoke the task with the id obtained
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("providerId", String.valueOf(id));
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
+						"/task/provider/feed", params);
+			} else {
+				LOGGER.severe("No provider ID for invokin task in the backend! Update provider's information method");
+			}
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			throw e;
+		}
+	}*/
+	
+	/*
+	 * Cron task to update provider's information that has external Feed, using a round-robin method. It invokes a backend task to do it.
+	 */
+	@RequestMapping(value="/update/provider", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void updateManualProviderInformation(@RequestParam(required=false) Long providerId) throws Exception {
+		CronTaskReport report = null;
+		try {
+			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_FEED);
+		} catch(Exception e) {
+			LOGGER.severe(new StringBuffer("No se ha podido recuperara el " +
+					"ultimo CronTaskReport").append(StackTraceUtil.getStackTrace(e)).toString());			
+		}
+		try {
+			Long id = null;
+		
+			if(providerId == null) {
+				List<Long> manualMediation = this.serviceLocator.getMediatorService().getAllMediationServiceIds(Boolean.TRUE);
+				List<Long> ids = this.serviceLocator.getProviderService().getProviderIdsByMediations(manualMediation);
+				StringBuffer idsSb = new StringBuffer();
+				
+				for(Long idTest : manualMediation) {
+					idsSb.append("[").append(idTest).append("] ");
+				}
+				LOGGER.info("Los ids de los mediadores son: " + idsSb.toString());
+				
+				idsSb = new StringBuffer();
+				for(Long idTest : ids) {
+					idsSb.append("[").append(idTest).append("] ");
+				}
+				LOGGER.info("Los ids de los providers son: " + idsSb.toString());
+				
 				if(ids != null && ids.size() > 0) {
 					id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
 				}

@@ -10,6 +10,7 @@ public interface I18nProviderService {
 	
 	Provider createProvider();
 	List<Long> getAllProviderIds() throws Exception;
+	List<Long> getProviderIdsByMediations(List<Long> mediationsIds) throws Exception;
 	List<Provider> getAllProviders(Locale locale) throws Exception;
 	void save(Provider provider, Locale locale) throws Exception;
 	Provider getProviderById(Long id, Locale locale) throws Exception;

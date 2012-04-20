@@ -112,7 +112,7 @@ public class TaskController extends BaseController  {
 				if(provider != null) {
 					Map<String, String> params = new HashMap<String, String>();
 					params.put("providerId", String.valueOf(provider.getId()));
-					
+					params.put("manual", "true");
 					worker.addWork("provider", "/task/provider/feed", params);
 				}
 			}
@@ -133,7 +133,7 @@ public class TaskController extends BaseController  {
 	 */
 	@RequestMapping(value = "/provider/feed", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)
-    public void loadProviderFeed(@RequestParam Long providerId) 
+    public void loadProviderFeed(@RequestParam Long providerId, @RequestParam(required=false, defaultValue="false") String manual) 
                     throws ParserConfigurationException, SAXException, IOException, Exception { 
 		LOGGER.info("Updating provider with id: " + providerId);
 		Provider provider = null;
@@ -147,10 +147,13 @@ public class TaskController extends BaseController  {
             
             report.setObject_id(providerId);
             report.setDate(new Date());
-            report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
+            if(("true").equals(manual)) {
+            	report.setType(CronTaskReport.TYPE.INTERNAL_FEED);
+            } else {
+            	report.setType(CronTaskReport.TYPE.PROVIDER_FEED);
+            }
+            
 			report.setDescription(new StringBuffer("Proveedor: ").append(provider.getName()).toString());
-			
-        	
 			
 			// DUMP
 			dump = this.dumpService.createDump();
