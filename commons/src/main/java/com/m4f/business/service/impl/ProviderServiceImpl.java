@@ -103,4 +103,11 @@ public class ProviderServiceImpl extends I18nDAOBaseService implements I18nProvi
 		//return this.DAO.getAllIds(Provider.class, null, null, null,  null);
 		return this.DAO.getAllIds(Provider.class, "id", "deleted == deletedParam", "Boolean deletedParam",  new Object[]{Boolean.FALSE});
 	}
+	
+	@Override
+	@Cacheable(cacheName="providers")
+	public List<Long> getProviderIdsByMediations(List<Long> mediationsIds) throws Exception {
+		//return this.DAO.getAllIds(Provider.class, null, null, null,  null);
+		return this.DAO.getAllIds(Provider.class, "id", "(mediationsIds.contains(mediationService) || mediationService == null) && deleted == deletedParam", "java.util.List mediationsIds, Boolean deletedParam",  new Object[]{mediationsIds, Boolean.FALSE});
+	}
 }

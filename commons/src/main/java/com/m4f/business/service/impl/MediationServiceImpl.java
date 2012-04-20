@@ -94,6 +94,13 @@ public class MediationServiceImpl extends I18nDAOBaseService implements I18nMedi
 	}
 
 	@Override
+	public List<Long> getAllMediationServiceIds(Boolean hasFeed) throws Exception {
+		return this.DAO.getAllIds(MediationService.class, "id",
+				"hasFeed == hasParam && deleted == deletedParam", "java.lang.Boolean hasParam, Boolean deletedParam",  
+				new Object[]{ hasFeed, Boolean.FALSE});
+	}
+	
+	@Override
 	public List<Long> getAllMediationServiceIds() throws Exception {
 		return this.DAO.getAllIds(MediationService.class, null, "deleted == deletedParam", 
 				"Boolean deletedParam", new Object[] {Boolean.FALSE });

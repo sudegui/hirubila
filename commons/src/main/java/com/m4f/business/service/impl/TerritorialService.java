@@ -224,7 +224,7 @@ public class TerritorialService extends I18nDAOBaseService implements I18nTerrit
 			throws Exception {
 		return this.DAO.findEntities(Town.class, locale, 
 				"province == provinceParam", "Long provinceParam", 
-				new Object[]{ idProvince }, null);
+				new Object[]{ idProvince }, "name");
 	}
 	
 	@Override

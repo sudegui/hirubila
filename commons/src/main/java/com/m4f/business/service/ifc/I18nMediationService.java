@@ -9,6 +9,7 @@ public interface I18nMediationService {
 	
 	MediationService createMediationService();
 	List<Long> getAllMediationServiceIds() throws Exception;
+	List<Long> getAllMediationServiceIds(Boolean hasFeed) throws Exception;
 	List<Long> getAllMediationServiceManualIds() throws Exception;
 	List<MediationService> getAllMediationService(Locale locale) throws Exception;
 	Collection<MediationService> getMediationServices(boolean manual, Locale locale) throws Exception;

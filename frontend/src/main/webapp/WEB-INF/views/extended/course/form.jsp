@@ -112,6 +112,12 @@
 			
 			$('#schools-dialog').dialog('open');
 
+			var sortProvincesFn = function sortByName(a, b){
+				  var aName = a.name.toLowerCase();
+				  var bName = b.name.toLowerCase(); 
+				  return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+				}
+
 			$("#provinces").change(function(){
 				$('#towns').empty();
 				$("#towns").append('<option selected="true" value=""/>');
@@ -121,6 +127,7 @@
 				var provinceId = $("#provinces").val();
 				var url = '/${rc.locale.language}/extended/course/ajax/towns?provinceId='+provinceId;
 				$.getJSON(url, function(data){	
+					data.sort(sortProvincesFn);
 					$.each(data, function(i, val){
 						$("#towns").append('<option value="' + val.id + '">' + val.name +'</option>');
 					});	
