@@ -98,8 +98,8 @@ public class LastCatalogController extends BaseController {
 			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/reglated/course/list");
 			
-			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.DAY_OF_MONTH, 1); // First day in the month
+			Calendar calendar = this.getCalendar();
+			/*calendar.set(Calendar.DAY_OF_MONTH, 1); // First day in the month
 			calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
 			calendar.set(Calendar.MINUTE, 0); // 0 minutes
 			calendar.set(Calendar.SECOND, 0); // 0 seconds
@@ -110,7 +110,7 @@ public class LastCatalogController extends BaseController {
 			} else { // If its January, set one year before and december month
 				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
 				calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-			}
+			}*/
 			
 			LOGGER.info("Date: " + calendar.getTime());
 			
@@ -142,8 +142,8 @@ public class LastCatalogController extends BaseController {
 			paginator.setOffset(this.getPageSize());
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/non-reglated/course/list");
 			
-			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.DAY_OF_MONTH, 1); // First day in the month
+			Calendar calendar = this.getCalendar();
+			/*calendar.set(Calendar.DAY_OF_MONTH, 1); // First day in the month
 			calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
 			calendar.set(Calendar.MINUTE, 0); // 0 minutes
 			calendar.set(Calendar.SECOND, 0); // 0 seconds
@@ -154,7 +154,7 @@ public class LastCatalogController extends BaseController {
 			} else { // If its January, set one year before and december month
 				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
 				calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-			}
+			}*/
 			
 			LOGGER.info("Date: " + calendar.getTime());
 			
@@ -324,5 +324,18 @@ public class LastCatalogController extends BaseController {
 		}
 		
 		return courseData;
+	}
+	
+	private Calendar getCalendar() {
+		final long referenceTime = 15 /* day */ * 24 /* hours/day */ * 60 /* minutes/day */ * 60 /* seconds/minute */ * 1000 /* miliseconds/second */;
+		Calendar calendar = Calendar.getInstance();
+		// Reset calendar to a known time 00:00:00:000
+		calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
+		calendar.set(Calendar.MINUTE, 0); // 0 minutes
+		calendar.set(Calendar.SECOND, 0); // 0 seconds
+		calendar.set(Calendar.MILLISECOND, 0); // O miliseconds
+		calendar.setTimeInMillis(calendar.getTimeInMillis() - referenceTime);
+		
+		return calendar;
 	}
 }
