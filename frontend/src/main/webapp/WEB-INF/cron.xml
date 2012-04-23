@@ -10,7 +10,7 @@
  <cron>
   	<url>/loader/update/provider</url>
   	<description>Update provider's information using its feed. Round-robin update</description>
-  	<schedule>every 180 minutes</schedule>
+  	<schedule>every 300 minutes</schedule>
   	<timezone>Europe/Madrid</timezone>
   </cron>
  <!--   
