@@ -47,7 +47,7 @@
 								
 								<sec:authorize ifAllGranted="ROLE_ADMIN">
 								<li>
-									<a href="<c:url value='/${rc.locale.language}/launcher/updatecourses/${school.id}'/>" title="${school.name}">
+									<a href="<c:url value='/loader/update/school?schoolId=${school.id}'/>" title="${school.name}">
 									<fmt:message key="action.dumpFeed"/>
 									</a>
 								</li>

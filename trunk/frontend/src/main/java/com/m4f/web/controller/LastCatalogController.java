@@ -327,7 +327,7 @@ public class LastCatalogController extends BaseController {
 	}
 	
 	private Calendar getCalendar() {
-		final long referenceTime = 15 /* day */ * 24 /* hours/day */ * 60 /* minutes/day */ * 60 /* seconds/minute */ * 1000 /* miliseconds/second */;
+		final long referenceTime = 7 /* days */ * 24 /* hours/day */ * 60 /* minutes/day */ * 60 /* seconds/minute */ * 1000 /* miliseconds/second */;
 		Calendar calendar = Calendar.getInstance();
 		// Reset calendar to a known time 00:00:00:000
 		calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day

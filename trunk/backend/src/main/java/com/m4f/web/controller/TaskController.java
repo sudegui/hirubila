@@ -133,7 +133,7 @@ public class TaskController extends BaseController  {
 	 */
 	@RequestMapping(value = "/provider/feed", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)
-    public void loadProviderFeed(@RequestParam Long providerId, @RequestParam(required=false, defaultValue="false") String manual) 
+    public void loadProviderFeed(@RequestParam Long providerId, @RequestParam(required=false, defaultValue="false") String manual, @RequestParam(required=false, defaultValue="true") String register) 
                     throws ParserConfigurationException, SAXException, IOException, Exception { 
 		LOGGER.info("Updating provider with id: " + providerId);
 		Provider provider = null;
@@ -147,6 +147,7 @@ public class TaskController extends BaseController  {
             
             report.setObject_id(providerId);
             report.setDate(new Date());
+            
             if(("true").equals(manual)) {
             	report.setType(CronTaskReport.TYPE.INTERNAL_FEED);
             } else {
@@ -203,12 +204,15 @@ public class TaskController extends BaseController  {
 	        } */
 	        
 	        // Set result into report
-			report.setResult("OK");
+    		report.setResult("OK");
+    		
         } catch(Exception e) {
                 report.setResult(new StringBuffer("ERROR: ").append(e.getMessage()).toString());
                 throw e;
         } finally {
-        	cronTaskReportService.save(report);
+        	if("true".equals(register)) {
+        		cronTaskReportService.save(report);
+        	}
         	dumpService.save(dump);
         }
 	}

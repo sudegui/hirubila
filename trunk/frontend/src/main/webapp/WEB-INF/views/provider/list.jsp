@@ -79,15 +79,17 @@
 							</li>
 						</sec:authorize>
 	        			<li>
-	        				<a href="<c:url value='/${rc.locale.language}/launcher/updateschools/${provider.id}/'/>" title="${provider.name} dump feed">
+	        				<a href="<c:url value='/loader/update/provider?providerId=${provider.id}/'/>" title="${provider.name} dump feed">
 								<fmt:message key="action.dumpFeed"/>
 							</a>
 						</li>
+						<%-- 
 						<li>
 	        				<a href="#" title="${provider.name} create catalog" onclick="javascript:createCatalog('${provider.id}');">
 								Creacion catalogo SEO
 							</a>
 						</li>
+						--%>
 						<li>
 							<a href="<c:url value='/${rc.locale.language}/provider/${provider.id}/summary/'/>" title="${provider.name}">
 								<fmt:message key="provider.action.summary"/>
