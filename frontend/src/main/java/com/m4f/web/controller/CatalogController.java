@@ -151,19 +151,7 @@ public class CatalogController extends BaseController {
 			Locale locale, HttpServletResponse response) throws GenericException {
 		return this.redirectToCourseDetail(response, courseId, model, locale);
 	}
-	
-	@RequestMapping(value="/cleanCache", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public void cleanCache(Locale locale) throws GenericException {
-		String[] cacheNames =  {"courses", "schools", "coursesCatalog"};
-    	for(String cacheName : cacheNames) {
-    		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService(cacheName);
-    		syncCache.clearAll();
-    	}
-    	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.clearAll();    
-	}
-	
+		
 	/*private String redirectToCourseDetail(HttpServletResponse response, 
 			Long courseId, Model model, Locale locale) throws GenericException {
 		try {

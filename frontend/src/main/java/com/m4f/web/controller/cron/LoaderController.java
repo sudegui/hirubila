@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.MediationService;
+import com.m4f.business.domain.School;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.web.controller.BaseController;
 
@@ -186,6 +187,8 @@ public class LoaderController extends BaseController {
 	@ResponseStatus(HttpStatus.OK)
 	public void updateManualProviderInformation(@RequestParam(required=false) Long providerId) throws Exception {
 		CronTaskReport report = null;
+		boolean register = true;
+		
 		try {
 			report = this.serviceLocator.getCronTaskReportService().getLastCronTaskReport(CronTaskReport.TYPE.PROVIDER_FEED);
 		} catch(Exception e) {
@@ -215,6 +218,7 @@ public class LoaderController extends BaseController {
 					id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
 				}
 			} else {
+				register = false;
 				id = providerId;
 			}
 			
@@ -223,6 +227,9 @@ public class LoaderController extends BaseController {
 				// Invoke the task with the id obtained
 				Map<String, String> params = new HashMap<String, String>();
 				params.put("providerId", String.valueOf(id));
+				if(!register) {
+					params.put("register", "false");
+				}
 				this.serviceLocator.getWorkerFactory().createWorker().addWork(
 						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().PROVIDER_QUEUE, 
 						"/task/provider/feed", params);
@@ -233,6 +240,32 @@ public class LoaderController extends BaseController {
 			LOGGER.severe(StackTraceUtil.getStackTrace(e));
 			throw e;
 		}
+	}
+	
+	/*
+	 * Cron task to update provider's information that has external Feed, using a round-robin method. It invokes a backend task to do it.
+	 */
+	@RequestMapping(value="/update/school", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void updateManualSchoolInformation(@RequestParam(required=false) Long schoolId, Locale locale) throws Exception {
+		try {
+			School school = this.serviceLocator.getSchoolService().getSchool(schoolId, locale);
+			if(school != null) {
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("schoolId", String.valueOf(school.getId()));
+				
+				this.serviceLocator.getWorkerFactory().createWorker().addWork(
+						this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().SCHOOL_QUEUE, 
+						"/task/school/feed", params);
+			} else {
+				LOGGER.severe("No school ID for invokin task in the backend! Update school's information method");
+			}
+			
+		} catch(Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			throw e;
+		}
+		
 	}
 	/*
 	@RequestMapping(value="/update/provider/schools", method=RequestMethod.GET)
