@@ -291,8 +291,17 @@ public class Course extends BaseEntity implements Taggeable {
 			append("INFO: ").append(this.information).append(" ").
 			append("URL: ").append(this.url).append(" ").
 			append("CREATED: ").append(this.created).append(" ").
-			append("UPDATED: ").append(this.updated).append(" ").
-			append("]");
+			append("UPDATED: ").append(this.updated).append(" ");
+		
+		StringBuffer tagsSb = new StringBuffer("{");
+		if(tags != null) {
+			for(Category tag : tags) {
+				tagsSb.append(tag.getCategory()).append(",");
+			}
+		}
+		tagsSb.append("}");
+		
+		sb.append("TAGS: ").append(tagsSb.toString()).append(" ").append("]");
 		
 		return sb.toString();
 	}
