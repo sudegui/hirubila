@@ -96,6 +96,7 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 				oldCourse.setStart(newCourse.getStart());
 				oldCourse.setEnd(newCourse.getEnd());
 				oldCourse.setInformation(newCourse.getInformation());
+				oldCourse.setTags(newCourse.getTags());
 				oldCourse.setActive(true);
 				if(oldCourse.isTranslated()) oldCourse.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
 				//newCourse.setId(oldCourse.getId());
