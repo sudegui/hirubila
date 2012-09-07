@@ -1,27 +1,30 @@
 package com.m4f.web.controller.model;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+
 import com.google.appengine.api.datastore.Category;
 import com.m4f.business.domain.InternalUser;
 import com.m4f.business.domain.MediationService;
@@ -31,7 +34,6 @@ import com.m4f.business.domain.extended.Province;
 import com.m4f.business.domain.extended.Town;
 import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
-import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/extended/course/")
@@ -93,6 +95,10 @@ private static final Logger LOGGER = Logger.getLogger(ExtendedCourseController.c
 				MediationService mediationService = 
 					this.serviceLocator.getMediatorService().getMediationServiceByUser(user.getId(), locale);
 				course.setMediationService(mediationService.getId());
+				if(course.getId() == null) {
+					course.setCreated(new Date());
+				}
+				course.setUpdated(new Date());
 				this.serviceLocator.getExtendedCourseService().save(course, locale);
 			} else {
 				return "common.error";

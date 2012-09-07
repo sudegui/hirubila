@@ -1,6 +1,7 @@
 package com.m4f.web.controller.cron;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,10 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CronTaskReport;
 import com.m4f.business.domain.MediationService;
 import com.m4f.business.domain.School;
+import com.m4f.utils.PageManager;
 import com.m4f.utils.StackTraceUtil;
 import com.m4f.web.controller.BaseController;
 
@@ -39,8 +45,35 @@ public class LoaderController extends BaseController {
 		this.serviceLocator.getWorkerFactory().createWorker().addWork(
 				this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
 				"/task/school/feed", params);
+	}	
+	
+	
+	/*
+	 * Cron task to generate all internal feeds with the last information. Invoke for each manual mediation service a
+	 * backend task to do it.
+	 */
+	@RequestMapping(value="/manual/feed", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void generateManualFeeds() throws Exception {
+		// Get all manual mediation services
+		List<MediationService> mediations = this.serviceLocator.getMediatorService().getAllMediationService(null);
+		if(mediations != null) {
+			// For each one create a backend task.
+			for(MediationService mediation : mediations) {
+				if(!mediation.getHasFeed()) { // If its a manual mediation service
+					LOGGER.info("Manual mediation service: " + mediation.getName());
+					// Invoke the task with the id obtained
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("mediationId", String.valueOf(mediation.getId()));
+					this.serviceLocator.getWorkerFactory().createWorker().addWork(
+							this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
+							"/task/_feed/mediation/create", params);
+				}
+			}
+		}
 	}
 	
+	/* TEST METHODS! */
 	@RequestMapping(value="/school/information", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void infoSchool(@RequestParam(required=true) Long schoolId, HttpServletResponse response) throws Exception {
@@ -96,30 +129,27 @@ public class LoaderController extends BaseController {
 		
 	}
 	
-	/*
-	 * Cron task to generate all internal feeds with the last information. Invoke for each manual mediation service a
-	 * backend task to do it.
-	 */
-	@RequestMapping(value="/manual/feed", method=RequestMethod.GET)
+	/*@RequestMapping(value="/course/noUpdated", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public void generateManualFeeds() throws Exception {
-		// Get all manual mediation services
-		List<MediationService> mediations = this.serviceLocator.getMediatorService().getAllMediationService(null);
-		if(mediations != null) {
-			// For each one create a backend task.
-			for(MediationService mediation : mediations) {
-				if(!mediation.getHasFeed()) { // If its a manual mediation service
-					LOGGER.info("Manual mediation service: " + mediation.getName());
-					// Invoke the task with the id obtained
-					Map<String, String> params = new HashMap<String, String>();
-					params.put("mediationId", String.valueOf(mediation.getId()));
-					this.serviceLocator.getWorkerFactory().createWorker().addWork(
-							this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
-							"/task/_feed/mediation/create", params);
-				}
-			}
-		}
+	public void infoUpdatedCourses(@RequestParam(required=true) String eId, HttpServletResponse response) throws Exception {
+		StringBuffer sb = new StringBuffer();
+		long count = this.serviceLocator.getCourseService().countTESTnoUPDATED();
+		
+		sb.append("Numero de cursos sin updated es: ").append(count);
+		
+		response.getWriter().write(sb.toString());
 	}
+	
+	@RequestMapping(value="/course/noUpdatedGet", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void noUpdateCoursesGet(@RequestParam(required=true) String eId, HttpServletResponse response) throws Exception {
+		Queue queue = QueueFactory.getDefaultQueue();
+		TaskOptions options = TaskOptions.Builder.withUrl("/task/course/noUpdatedGet");
+		options.method(Method.GET);
+		options.param("eId", "78989795646");
+	    queue.add(options);
+	}*/
+	
 	
 	/*@RequestMapping(value="/update/providers", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)

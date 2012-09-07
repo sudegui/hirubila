@@ -1,5 +1,7 @@
 package com.m4f.web.controller;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -11,11 +13,15 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.m4f.business.domain.Course;
 import com.m4f.business.domain.Inbox;
 import com.m4f.business.domain.ResultSearchEmail;
 import com.m4f.utils.StackTraceUtil;
@@ -28,7 +34,21 @@ public class TaskController extends BaseController  {
 	private static final Logger LOGGER = Logger.getLogger(TaskController.class.getName());
 	private static final String EMAIL_DOMAIN_SUFFIX = "@hirubila.appspotmail.com";
 	
-	
+	/*@RequestMapping(value="/course/noUpdatedGet", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void noUpdateCoursesGet(@RequestParam(required=true) String eId, HttpServletResponse response) throws Exception {
+		StringBuffer sb = new StringBuffer();
+		Collection<Course> courses = this.serviceLocator.getCourseService().getCoursesNoUPDATED(0, 2000);
+		for(Course course : courses) {
+			if(course.getUpdated() == null) {
+				course.setUpdated(new Date());
+				this.serviceLocator.getCourseService().save(course, null);
+				sb.append(course.getId()).append(";");
+			}
+		}
+		response.getWriter().write(sb.toString());
+	}
+	*/
 	@RequestMapping(value="/recovery", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
 	public void recovery(@RequestParam(required=true) String email) {
