@@ -1,7 +1,9 @@
 package com.m4f.web.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +25,10 @@ import com.google.appengine.api.datastore.Category;
 import com.google.appengine.api.memcache.InvalidValueException;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.domain.Provider;
@@ -112,7 +118,7 @@ public class LastCatalogController extends BaseController {
 				calendar.set(Calendar.MONTH, Calendar.DECEMBER);
 			}*/
 			
-			LOGGER.info("Date: " + calendar.getTime());
+			LOGGER.severe("Date: " + calendar.getTime());
 			
 			paginator.setSize(this.serviceLocator.getCourseService().countUpdatedCourses(calendar.getTime(), true));
 			if((page-1)*paginator.getOffset() > paginator.getSize()) {
@@ -143,20 +149,11 @@ public class LastCatalogController extends BaseController {
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/non-reglated/course/list");
 			
 			Calendar calendar = this.getCalendar();
-			/*calendar.set(Calendar.DAY_OF_MONTH, 1); // First day in the month
-			calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
-			calendar.set(Calendar.MINUTE, 0); // 0 minutes
-			calendar.set(Calendar.SECOND, 0); // 0 seconds
-			calendar.set(Calendar.MILLISECOND, 0); // O miliseconds
+						
+			// CHECKING NUMBER OF COURSES WITH NULL IN UPDATED field.
+			long noCourses = this.serviceLocator.getCourseService().countUpdatedCourses(null, false);
 			
-			if(calendar.get(Calendar.MONTH) > 0) { // Check that the month is not January
-				calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) -1 );
-			} else { // If its January, set one year before and december month
-				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
-				calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-			}*/
-			
-			LOGGER.info("Date: " + calendar.getTime());
+			LOGGER.severe("Date: " + calendar.getTime());
 			
 			paginator.setSize(this.serviceLocator.getCourseService().countUpdatedCourses(calendar.getTime(), false));
 			if((page-1)*paginator.getOffset() > paginator.getSize()) {
@@ -165,8 +162,7 @@ public class LastCatalogController extends BaseController {
 			paginator.setStart((page-1)*paginator.getOffset());
 			paginator.setCollection(this.serviceLocator.getCourseService().getUpdatedCourses(calendar.getTime(), false, 
 					"-" + ORDERING_PROPERTY, locale, paginator.getStart(), paginator.getEnd()));
-			/*paginator.setCollection(this.serviceLocator.getCourseService().getCourses(false, 
-					"-" + ORDERING_PROPERTY, locale, paginator.getStart(), paginator.getEnd())); */
+			
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("type", "non-reglated");
 			
@@ -175,8 +171,38 @@ public class LastCatalogController extends BaseController {
 			throw new GenericException(e);
 		}
 		return "catalog.course.list";
-	}
-	
+	} 
+/*	
+	 @RequestMapping(value="/non-reglated/course/list", method=RequestMethod.GET)
+		public String listNonReglated(Model model, Locale locale, HttpServletResponse response,
+				@RequestParam(defaultValue="1", required=false) Integer page) throws GenericException {
+			try {
+				
+				PageManager<Course> paginator = new PageManager<Course>();
+				paginator.setOffset(this.getPageSize());
+				paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/non-reglated/course/list");
+				
+				Calendar calendar = this.getCalendar();
+											
+				LOGGER.severe("Date: " + calendar.getTime());
+				
+				paginator.setSize(this.serviceLocator.getCourseService().countCoursesByProvider(new Long(715431)));
+				if((page-1)*paginator.getOffset() > paginator.getSize()) {
+					throw new GenericException("Paginator Out of Range!!! Size: " + paginator.getSize() + " start: " + (page-1)*paginator.getOffset()); 
+				}
+				paginator.setStart((page-1)*paginator.getOffset());
+				paginator.setCollection(this.serviceLocator.getCourseService().getCoursesByProvider(new Long(715431), "id", locale, paginator.getStart(), paginator.getEnd()));
+				
+				model.addAttribute("paginator", paginator);
+				model.addAttribute("type", "non-reglated");
+				
+				response.addDateHeader("Last-Modified", calendar.getTimeInMillis());
+			} catch(Exception e) {
+				throw new GenericException(e);
+			}
+			return "catalog.course.list";
+		}
+*/	
 	@RequestMapping(value="/reglated/course/detail/{courseId}", method=RequestMethod.GET)
 	public String reglatedDetail(@PathVariable Long courseId, Model model, Locale locale, 
 			HttpServletResponse response) throws GenericException {
@@ -195,7 +221,7 @@ public class LastCatalogController extends BaseController {
 		return this.redirectToCourseDetail(response, courseId, model, locale);
 	}
 	
-	@RequestMapping(value="/cleanCache", method=RequestMethod.GET)
+	/*@RequestMapping(value="/cleanCache", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void cleanCache(Locale locale) throws GenericException {
 		String[] cacheNames =  {"courses", "schools", "coursesCatalog"};
@@ -205,7 +231,7 @@ public class LastCatalogController extends BaseController {
     	}
     	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.clearAll();    
-	}
+	}*/
 	
 	/*private String redirectToCourseDetail(HttpServletResponse response, 
 			Long courseId, Model model, Locale locale) throws GenericException {
@@ -329,13 +355,83 @@ public class LastCatalogController extends BaseController {
 	private Calendar getCalendar() {
 		final long referenceTime = 7 /* days */ * 24 /* hours/day */ * 60 /* minutes/day */ * 60 /* seconds/minute */ * 1000 /* miliseconds/second */;
 		Calendar calendar = Calendar.getInstance();
+		
 		// Reset calendar to a known time 00:00:00:000
 		calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
 		calendar.set(Calendar.MINUTE, 0); // 0 minutes
 		calendar.set(Calendar.SECOND, 0); // 0 seconds
 		calendar.set(Calendar.MILLISECOND, 0); // O miliseconds
+		
+		
 		calendar.setTimeInMillis(calendar.getTimeInMillis() - referenceTime);
+		
+		
+		//calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
+		//calendar.set(Calendar.MONTH, Calendar.JANUARY);
+		//calendar.set(Calendar.DAY_OF_MONTH, 1); 
 		
 		return calendar;
 	}
+	
+	/*	private Calendar getCalendar() {
+		final int MONTHS = 1; // Number of months before today to get the catalog.
+		
+		
+		Calendar calendar = Calendar.getInstance();
+		
+		int years = MONTHS / 12; // Number of years. Rounded 1 up. Mathematical formula (X + Y - 1) / Y
+		int months = MONTHS - (years * 12);
+		
+		if(calendar.get(Calendar.MONTH) - months < 0) { // Check if it must be added a year.
+			years++; // Add a year
+			months -= calendar.get(Calendar.MONTH); // Substract the number of months
+		}
+		// Set year
+		calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - years);
+		// Set month
+		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - months); 
+		// Set First day of month
+		calendar.set(Calendar.DAY_OF_MONTH, 10);
+		// Set a known time 00:00:00:000
+		calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
+		calendar.set(Calendar.MINUTE, 0); // 0 minutes
+		calendar.set(Calendar.SECOND, 0); // 0 seconds
+		calendar.set(Calendar.MILLISECOND, 0); // O miliseconds
+				
+		//calendar.setTimeInMillis(calendar.getTimeInMillis() - referenceTime); 
+		
+		return calendar;
+	}*/
+	
+	/*@RequestMapping(value="/test", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void test(){
+		Queue queue = QueueFactory.getDefaultQueue();
+		TaskOptions options = TaskOptions.Builder.withUrl("/es/catalog/dotest");
+		options.method(Method.GET);
+	    queue.add(options);
+	}
+	
+	@RequestMapping(value="/dotest", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void doTest(HttpServletResponse response) throws GenericException, ServiceNotFoundException, ContextNotActiveException, IOException {
+		Collection<Course> courses = this.serviceLocator.getCourseService().getCoursesByProvider(new Long(715431), "id", null);
+		
+		List<Course> repeated = new ArrayList<Course>();
+		HashMap<String, Course> map = new HashMap<String, Course>();
+		
+		for(Course c : courses) {
+			if(map.get(c.getExternalId()) == null) {
+				map.put(c.getExternalId(), c);
+			} else {
+				repeated.add(c);
+			}	
+		}
+		StringBuffer sb = new StringBuffer("Total: ").append(courses.size()).append(" Repetidos: ").append(" (").append(repeated.size()).append(")");
+		for(Course c : repeated) {
+			sb.append(c.getExternalId()).append(", \n");
+		}
+		
+		LOGGER.log(Level.SEVERE, sb.toString());
+	}*/
 }
