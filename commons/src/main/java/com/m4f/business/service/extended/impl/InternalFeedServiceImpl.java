@@ -281,4 +281,34 @@ private static final Logger LOGGER = Logger.getLogger(InternalFeedServiceImpl.cl
 	public void saveFeedSchools(FeedSchools feed) throws Exception {
 		this.DAO.saveOrUpdate(feed);		
 	}
+	
+	@Override
+	public Collection<FeedSchools> getFeedSchools(Date limit) {
+		String filter = "date == dateParam"; 
+		String params = "java.util.Date dateParam";
+		
+		return this.DAO.findEntities(FeedSchools.class, filter, params, 
+				new Object[]{limit}, "id");
+	}
+	
+	@Override
+	public Collection<FeedCourses> getFeedCourses(Date limit) {
+		String filter = "date == dateParam"; 
+		String params = "java.util.Date dateParam";
+		
+		return this.DAO.findEntities(FeedCourses.class, filter, params, 
+				new Object[]{limit}, "id");
+	}
+	
+	@Override
+	public void deleteFeedSchools(Collection<FeedSchools> feeds)
+			throws Exception {
+		this.DAO.delete(feeds);
+	}
+	
+	@Override
+	public void deleteFeedCourses(Collection<FeedCourses> feeds)
+			throws Exception {
+		this.DAO.delete(feeds);
+	}
 }
