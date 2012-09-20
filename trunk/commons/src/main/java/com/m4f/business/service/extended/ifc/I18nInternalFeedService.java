@@ -6,6 +6,7 @@ import com.m4f.business.domain.extended.ExtendedSchool;
 import com.m4f.business.domain.extended.FeedCourses;
 import com.m4f.business.domain.extended.FeedSchools;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Locale;
 
 public interface I18nInternalFeedService {
@@ -19,6 +20,13 @@ public interface I18nInternalFeedService {
 	
 	FeedSchools getLastFeedSchools(Long providerId) throws Exception;
 	FeedCourses getLastFeedCourses(Long providerId, Long extendedSchoolId) throws Exception;
+
+	
+	Collection<FeedSchools> getFeedSchools(Date limit);
+	Collection<FeedCourses> getFeedCourses(Date limit);
+
+	void deleteFeedSchools(Collection<FeedSchools> feeds) throws Exception;
+	void deleteFeedCourses(Collection<FeedCourses> feeds) throws Exception;
 	
 	
 }

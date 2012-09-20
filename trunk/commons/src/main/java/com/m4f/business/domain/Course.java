@@ -263,14 +263,34 @@ public class Course extends BaseEntity implements Taggeable {
 			Course c = (Course) obj;
 			// First if obj has id. This attribute will mark if they are equal
 			if(c.getId() != null) equal &= this.id.equals(c.getId()); 
-			if(this.externalId != null/* && c.getExternalId() != null*/) equal &= this.externalId.equals(c.getExternalId()); 
-			if(this.school != null /*&& c.getSchool() != null*/) equal &= this.school.equals(c.getSchool());
-			if(this.provider != null/* && c.getProvider() != null*/) equal &= this.provider.equals(c.getProvider());
-			if(this.title != null /*&& c.getTitle() != null*/) equal &= this.title.equals(c.getTitle());
-			if(this.url != null /*&& c.getUrl() != null*/) equal &= this.url.equals(c.getUrl());
+			if(this.externalId != null) equal &= this.externalId.equals(c.getExternalId()); 
+			if(this.school != null ) equal &= this.school.equals(c.getSchool());
+			if(this.provider != null) equal &= this.provider.equals(c.getProvider());
+			if(this.title != null ) equal &= this.title.equals(c.getTitle());
+			if(this.url != null) {
+				if(c.getUrl() == null && "".equals(this.url)) {
+					equal &= true;
+				} else {
+					equal &= this.url.equals(c.getUrl());
+				}
+			} else if(this.url == null && (c.getUrl() == null || "".equals(c.getUrl()))) {
+				equal &= true;
+			} else {
+				equal &= false;
+			}
 			if(this.start != null) equal &= this.start.equals(c.getStart());
 			if(this.end != null) equal &= this.end.equals(c.getEnd());
-			if(this.information != null) equal &= this.information.equals(c.getInformation());
+			if(this.information != null) {
+				if(c.getInformation() == null && "".equals(this.information.getValue())) {
+					equal &= true;
+				} else {
+					equal &= this.information.equals(c.getInformation());
+				}
+			} else if(this.information == null && (c.getInformation() == null || "".equals(c.getInformation().getValue()))) {
+				equal &= true;
+			} else {
+				equal &= false;
+			}
 			if(tags != null) equal &= this.tags.equals(c.getTags());
 			
 		} else {

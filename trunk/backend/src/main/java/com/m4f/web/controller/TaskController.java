@@ -314,6 +314,44 @@ public class TaskController extends BaseController  {
         
     }
 	
+	/*
+	 * This task clean the old schools Feeds from a Date.
+	 */
+	@RequestMapping(value = "/clean/feedSchools", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseStatus(HttpStatus.OK)
+    public void cleanFeedSchools() throws Exception { 
+		Date limitDate = this.getLimitDateFeeds();
+		
+		LOGGER.info("Cleaning old internal schools's feeds till: " + limitDate);
+		
+		Collection<FeedSchools> feedSchools = this.internalFeedService.getFeedSchools(limitDate);
+		this.internalFeedService.deleteFeedSchools(feedSchools);
+	}
+	
+	/*
+	 * This task clean the old schools Feeds from a Date.
+	 */
+	@RequestMapping(value = "/clean/feedCourses", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseStatus(HttpStatus.OK)
+    public void cleanFeedCourses() throws Exception { 
+		Date limitDate = this.getLimitDateFeeds();
+		
+		LOGGER.info("Cleaning old internal schools's feeds till: " + limitDate);
+		
+		Collection<FeedCourses> feedCourses = this.internalFeedService.getFeedCourses(limitDate);
+		this.internalFeedService.deleteFeedCourses(feedCourses);
+	}
+	
+	private Date getLimitDateFeeds() {
+		final long referenceTime = 30 /* days */ * 24 /* hours/day */ * 60 /* minutes/day */ * 60 /* seconds/minute */ * 1000 /* miliseconds/second */;
+		Calendar calendar = Calendar.getInstance();
+		
+		calendar.setTimeInMillis(calendar.getTimeInMillis() - referenceTime);
+		
+		return calendar.getTime();
+	}
+	
+	
 	/* @RequestMapping(value = "/update/providers", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)
     public void updateProviders() throws ParserConfigurationException, SAXException, IOException, Exception { 

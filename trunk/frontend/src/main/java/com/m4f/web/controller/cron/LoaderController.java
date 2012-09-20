@@ -36,6 +36,28 @@ public class LoaderController extends BaseController {
 	
 	private static final Logger LOGGER = Logger.getLogger(LoaderController.class.getName());
 	
+	@RequestMapping(value="/clean/feedSchools", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void cleanFeedSchools(@RequestParam(required=true) Long schoolId) throws Exception {
+		// Invoke the task with the id obtained
+		Map<String, String> params = new HashMap<String, String>();
+
+		this.serviceLocator.getWorkerFactory().createWorker().addWork(
+				this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
+				"/task/clean/feedSchools", params);
+	}	
+	
+	@RequestMapping(value="/clean/feedCourses", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void cleanFeedCourses(@RequestParam(required=true) Long schoolId) throws Exception {
+		// Invoke the task with the id obtained
+		Map<String, String> params = new HashMap<String, String>();
+		
+		this.serviceLocator.getWorkerFactory().createWorker().addWork(
+				this.serviceLocator.getAppConfigurationService().getGlobalConfiguration().INTERNAL_FEED_QUEUE, 
+				"/task/clean/feedCourses", params);
+	}	
+	
 	@RequestMapping(value="/update/school", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void testSchool(@RequestParam(required=true) Long schoolId) throws Exception {
