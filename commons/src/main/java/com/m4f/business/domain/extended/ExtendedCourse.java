@@ -41,9 +41,11 @@ public class ExtendedCourse extends BaseEntity implements Taggeable {
     public String title;
     
     @Persistent
+    @NotNull
     private Date start;
     
     @Persistent
+    @NotNull
     private Date end;
     
     @Persistent

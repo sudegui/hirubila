@@ -3,7 +3,7 @@
 <%@ include file="/WEB-INF/views/common/includes.jsp"%>
 
 <h1><fmt:message key="course.detail.section.header"/></h1>
-
+<input id="eId" type="hidden" value="${course.externalId}">
 <p><strong><fmt:message key="course.fields.ownedSchool"/></strong>: <a href="<c:url value='/${rc.locale.language}/school/detail/${school.id}/'/>" title="${school.name}">${school.name}</a></p>
 <p><strong><fmt:message key="course.fields.title"/></strong>: ${course.title}</p>
 <p><strong><fmt:message key="course.fields.information"/></strong>: ${course.information.value}</p>
