@@ -261,4 +261,16 @@ private static final Logger LOGGER = Logger.getLogger(ExtendedCourseController.c
 		}
 	}
 	
+	@Secured("ROLE_MANUAL_MEDIATOR")
+	@RequestMapping(value="/ajax/school", method=RequestMethod.GET)
+	public @ResponseBody ExtendedSchool getSchool(Principal currentUser, 
+			@RequestParam(required=true, defaultValue="") Long schoolId, Locale locale) {
+		try {
+			return this.serviceLocator.getExtendedSchoolService().getSchool(schoolId, locale);
+		} catch (Exception e) {
+			LOGGER.severe(StackTraceUtil.getStackTrace(e));
+			return new ExtendedSchool();
+		}
+	}
+	
 }

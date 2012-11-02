@@ -150,6 +150,15 @@
 			});
 			return false;
 		});
+		
+		var schoolId = $("#school_id").val();
+		if(schoolId) {
+			var url = '/${rc.locale.language}/extended/course/ajax/school?schoolId='+schoolId;
+			$.getJSON(url, function(data){	
+				$("#school_desc").val(data.name);				
+			 });
+		}
+		
 	});
 	</script>
 
