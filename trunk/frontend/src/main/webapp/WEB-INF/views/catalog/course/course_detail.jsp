@@ -114,7 +114,7 @@
             	</td>
             	<td align="right">
             		<a href="<c:url value='/${rc.locale.language}/search/'/>">
-            			<img border="0" src="<c:url value='/static/search/img/hirubila_${rc.locale.language}.jpg'/>" alt="Logo Hirubila" />
+            			<img border="0" src="<c:url value='/static/search/img/hirubila_${rc.locale.language}.jpg'/>" alt="" title="Hirubila"/>
             		</a>
             	</td>
             	</tr>
@@ -211,7 +211,7 @@
 			   	</c:if>
 			<br/>
             <br/>
-			<p><a href="<c:url value='/${rc.locale.language}/search/'/>"><img border="0" src="<c:url value='/static/search/img/hirubila_${rc.locale.language}.jpg'/>" alt="Logo Hirubila" /></a></p>
+			<p><a href="<c:url value='/${rc.locale.language}/search/'/>"><img border="0" src="<c:url value='/static/search/img/hirubila_${rc.locale.language}.jpg'/>" alt="" title="Hirubila"/></a></p>
         </div> 
      </div>
     
