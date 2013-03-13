@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN" "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+  
+	<definition name="base.definition">
+		<put-attribute name="title" value=""/>
+		<put-attribute name="sectionId" value=""/>
+		<put-attribute name="extraHead" value=""/>
+		<put-attribute name="header" value="/WEB-INF/views/common/header.jsp"/>
+		<put-attribute name="menu" value="/WEB-INF/views/common/menu.jsp"/>
+		<put-attribute name="sidebar" value="/WEB-INF/views/common/sidebar.jsp" />
+		<put-attribute name="body" value=""/>
+		<put-attribute name="footer" value="/WEB-INF/views/common/footer.jsp" />
+	</definition>
+	
+	
+  <!-- Start Bases views definitions -->
+  <definition name="base.2col.definition" template="/WEB-INF/views/common/layout_2col.jsp" extends="base.definition">	
+  </definition>
+	
+	<definition name="base.1col.definition" template="/WEB-INF/views/common/layout_1col.jsp" extends="base.definition">
+	</definition>
+	
+	<definition name="base.clear.definition" template="/WEB-INF/views/common/layout_clear.jsp">
+		<put-attribute name="extraHead" value=""/>
+	</definition>
+	
+	<definition name="gsa.base" template="/WEB-INF/views/catalog/gsa_layout.jsp" extends="base.definition">
+	</definition>
+	
+	<definition name="catalog.base" template="/WEB-INF/views/catalog/catalog_layout_1col.jsp" extends="base.definition">
+		<put-attribute name="header" value=""/>
+		<put-attribute name="gsaHeader" value=""/>
+		<put-attribute name="menu" value=""/>
+		<put-attribute name="sidebar" value="" />
+	</definition>
+	
+	<definition name="extended.catalog.base" template="/WEB-INF/views/catalog/extended_catalog_layout_1col.jsp" extends="base.definition">
+		<put-attribute name="header" value="/WEB-INF/views/common/catalog_header.jsp"/>
+		<put-attribute name="menuId" value="catalogMenu"/>
+		<put-attribute name="menu" value=""/>
+		<put-attribute name="sidebar" value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/common/catalog_footer.jsp" />
+	</definition>
+	
+	<definition name="mediation.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+		
+	<definition name="feed.base" extends="base.1col.definition">	
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="school.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="course.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="provider.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="user.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="mediator.base" extends="base.2col.definition">
+		<put-attribute name="menuId" value="dashboardMenu"/>
+	</definition>
+	
+	<definition name="mediator.catalog.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="admin.base" extends="base.2col.definition">
+		<put-attribute name="menuId" value="dashboardMenu"/>
+	</definition>
+	
+	<definition name="admin.catalog.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="admin.suggestions.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="suggestionMenu"/>
+	</definition>
+	
+	<definition name="admin.territorial.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="territorialMenu"/>
+	</definition>
+	
+	<definition name="admin.advanced.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="configurationMenu"/>
+	</definition>
+	
+	<definition name="admin.summary.crontaskreport" extends="base.1col.definition">
+		<put-attribute name="menuId" value="summaryMenu"/>
+	</definition>
+	
+	<!-- End Bases views definitions -->
+	
+	
+	<definition name="home" extends="base.2col.definition">
+		<put-attribute name="title" value="home.title" />
+		<put-attribute name="body" value="/WEB-INF/views/home.jsp"/>
+		<put-attribute name="menuId" value="homeMenu"/>
+	</definition>
+	
+	<definition name="denied" extends="base.clear.definition">
+		<put-attribute name="title" value="denied.title" />
+		<put-attribute name="body" value="/WEB-INF/views/denied.jsp" />
+	</definition>
+	
+	<definition name="contact" extends="base.1col.definition">
+		<put-attribute name="title" value="contact.title" />
+		<put-attribute name="body" value="/WEB-INF/views/contact.jsp" />
+		<put-attribute name="menuId" value="contactMenu"/>
+	</definition>
+	
+	
+	<!-- MediatorService's views definitions -->
+
+	
+	<definition name="mediation.form" extends="mediation.base">
+		<put-attribute name="title" value="mediation.form.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/mediation/form.jsp" />
+	</definition>
+	
+	<definition name="mediation.list" extends="mediation.base">
+		<put-attribute name="title" value="mediation.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/mediation/list.jsp" />
+	</definition>
+	
+	<definition name="mediation.detail" extends="mediation.base">
+		<put-attribute name="title" value="mediation.detail.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/mediation/detail.jsp" />
+	</definition>
+	
+	
+	<!-- Provider's views definitions -->
+	
+		
+	<definition name="provider.form" extends="provider.base">
+		<put-attribute name="title" value="provider.add.section.title" />
+		<put-attribute name="body" value="/WEB-INF/views/provider/form.jsp" />
+	</definition>
+	
+	<definition name="provider.detail" extends="provider.base">
+		<put-attribute name="title" value="provider.detail.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/provider/detail.jsp" />
+	</definition>
+	
+	
+	<!-- Feed's views definitions -->
+	
+	
+	<definition name="dump.main" extends="feed.base">
+		<put-attribute name="title" value="dump.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/dump/main.jsp" />
+	</definition>
+		
+	<definition name="dump.parsererror.list" extends="feed.base">
+		<put-attribute name="title" value="dumperParseError.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/dump/parsererror/list.jsp" />
+	</definition>
+		
+	<definition name="dump.dumpererror.list" extends="feed.base">
+		<put-attribute name="title" value="dumpererror.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/dump/dumpererror/list.jsp" />
+	</definition>
+	
+	<definition name="dump.dumpersuccess.list" extends="feed.base">
+		<put-attribute name="title" value="dumpersuccess.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/dump/dumpersuccess/list.jsp" />
+	</definition>
+	
+
+	<!-- School's views definitions -->
+	
+	<definition name="school.form" extends="school.base">
+		<put-attribute name="title" value="school.add.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/school/form.jsp" />
+	</definition>
+	
+	<definition name="school.detail" extends="school.base">
+		<put-attribute name="title" value="school.detail.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/school/detail.jsp" />
+	</definition>
+	
+	<definition name="school.list" extends="school.base">
+		<put-attribute name="title" value="school.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/school/list.jsp" />
+	</definition>
+	
+	
+	<!-- Course's views definitions -->
+	
+	<definition name="course.form" extends="course.base">
+		<put-attribute name="title" value="course.add.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/course/form.jsp" />
+	</definition>
+	
+	<definition name="course.list" extends="course.base">
+		<put-attribute name="title" value="course.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/course/list.jsp" />
+		
+	</definition>
+		
+	<definition name="course.detail" extends="course.base">
+		<put-attribute name="title" value="course.detail.section.header"/>
+		<put-attribute name="body" value="/WEB-INF/views/course/detail.jsp" />
+	</definition>
+	
+	<!-- Search's views definitions -->		
+	<definition name="search.form" template="/WEB-INF/views/search/search.jsp">
+		<put-attribute name="title" value="home.search" />
+	</definition>
+	
+	<definition name="search.advanced" template="/WEB-INF/views/search/search_avanced.jsp">
+		<put-attribute name="title" value="home.search" />
+	</definition>
+	
+	<definition name="search.results" template="/WEB-INF/views/search/results.jsp">
+		<put-attribute name="title" value="home.search" />
+	</definition>
+	
+	<definition name="search.result.detail" template="/WEB-INF/views/catalog/course/course_detail.jsp">
+		<put-attribute name="gsa_metadata" value="/WEB-INF/views/catalog/course/gsa_metadata.jsp" />
+	</definition>
+	
+	<definition name="search.results.send" template="/WEB-INF/views/search/results_send.jsp">
+		<put-attribute name="title" value="home.search" />
+	</definition>
+	
+	<definition name="search.results.error" template="/WEB-INF/views/search/results_error.jsp">
+		<put-attribute name="title" value="home.search" />
+	</definition>
+	
+	<definition name="search.mediator.net.index" template="/WEB-INF/views/search/mediators_net.jsp">
+		<put-attribute name="title" value="home.search" />
+	</definition>
+	
+	<definition name="search.mediator.net.detail" template="/WEB-INF/views/search/mediators_detail.jsp">
+		<put-attribute name="title" value="home.search" />
+	</definition>
+	
+	<definition name="search.list" extends="base.2col.definition">
+		<put-attribute name="title" value="home.search.list" />
+		<put-attribute name="body" value="/WEB-INF/views/search/list.jsp" />
+	</definition>
+	
+	<!-- Login and recovery definition -->	
+	<definition name="login.login" extends="base.1col.definition">
+		<put-attribute name="title" value="login.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/login/login.jsp" />
+		<put-attribute name="menuId" value="homeMenu"/>
+	</definition>
+	
+	<definition name="login.recovery" extends="base.1col.definition">
+		<put-attribute name="title" value="login.recovery.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/login/recovery.jsp" />
+		<put-attribute name="menuId" value="homeMenu"/>
+	</definition>
+	
+	<!-- User's definitions -->	
+	<definition name="user.form" extends="user.base">
+		<put-attribute name="title" value="user.add.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/user/form.jsp" />
+	</definition>
+	
+	<definition name="user.list" extends="user.base">
+		<put-attribute name="title" value="user.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/user/list.jsp" />
+	</definition>
+	
+	<definition name="user.detail" extends="user.base">
+		<put-attribute name="title" value="user.detail.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/user/detail.jsp" />
+	</definition>
+	
+	<definition name="user.mediatorForm" extends="user.base">
+		<put-attribute name="title" value="user.mediator.add.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/user/mediatorForm.jsp" />
+	</definition>
+	
+	<!--  Mediator user's views definition -->
+	<definition name="mediator.home" extends="mediator.base">
+		<put-attribute name="title" value="user.mediator.home.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/mediator/home.jsp" />
+	</definition>
+	
+	<definition name="mediator.catalog.index" extends="mediator.catalog.base">
+		 <put-attribute name="title" value="catalog.index.section.title"/>
+		 <put-attribute name="body" value="/WEB-INF/views/mediator/catalog.jsp"/>
+	</definition>
+	
+	<definition name="mediator.catalog.schools" extends="mediator.catalog.base">
+		 <put-attribute name="title" value="catalog.schools.section.title"/>
+		 <put-attribute name="body" value="/WEB-INF/views/school/list.jsp"/>
+	</definition>
+	
+	<definition name="mediator.catalog.courses" extends="mediator.catalog.base">
+		 <put-attribute name="title" value="catalog.courses.section.title"/>
+		 <put-attribute name="body" value="/WEB-INF/views/course/list.jsp"/>
+	</definition>
+	
+	<definition name="mediator.catalog.extended.schools" extends="mediator.catalog.base">
+		<put-attribute name="title" value="catalog.schools.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/school/list.jsp" />
+	</definition>
+	
+	<definition name="mediator.catalog.extended.courses" extends="mediator.catalog.base">
+		<put-attribute name="title" value="catalog.courses.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/course/list.jsp" />	
+	</definition>
+	
+	<definition name="mediator.profile" extends="user.base">
+		<put-attribute name="menuId" value="profileMenu"/>
+		<put-attribute name="title" value="user.mediator.profile.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/mediator/mediatorForm.jsp" />
+	</definition>
+	
+	
+	<!-- Administrator user's views definitions -->
+	
+	<definition name="admin.home" extends="admin.base">
+		<put-attribute name="title" value="website.section.homepage"/>
+		<put-attribute name="body" value="/WEB-INF/views/admin/home.jsp" />
+	</definition>
+	
+	<definition name="admin.catalog.index" extends="admin.catalog.base">
+		 <put-attribute name="title" value="catalog.index.section.title"/>
+		 <put-attribute name="body" value="/WEB-INF/views/admin/catalog.jsp"/>
+	</definition>
+	
+	<definition name="admin.configuration.index" extends="admin.advanced.base">
+		 <put-attribute name="title" value="configuration.index.section.title"/>
+		 <put-attribute name="body" value="/WEB-INF/views/admin/configuration.jsp"/>
+	</definition>
+	
+	<definition name="admin.catalog.schools" extends="admin.catalog.base">
+		 <put-attribute name="title" value="catalog.schools.section.title"/>
+		 <put-attribute name="body" value="/WEB-INF/views/school/list.jsp"/>
+	</definition>
+	
+	<definition name="admin.catalog.courses" extends="admin.catalog.base">
+		 <put-attribute name="title" value="catalog.courses.section.title"/>
+		 <put-attribute name="body" value="/WEB-INF/views/course/list.jsp"/>
+	</definition>
+	
+	<definition name="admin.catalog.extended.schools" extends="admin.catalog.base">
+		<put-attribute name="title" value="catalog.schools.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/school/list.jsp" />
+	</definition>
+	
+	<definition name="admin.catalog.extended.courses" extends="admin.catalog.base">
+		<put-attribute name="title" value="catalog.courses.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/course/list.jsp" />	
+	</definition>
+	
+	<definition name="admin.catalog.users" extends="admin.catalog.base">
+		<put-attribute name="title" value="catalog.users.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/user/list.jsp"/>
+	</definition>
+	
+	<definition name="admin.catalog.providers" extends="admin.catalog.base">
+		<put-attribute name="title" value="catalog.providers.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/provider/list.jsp"/>
+	</definition>
+	
+	<definition name="admin.catalog.mediations" extends="admin.catalog.base">
+		<put-attribute name="title" value="catalog.mediations.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/mediation/list.jsp"/>
+	</definition>
+	
+	<definition name="admin.suggestions.index" extends="admin.suggestions.base">
+		<put-attribute name="title" value="catalog.users.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/inbox/list.jsp" />	
+	</definition>
+	
+	<definition name="admin.territorial.index" extends="admin.territorial.base">
+		<put-attribute name="title" value="territorial.home.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/territorial/home.jsp" />	
+	</definition>
+	
+	
+	
+	<!-- Suggestion's definition -->
+	<definition name="suggestion.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="suggestionMenu"/>
+	</definition>
+	
+	<definition name="suggestion.inbox.form" extends="suggestion.base">
+		<put-attribute name="title" value="suggestion.inbox.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/inbox/form.jsp" />
+	</definition>
+	
+	<definition name="suggestion.inbox.detail" extends="suggestion.base">
+		<put-attribute name="title" value="suggestion.inbox.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/inbox/detail.jsp"/>
+	</definition>
+	
+	<definition name="suggestion.inbox.list" extends="suggestion.base">
+		<put-attribute name="title" value="suggestion.inbox.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/inbox/list.jsp" />
+	</definition>
+	
+	<definition name="suggestion.inbox.response" extends="suggestion.base">
+		<put-attribute name="title" value="suggestion.inbox.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/inbox/response.jsp" />
+	</definition>
+	
+	<!-- i18N definitions -->
+	
+	<definition name="i18n.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="i18n.form" extends="i18n.base">
+		<put-attribute name="title" value="suggestion.i18n.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/i18n/form.jsp"/>
+	</definition>
+	
+	<definition name="i18n.list" extends="i18n.base">
+		<put-attribute name="title" value="suggestion.i18n.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/i18n/list.jsp"/>
+	</definition>
+	
+
+	<!-- Task launched's views definitions -->
+	
+	<definition name="cron.launched" extends="base.1col.definition">
+		<put-attribute name="body" value="/WEB-INF/views/cron/launched.jsp"/>
+	</definition>
+	
+	<definition name="task.launched" extends="base.1col.definition">
+		<put-attribute name="body" value="/WEB-INF/views/task/launched.jsp"/>
+	</definition>
+	
+	<!-- Common's views definitions -->
+	<definition name="common.error" extends="base.1col.definition">
+		<put-attribute name="extraHead" value="/WEB-INF/views/common/no_indexable.jsp"/>
+		<put-attribute name="body" value="/WEB-INF/views/common/error.jsp"/>
+	</definition>
+	
+	<definition name="common.ping" extends="base.clear.definition">
+		<put-attribute name="extraHead" value="/WEB-INF/views/common/no_indexable.jsp"/>
+		<put-attribute name="body" value="/WEB-INF/views/common/ping.jsp"/>
+	</definition>
+	
+
+	<!-- Catalog definitions -->
+	
+	
+	<!-- Catalog Course's definitions -->
+	<definition name="catalog.index" extends="catalog.base">
+		<put-attribute name="title" value="catalog.course.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/catalog/index.jsp"/>
+	</definition>
+	
+	<definition name="catalog.course.list" extends="catalog.base">
+		<put-attribute name="extraHead" value="/WEB-INF/views/common/followable.jsp"/>
+		<put-attribute name="title" value="catalog.course.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/catalog/course/course_list.jsp"/>
+	</definition>
+	
+	<definition name="catalog.course.detail" extends="gsa.base">
+		<put-attribute name="gsaMetadata" value="/WEB-INF/views/catalog/course/gsa_metadata.jsp"/>
+		<put-attribute name="body" value="/WEB-INF/views/catalog/course/course_detail.jsp"/>
+	</definition>	
+
+	<!-- EXTENDED DEFINITIONS  -->
+	<definition name="extended.home" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/home.jsp" />
+	</definition>
+	
+	<!-- School extended definitions -->
+	<definition name="extended.school.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="extended.school.form" extends="extended.school.base">
+		<put-attribute name="title" value="school.add.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/school/form.jsp" />
+	</definition>
+	
+	<definition name="extended.school.detail" extends="extended.school.base">
+		<put-attribute name="title" value="school.detail.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/school/detail.jsp" />
+	</definition>
+	
+	<definition name="extended.school.list" extends="extended.school.base">
+		<put-attribute name="title" value="school.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/school/list.jsp" />
+	</definition>
+	
+	
+	
+	
+	<definition name="extended.public.school" extends="extended.catalog.base">
+		<put-attribute name="title" value="school.detail.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/public/school.jsp" />
+	</definition>
+	
+	<definition name="extended.public.course" extends="extended.catalog.base">
+		<put-attribute name="title" value="course.detail.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/public/course.jsp" />
+	</definition>
+	
+	
+	<!-- Course extended definitions -->
+	<definition name="extended.course.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="catalogMenu"/>
+	</definition>
+	
+	<definition name="extended.course.form" extends="extended.course.base">
+		<put-attribute name="title" value="course.add.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/course/form.jsp" />
+	</definition>
+		
+	<definition name="extended.course.detail" extends="extended.course.base">
+		<put-attribute name="title" value="course.detail.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/extended/course/detail.jsp" />
+	</definition>
+	
+	<!-- Territorial definition's -->
+	<definition name="territorial.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="territorialMenu"/>
+	</definition>
+	
+	<definition name="territorial.home" extends="territorial.base">
+		<put-attribute name="body" value="/WEB-INF/views/territorial/home.jsp" />
+	</definition>
+	
+	<definition name="territorial.province.list" extends="territorial.base">
+		<put-attribute name="title" value="territorial.province.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/territorial/provinceList.jsp" />
+	</definition>
+	
+	<definition name="territorial.province.form" extends="territorial.base">
+		<put-attribute name="title" value="territorial.province.add.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/territorial/provinceForm.jsp" />
+	</definition>
+	
+	<definition name="territorial.region.list" extends="territorial.base">
+		<put-attribute name="title" value="territorial.region.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/territorial/regionList.jsp" />
+	</definition>
+	
+	<definition name="territorial.region.form" extends="territorial.base">
+		<put-attribute name="title" value="territorial.region.add.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/territorial/regionForm.jsp" />
+	</definition>
+	
+	<definition name="territorial.town.list" extends="territorial.base">
+		<put-attribute name="title" value="territorial.town.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/territorial/townList.jsp" />
+	</definition>
+	
+	<definition name="territorial.town.form" extends="territorial.base">
+		<put-attribute name="title" value="territorial.town.add.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/territorial/townForm.jsp" />
+	</definition>
+	
+	<!-- Error views definition -->
+	<definition name="error.404" extends="catalog.base">
+		<put-attribute name="title" value="error.404.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/error/404.jsp" />
+	</definition>
+	
+	<definition name="error.403" extends="catalog.base">
+		<put-attribute name="title" value="error.403.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/error/403.jsp" />
+	</definition>
+	
+	<!-- SUMMARY definitions -->
+	<definition name="summary.base" extends="base.1col.definition">
+		<put-attribute name="menuId" value="summaryMenu"/>
+	</definition>
+	
+	<definition name="summary.today" extends="summary.base">
+		<put-attribute name="menuId" value="summaryMenu"/>
+		<put-attribute name="title" value="summary.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/summary/today.jsp" />
+	</definition>
+	
+	<definition name="summary.admin.today" extends="summary.base">
+		<put-attribute name="menuId" value="catalogMenu"/>
+		<put-attribute name="title" value="summary.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/summary/today.jsp" />
+	</definition>
+	
+	<definition name="summary.admin.crontaskreport.list" extends="admin.summary.crontaskreport">
+		<put-attribute name="menuId" value="processMenu"/>	
+		<put-attribute name="title" value="process.index.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/summary/crontaskreportlist.jsp" />
+	</definition>
+	
+	<!-- TUTORIAL definition -->
+	<definition name="tutorials" extends="base.1col.definition">
+		<put-attribute name="menuId" value="tutorialsMenu"/>
+		<put-attribute name="title" value="process.index.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/common/tutorial.jsp" />
+	</definition>
+</tiles-definitions>

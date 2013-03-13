@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+	
+	<aop:aspectj-autoproxy/>
+	
+	<bean id="beanManager" class="com.m4f.utils.beans.BeanManager"/>
+	
+	<!-- MultiLanguage DAO -->
+	<bean id="i18nDAO" class="com.m4f.utils.i18n.dao.impl.jdo.JdoI18nDAO"/>
+	
+	
+	
+	<!-- Mulilanguage services definitions. -->
+	
+	<bean id="mediatorService" class="com.m4f.business.service.impl.MediationServiceImpl" scope="prototype">
+		<constructor-arg index="0" ref="i18nDAO"/>
+	</bean>
+	
+	<bean id="inboxService" class="com.m4f.business.service.impl.InboxServiceImpl" scope="prototype">
+		<constructor-arg index="0" ref="i18nDAO"/>
+	</bean>
+	
+	<bean id="courseService" class="com.m4f.business.service.impl.CourseServiceImpl" scope="prototype">
+		<constructor-arg index="0" ref="i18nDAO"/>
+	</bean>
+	
+	<bean id="extendedCourseService" class="com.m4f.business.service.extended.impl.ExtendedCourseServiceImpl" scope="prototype">
+		<constructor-arg index="0" ref="i18nDAO"/>
+	</bean>
+		
+	
+	<bean id="schoolService" class="com.m4f.business.service.impl.SchoolServiceImpl" scope="prototype">
+		<constructor-arg index="0" ref="i18nDAO"/>
+		<constructor-arg index="1" ref="courseService"/>
+	</bean>
+	
+	<bean id="extendedSchoolService" class="com.m4f.business.service.extended.impl.ExtendedSchoolServiceImpl" scope="prototype">
+		<constructor-arg index="0" ref="i18nDAO"/>
+		<constructor-arg index="1" ref="extendedCourseService"/>
+		<constructor-arg index="2" ref="territorialService"/>
+	</bean>
+	
+	<bean id="providerService" class="com.m4f.business.service.impl.ProviderServiceImpl" scope="prototype">
+		<constructor-arg index="0" ref="i18nDAO"/>
+	</bean>
+	
+	<bean id="territorialService" class="com.m4f.business.service.impl.TerritorialService" scope="prototype">
+		<constructor-arg index="0" ref="i18nDAO"/>
+	</bean>
+	
+	<!-- NO multi-language DAO -->
+	<bean id="jdoDAO" class="com.m4f.utils.dao.impl.JdoDAO"/>
+	
+	<!-- NO multilanguage services definitions.-->
+	
+	<bean id="worker" class="com.m4f.utils.worker.impl.AppEngineBackendWorker"/>
+	
+	<!-- Creates worker factory -->
+	<bean id="workerFactory" class="com.m4f.utils.worker.WorkerFactory">
+		<constructor-arg index="0" ref="worker"/>
+	</bean>
+	
+	<!-- Creates the User Service -->
+	<bean id="userService" class="com.m4f.business.service.impl.UserServiceImpl">
+		<constructor-arg index="0" ref="jdoDAO"/>
+	</bean>
+	
+	<!-- Creates the CourseHtml Service -->
+	<bean id="catalogService" class="com.m4f.business.service.impl.GaeJdoCatalogService">
+		<constructor-arg index="0" ref="jdoDAO"/>
+	</bean>
+	
+	<!-- A service to store multilanguage entities into JDO model. -->
+    <bean id="i18nService" class="com.m4f.utils.i18n.service.impl.JdoI18nService">
+    	<constructor-arg index="0" ref="jdoDAO"/>
+    </bean>
+    
+    <!-- A service to store multilanguage entities into JDO model. -->
+    <bean id="eventService" class="com.m4f.utils.feeds.events.service.impl.JdoEventServiceImpl">
+    	<constructor-arg index="0" ref="jdoDAO"/>
+    </bean>
+    
+    <!-- A service to store multilanguage entities into JDO model. -->
+    <bean id="dumpService" class="com.m4f.utils.feeds.events.service.impl.JdoDumpServiceImpl">
+    	<constructor-arg index="0" ref="jdoDAO"/>
+    	<constructor-arg index="1" ref="eventService"/>
+    </bean>
+       
+    
+    
+    <!-- Configuration Service -->
+	<bean id="configuration" class="com.m4f.business.service.impl.AppConfigurationServiceImpl">
+		<constructor-arg index="0" ref="jdoDAO"/>
+		<constructor-arg index="1" ref="defaultConfiguration"/>
+	</bean>
+	
+   
+   <!-- Internal feeds service -->
+    <bean id="internalFeedService" class="com.m4f.business.service.extended.impl.InternalFeedServiceImpl">
+    	<constructor-arg index="0" ref="jdoDAO"/>
+    	<constructor-arg index="1" ref="extendedSchoolService"/>
+    	<constructor-arg index="2" ref="extendedCourseService"/>
+    </bean>
+	
+	
+	<!-- A service interceptor that intercepts other services with methods annotated. -->
+    <bean id="multilanguageTranslator" class="com.m4f.utils.i18n.MultilanguageInterceptor" autowire="constructor"/>
+    
+    <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
+    <bean id="cacheInterceptor" class="com.m4f.utils.cache.CacheInterceptor"/>
+    
+    <!-- A service interceptor that intercepts other services with methods annotated with cacheable. -->
+    <bean id="catalogCacheInterceptor" class="com.m4f.utils.cache.CatalogCacheInterceptor"/>
+    
+    <!-- CronTaskReport Service -->
+	<bean id="cronTaskReport" class="com.m4f.business.service.impl.CronTaskReportServiceImpl">
+		<constructor-arg index="0" ref="jdoDAO"/>
+	</bean>
+
+
+    <aop:config>
+          <aop:aspect ref="cacheInterceptor">
+         	<aop:pointcut id="cacheAble" expression="@annotation(com.m4f.utils.cache.annotations.Cacheable)" />
+            <aop:around pointcut-ref="cacheAble" method="cacheAble"/>
+            <aop:pointcut id="cacheFlush" expression="@annotation(com.m4f.utils.cache.annotations.Cacheflush)" />
+            <aop:around pointcut-ref="cacheFlush" method="cacheFlush"/>
+         </aop:aspect>
+         
+          <aop:aspect ref="catalogCacheInterceptor">
+         	<aop:pointcut id="catalogCacheAble" expression="@annotation(com.m4f.utils.cache.annotations.CatalogCacheable)" />
+            <aop:around pointcut-ref="catalogCacheAble" method="cacheAble"/>
+         </aop:aspect>  
+         
+    </aop:config>
+	
+</beans>

@@ -1,0 +1,367 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <parent>
+    <groupId>com.m4f</groupId>
+    <artifactId>hirubila-app</artifactId>
+    <version>1.0</version>
+  </parent>
+  
+  <!-- The Basics -->
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>hirubila-frontend</artifactId>
+  <packaging>war</packaging>
+  <name>hirubila-frontend</name>
+  <description>hirubila-frontend</description>
+  
+  <!-- Specify hard-coded project properties here -->
+  <properties>
+    <tiles.version>2.2.1</tiles.version>
+    <googleapi.version>1.3.2-alpha</googleapi.version>
+  </properties>
+  
+  
+  
+  <dependencies>
+    
+    <!-- Hirubila commons -->
+    <dependency>
+      <groupId>com.m4f</groupId>
+      <artifactId>hirubila-commons</artifactId>
+      <version>1.0</version>
+    </dependency>
+    
+    <!-- Google's data API's -->
+    
+    <dependency>
+      <groupId>com.google.api.client</groupId>
+      <artifactId>google-api-client</artifactId>
+      <version>${googleapi.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.google.api.client</groupId>
+      <artifactId>google-api-client-googleapis</artifactId>
+      <version>${googleapi.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.google.api.client</groupId>
+      <artifactId>google-api-client-extensions</artifactId>
+      <version>${googleapi.version}</version>
+    </dependency>
+    
+    <!-- Tiles dependencies -->
+    <dependency>
+      <groupId>org.apache.tiles</groupId>
+      <artifactId>tiles-api</artifactId>
+      <version>${tiles.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.tiles</groupId>
+      <artifactId>tiles-core</artifactId>
+      <version>${tiles.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.tiles</groupId>
+      <artifactId>tiles-jsp</artifactId>
+      <version>${tiles.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.tiles</groupId>
+      <artifactId>tiles-template</artifactId>
+      <version>${tiles.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.tiles</groupId>
+      <artifactId>tiles-servlet</artifactId>
+      <version>${tiles.version}</version>
+    </dependency>
+
+    <!--		
+	<dependency>
+	<groupId>net.sf.ehcache</groupId>
+	<artifactId>ehcache-core</artifactId>
+	<version>2.3.1</version>
+	</dependency>
+    -->		
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>${version.aspectj}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <version>${version.aspectj}</version>
+    </dependency>
+    
+    <!-- General dependencies for standard applications -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!--
+	Make use of JSP tags. Remove, if you don't use JSPs
+    -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+      <type>jar</type>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <!-- Spring dependencies -->
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>commons-logging</groupId>
+	  <artifactId>commons-logging</artifactId>	
+	</exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+<!--    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-asm</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+-->    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+<!--    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-dao</artifactId>
+      <version>2.0.8</version>
+    </dependency>
+-->    
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-taglibs</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>1.0.0.GA</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib-nodep</artifactId>
+      <version>2.2</version>
+    </dependency>
+<!--    
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+      <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>4.0.2.GA</version>
+    </dependency>
+-->    
+    <!-- Jackson is a high-performance JSON processor (parser, generator) -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <version>1.7.0</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.7.0</version>
+    </dependency>
+    
+    <!-- Application's used frameworks -->
+    <dependency>
+      <groupId>aopalliance</groupId>
+      <artifactId>aopalliance</artifactId>
+      <version>1.0</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1</version>
+    </dependency>
+    
+    
+    
+    <dependency>
+      <groupId>org.tuckey</groupId>
+      <artifactId>urlrewritefilter</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+    
+  </dependencies>
+  
+  <build>
+
+    <plugins>	 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.8</version>
+        <configuration>
+	  <ajdtVersion>none</ajdtVersion>
+	  <downloadSources>true</downloadSources>
+	  <additionalBuildcommands>                    
+	    <buildCommand>
+	      <name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
+	    </buildCommand>
+	    <buildCommand>
+	      <name>com.google.appengine.eclipse.core.projectValidator</name>
+	    </buildCommand>
+	    <buildCommand>
+	      <name>org.eclipse.jdt.core.javabuilder</name>
+	    </buildCommand>
+	    <buildCommand>
+	      <name>com.google.appengine.eclipse.core.enhancerbuilder</name>
+	    </buildCommand>
+	  </additionalBuildcommands>
+	  <additionalProjectnatures>
+	    <projectnature>org.eclipse.jdt.core.javanature</projectnature>
+	    <projectnature>com.google.appengine.eclipse.core.gaeNature</projectnature>
+	  </additionalProjectnatures>
+	  <classpathContainers>
+	    <classpathContainer>com.google.appengine.eclipse.core.GAE_CONTAINER</classpathContainer>
+	    <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+	  </classpathContainers>
+	  <additionalConfig>
+	    <file>
+	      <name>.settings/com.google.gdt.eclipse.core.prefs</name>
+	      <content><![CDATA[
+	      eclipse.preferences.version=1
+	      #filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.4.0.jar|appengine-api-labs-1.4.0.jar|appengine-jsr107cache-1.4.0.jar|jsr107cache-1.1.jar|datanucleus-appengine-1.0.8.final.jar|datanucleus-core-1.1.5.jar|datanucleus-jpa-1.1.5.jar|geronimo-jpa_3.0_spec-1.1.1.jar|geronimo-jta_1.1_spec-1.1.1.jar|jdo2-api-2.3-eb.jar
+	      warSrcDir=src/main/webapp/
+	      warSrcDirIsOutput=true
+	      ]]>
+	      </content>
+	    </file>
+	  </additionalConfig>
+	  <wtpversion>2.0</wtpversion>
+        </configuration>
+      </plugin>
+      
+      
+      
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-dependency-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>copy-dependencies</id>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>copy-dependencies</goal>
+	    </goals>
+	    <configuration>
+	      <outputDirectory>${basedir}/src/main/webapp/WEB-INF/lib/</outputDirectory>
+	      <overWriteReleases>false</overWriteReleases>
+	      <overWriteSnapshots>false</overWriteSnapshots>
+	      <overWriteIfNewer>true</overWriteIfNewer>
+	      <excludeArtifactIds>datanucleus-appengine,appengine-testing,appengine-api-stubs</excludeArtifactIds>      
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+      
+    </plugins>
+    
+    <outputDirectory>${basedir}/src/main/webapp/WEB-INF/classes</outputDirectory>
+  </build>
+  
+  
+  
+</project>
