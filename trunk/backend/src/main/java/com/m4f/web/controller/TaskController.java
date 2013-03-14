@@ -129,7 +129,8 @@ public class TaskController extends BaseController  {
 	
 	
 	/*
-	 * This task update Provider's information. Its invoked from a cron task in the frontend.
+	 * This task update Provider's information. Its invoked from a cron task in the frontend or from the above task (after internal feed generation for
+	 * each mediation service).
 	 */
 	@RequestMapping(value = "/provider/feed", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseStatus(HttpStatus.OK)
@@ -273,7 +274,7 @@ public class TaskController extends BaseController  {
 			school = schoolService.getSchool(schoolId, null);
 			LOGGER.info("School name: " + school.getName());
 			provider = providerService.getProviderById(school.getProvider(), null);
-			school = schoolService.getSchool(schoolId, null);
+			//school = schoolService.getSchool(schoolId, null);
 			dump = dumpService.getLastDumpByOwner(school.getProvider());
 			
 			report = cronTaskReportService.create();
@@ -286,7 +287,7 @@ public class TaskController extends BaseController  {
 			StringBuffer errorsSb = new StringBuffer();
 			while(retries > 0) {
 		    	try {
-				   providerImporter.createLoadTask(provider, school, dump);
+				   providerImporter.importCourses(provider, school, dump);
 				   retries = -1; // Break the loop
 			   	} catch(Exception e) {
 			   		LOGGER.severe(StackTraceUtil.getStackTrace(e));

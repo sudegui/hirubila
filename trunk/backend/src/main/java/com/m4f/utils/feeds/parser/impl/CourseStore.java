@@ -73,7 +73,7 @@ public class CourseStore extends StoreBase<Course> implements ICourseStorage {
 				newCourse.setActive(true);
 				this.entities.add(newCourse);
 			} else if(!oldCourse.equals(newCourse) || !oldCourse.isTranslated()) {
-				CourseComparator comparator = new CourseComparator();
+				//CourseComparator comparator = new CourseComparator();
 				/*if(comparator.compare(newCourse, oldCourse) == 0) {
 					LOGGER.info("Curso existente y NO MODIFICADO");
 					return;

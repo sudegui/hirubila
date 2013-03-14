@@ -102,7 +102,7 @@ public class ProviderController extends BaseController {
 					
                 	worker.addWork("school", "/provider/school", params); */
                 	try {
-                		providerImporter.createLoadTask(provider, school, dump);
+                		providerImporter.importCourses(provider, school, dump);
                 	} catch(Exception e) {
                 		fails.add(school);
                 	}
@@ -111,7 +111,7 @@ public class ProviderController extends BaseController {
 	        
 	        // Retries
 	        for(School school : fails) {
-	        	providerImporter.createLoadTask(provider, school, dump);
+	        	providerImporter.importCourses(provider, school, dump);
 	        }
 	        
 	        // Set result into report
@@ -196,7 +196,7 @@ public class ProviderController extends BaseController {
 			int retries = 5;
 			while(retries > 0) {
 		    	try {
-				   providerImporter.createLoadTask(provider, school, dump);
+				   providerImporter.importCourses(provider, school, dump);
 			   	} catch(Exception e) {
 			   		LOGGER.info("" + retries + " Fail importing courses: "+school.getName() );
 			   		retries--;
