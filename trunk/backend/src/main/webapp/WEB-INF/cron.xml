@@ -13,6 +13,12 @@
   	<schedule>every 300 minutes</schedule>
   	<timezone>Europe/Madrid</timezone>
   </cron>
+  
+  <cron>
+    <url>/_ah/sessioncleanup?clear</url>
+    <description>Clean up sessions</description>
+    <schedule>every 30 minutes</schedule>
+  </cron>
  <!--   
   <cron>
   	<url>/loader/update/schools</url>
