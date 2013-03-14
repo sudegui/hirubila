@@ -85,10 +85,10 @@ public class SchoolStore extends StoreBase<School> implements ISchoolStorage {
 				properties.add("name");
 				properties.add("feed");
 				this.beanManager.mergeObjects(newSchool, oldSchool, properties);
-				newSchool.setId(oldSchool.getId());
-				newSchool.setCreated(oldSchool.getCreated());
+				//newSchool.setId(oldSchool.getId());
+				//newSchool.setCreated(oldSchool.getCreated());
 				oldSchool.setUpdated(Calendar.getInstance(new Locale("es")).getTime());
-				newSchool.setUpdated(oldSchool.getUpdated());
+				//newSchool.setUpdated(oldSchool.getUpdated());
 				this.entities.add(oldSchool);
 			}
 		}

@@ -28,6 +28,7 @@ public class SchoolImporter extends Importer {
 		
 	}
 	
+	// TODO old. Look if its not referenced to future remove. Related to CourseCatalog
 	public void createCoursesCatalog(Provider provider, 
 			School school, Locale locale) throws Exception {
 		final int RANGE = 300;

@@ -31,7 +31,8 @@ public class ProviderImporter extends Importer {
 		storeSchools(provider, schools, configurationService.getDefaultLocale());
 	}
 	
-	public  void importCourses(Provider provider, Dump dump) throws Exception {
+	public  void importCourses(Provider provider, School school, Dump dump) throws Exception {
+		schoolImporter.importCourses(provider, school, dump);
 		/*PageManager<School> paginator = new PageManager<School>();
         long total = schoolService.countSchoolsByProvider(provider.getId());
         paginator.setOffset(RANGE);
@@ -51,12 +52,13 @@ public class ProviderImporter extends Importer {
 	
 	private  void storeSchools(Provider provider, Collection<School> schools, 
 			Locale locale) throws Exception {
+		// TODO: Log de todos los errores de validacion. Se devuelven en un mapa en esta llamada.
 		schoolStorage.store(schools, locale, provider);
 	}
-	
+	/*
 	public void createLoadTask(Provider provider, School school, Dump dump) throws Exception {
-		schoolImporter.importCourses(provider, school, dump);
-	}
+		
+	}*/
 	
 	public void createCourseCatalogTask(Provider provider, School school, Collection<Course> courses, Locale locale) throws Exception {
 		this.catalogBuilder.buildSeo(courses, school, provider, locale);
