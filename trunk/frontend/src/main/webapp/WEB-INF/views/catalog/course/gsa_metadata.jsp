@@ -4,7 +4,7 @@
 
 <meta http-equiv="Content-Language" content="${rc.locale.language}">
 <meta name="title" content="<spring:escapeBody htmlEscape="true">${course.title} - (${school.name})</spring:escapeBody>"> 
-<meta name="description" content="<spring:escapeBody htmlEscape="true">${tags}</spring:escapeBody>"> 
+<meta name="description" content="<spring:escapeBody htmlEscape="true">${course.information}</spring:escapeBody>"> 
 <meta name="keywords" content="<spring:escapeBody htmlEscape="true">${tags}</spring:escapeBody>"> <%-- COURSE's meta to use with GSA --%>
 <meta name="cTitle" content="<spring:escapeBody htmlEscape="true">${course.title}</spring:escapeBody>" >
 <meta name="cTopics" content="<spring:escapeBody htmlEscape="true">${tags}</spring:escapeBody>" >
