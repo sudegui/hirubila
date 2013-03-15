@@ -52,5 +52,7 @@ public interface I18nCourseService {
 	public long countCourses(boolean reglated, Locale locale) throws Exception;
 	public Collection<Course> getCourses(boolean reglated, String ordering, Locale locale, int init, int end);
 	Collection<Course> getCoursesByExternalId(String externalId, Locale locale);
+	long countTESTnoUPDATED();
+	Collection<Course> getCoursesNoUPDATED(int init, int end);
 	
 }

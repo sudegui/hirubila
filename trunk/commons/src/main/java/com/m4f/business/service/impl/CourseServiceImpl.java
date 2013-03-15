@@ -150,6 +150,24 @@ public class CourseServiceImpl extends I18nDAOBaseService implements I18nCourseS
 		return this.DAO.count(Course.class, filters);
 	}
 	
+	@Override
+	@CatalogCacheable(cacheName="coursesCatalog")
+	public long countTESTnoUPDATED() {
+		ArrayList<GaeFilter> filters = new ArrayList<GaeFilter>();
+		
+		GaeFilter filter = new GaeFilter("updated", FilterOperator.EQUAL, null);
+		
+		filters.add(filter);
+				
+		return this.DAO.count(Course.class, filters);
+	}
+	
+	@Override
+	@CatalogCacheable(cacheName="coursesCatalog")
+	public Collection<Course> getCoursesNoUPDATED(int init, int end) {
+		return this.DAO.findEntitiesByRange(Course.class, null, "updated == null", "", new Object[]{}, init, end, null);
+	}
+	
 	
 	@Override
 	@Cacheable(cacheName="courses")
