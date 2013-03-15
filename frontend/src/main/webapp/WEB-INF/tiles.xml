@@ -466,6 +466,12 @@
 		<put-attribute name="body" value="/WEB-INF/views/catalog/course/course_list.jsp"/>
 	</definition>
 	
+	<definition name="catalog.mediation.course.list" extends="catalog.base">
+		<put-attribute name="extraHead" value="/WEB-INF/views/common/followable.jsp"/>
+		<put-attribute name="title" value="catalog.course.list.section.title"/>
+		<put-attribute name="body" value="/WEB-INF/views/catalog/course/mediation_course_list.jsp"/>
+	</definition>
+	
 	<definition name="catalog.course.detail" extends="gsa.base">
 		<put-attribute name="gsaMetadata" value="/WEB-INF/views/catalog/course/gsa_metadata.jsp"/>
 		<put-attribute name="body" value="/WEB-INF/views/catalog/course/course_detail.jsp"/>

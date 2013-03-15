@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +34,8 @@ import com.m4f.business.domain.Course;
 import com.m4f.business.domain.CourseCatalog;
 import com.m4f.business.domain.Provider;
 import com.m4f.business.domain.School;
+import com.m4f.business.domain.extended.FeedCourses;
+import com.m4f.business.domain.extended.FeedSchools;
 import com.m4f.business.domain.extended.Province;
 import com.m4f.business.domain.extended.Region;
 import com.m4f.business.domain.extended.Town;
@@ -402,8 +405,9 @@ public class LastCatalogController extends BaseController {
 		
 		return calendar;
 	}*/
+
 	
-	/*@RequestMapping(value="/test", method=RequestMethod.GET)
+	@RequestMapping(value="/test", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void test(){
 		Queue queue = QueueFactory.getDefaultQueue();
@@ -414,24 +418,24 @@ public class LastCatalogController extends BaseController {
 	
 	@RequestMapping(value="/dotest", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public void doTest(HttpServletResponse response) throws GenericException, ServiceNotFoundException, ContextNotActiveException, IOException {
-		Collection<Course> courses = this.serviceLocator.getCourseService().getCoursesByProvider(new Long(715431), "id", null);
+	public void doTest(HttpServletResponse response) throws Exception {
 		
-		List<Course> repeated = new ArrayList<Course>();
-		HashMap<String, Course> map = new HashMap<String, Course>();
+		long total = this.serviceLocator.getCourseService().countCoursesByProvider(new Long(127297));
+		Collection<Course> courses = this.serviceLocator.getCourseService().getCoursesByProvider(new Long(127297), "", null);
 		
+		StringBuffer sb = new StringBuffer("Total: ").append(total).append("\n");
 		for(Course c : courses) {
-			if(map.get(c.getExternalId()) == null) {
-				map.put(c.getExternalId(), c);
-			} else {
-				repeated.add(c);
-			}	
-		}
-		StringBuffer sb = new StringBuffer("Total: ").append(courses.size()).append(" Repetidos: ").append(" (").append(repeated.size()).append(")");
-		for(Course c : repeated) {
-			sb.append(c.getExternalId()).append(", \n");
+			/*c.setUpdated(new Date());
+			c.setRegulated(Boolean.FALSE);
+			this.serviceLocator.getCourseService().save(c, null); */
+			sb.append("http://hirubila.appspot.com/es/catalog/non-reglated/course/detail/"+c.getId());
+			sb.append("\n");
+			sb.append(c.toString() + " -> active: "+ c.getActive() + " Regulated: -> " + c.getRegulated());
+			sb.append("\n");
 		}
 		
+		//LOGGER.log(Level.SEVERE, "Removed " + courses.size() + " catalog courses");
 		LOGGER.log(Level.SEVERE, sb.toString());
-	}*/
+	}
+
 }
