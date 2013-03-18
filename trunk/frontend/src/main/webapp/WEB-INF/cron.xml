@@ -17,7 +17,7 @@
   <cron>
     <url>/_ah/sessioncleanup?clear</url>
     <description>Clean up sessions</description>
-    <schedule>every 1 minutes</schedule>
+    <schedule>every 30 minutes</schedule>
   </cron>
  <!--   
   <cron>

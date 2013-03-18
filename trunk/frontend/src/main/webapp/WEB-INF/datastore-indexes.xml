@@ -70,9 +70,25 @@
         <property name="updated" direction="asc"/>
     </datastore-index>
     
+    <datastore-index kind="Course" ancestor="false" source="manual">
+        <property name="regulated" direction="asc"/>
+        <property name="title" direction="asc"/>
+    </datastore-index>
+    
+    <datastore-index kind="Course" ancestor="false" source="manual">
+        <property name="active" direction="asc"/>
+        <property name="regulated" direction="asc"/>
+        <property name="updated" direction="desc"/>
+    </datastore-index>
+    
     <datastore-index kind="MediationService" ancestor="false" source="manual">
         <property name="deleted" direction="asc"/>
         <property name="province" direction="asc"/>
         <property name="name" direction="asc"/>
+    </datastore-index>
+    
+    <datastore-index kind="CronTaskReport" ancestor="false" source="manual">
+        <property name="type" direction="asc"/>
+        <property name="date" direction="desc"/>
     </datastore-index>
 </datastore-indexes>
