@@ -254,7 +254,7 @@ public class LoaderController extends BaseController {
 				List<Long> manualMediation = this.serviceLocator.getMediatorService().getAllMediationServiceIds(Boolean.TRUE);
 				List<Long> ids = this.serviceLocator.getProviderService().getProviderIdsByMediations(manualMediation);
 				StringBuffer idsSb = new StringBuffer();
-				
+				// Start log info
 				for(Long idTest : manualMediation) {
 					idsSb.append("[").append(idTest).append("] ");
 				}
@@ -265,7 +265,7 @@ public class LoaderController extends BaseController {
 					idsSb.append("[").append(idTest).append("] ");
 				}
 				LOGGER.info("Los ids de los providers son: " + idsSb.toString());
-				
+				// End log info
 				if(ids != null && ids.size() > 0) {
 					id = this.getNextIdCronTaskReport(report != null ? report.getObject_id() : null, ids);
 				}
@@ -274,6 +274,7 @@ public class LoaderController extends BaseController {
 				id = providerId;
 			}
 			
+			//  Here we have our target provider in the id variable.
 			if(id != null) {
 				LOGGER.info("Invoking backend task to update provider with ID:" + id);
 				// Invoke the task with the id obtained

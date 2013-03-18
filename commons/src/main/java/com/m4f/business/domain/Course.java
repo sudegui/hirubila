@@ -27,7 +27,7 @@ import com.google.appengine.api.datastore.Category;
  * Esta clase representa un curso de formación, el cual es agregado al sistema
  * de la importación de un feed perteneciente a un proveedor de cursos registrado.
  * 
- * Por la tanto es importante tener en cuenta que todo curso proviene o  pertenece
+ * Por lo tanto es importante tener en cuenta que todo curso proviene o  pertenece
  * a un proveedor y que todo curso, es impartido en un centro de formación.
  * Para modelar estas relaciones se inserta dentro de esta clase el id único del
  * proveedor, el cual se encuentra dentro del atributo provider, y el id único
