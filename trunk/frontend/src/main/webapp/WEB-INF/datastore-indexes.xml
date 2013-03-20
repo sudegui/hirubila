@@ -29,6 +29,11 @@
         <property name="created" direction="desc"/>
     </datastore-index>
     
+    <datastore-index kind="ExtendedCourse" ancestor="false" source="manual">
+        <property name="mediationService" direction="asc"/>
+        <property name="title" direction="asc"/>
+    </datastore-index>
+    
     <datastore-index kind="FeedSchools" ancestor="false" source="manual">
         <property name="providerId" direction="asc"/>
         <property name="date" direction="desc"/>
