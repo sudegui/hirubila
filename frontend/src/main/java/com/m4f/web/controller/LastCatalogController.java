@@ -108,19 +108,7 @@ public class LastCatalogController extends BaseController {
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/reglated/course/list");
 			
 			Calendar calendar = this.getCalendar();
-			/*calendar.set(Calendar.DAY_OF_MONTH, 1); // First day in the month
-			calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
-			calendar.set(Calendar.MINUTE, 0); // 0 minutes
-			calendar.set(Calendar.SECOND, 0); // 0 seconds
-			calendar.set(Calendar.MILLISECOND, 0); // O miliseconds
-			
-			if(calendar.get(Calendar.MONTH) > 0) { // Check that the month is not January
-				calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) -1 );
-			} else { // If its January, set one year before and december month
-				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
-				calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-			}*/
-			
+						
 			LOGGER.severe("Date: " + calendar.getTime());
 			
 			paginator.setSize(this.serviceLocator.getCourseService().countUpdatedCourses(calendar.getTime(), true));
@@ -152,10 +140,7 @@ public class LastCatalogController extends BaseController {
 			paginator.setUrlBase("/" + locale.getLanguage()+ "/catalog/non-reglated/course/list");
 			
 			Calendar calendar = this.getCalendar();
-						
-			// CHECKING NUMBER OF COURSES WITH NULL IN UPDATED field.
-			long noCourses = this.serviceLocator.getCourseService().countUpdatedCourses(null, false);
-			
+									
 			LOGGER.severe("Date: " + calendar.getTime());
 			
 			paginator.setSize(this.serviceLocator.getCourseService().countUpdatedCourses(calendar.getTime(), false));
@@ -356,57 +341,21 @@ public class LastCatalogController extends BaseController {
 	}
 	
 	private Calendar getCalendar() {
-		final long referenceTime = 7 /* days */ * 24 /* hours/day */ * 60 /* minutes/day */ * 60 /* seconds/minute */ * 1000 /* miliseconds/second */;
+		final long referenceTime = 15 /* days */ * 24 /* hours/day */ * 60 /* minutes/day */ * 60 /* seconds/minute */ * 1000 /* miliseconds/second */;
 		Calendar calendar = Calendar.getInstance();
 		
 		// Reset calendar to a known time 00:00:00:000
 		calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
 		calendar.set(Calendar.MINUTE, 0); // 0 minutes
 		calendar.set(Calendar.SECOND, 0); // 0 seconds
-		calendar.set(Calendar.MILLISECOND, 0); // O miliseconds
-		
+		calendar.set(Calendar.MILLISECOND, 0); // O miliseconds		
 		
 		calendar.setTimeInMillis(calendar.getTimeInMillis() - referenceTime);
-		
-		
-		//calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) -1);
-		//calendar.set(Calendar.MONTH, Calendar.JANUARY);
-		//calendar.set(Calendar.DAY_OF_MONTH, 1); 
 		
 		return calendar;
 	}
 	
-	/*	private Calendar getCalendar() {
-		final int MONTHS = 1; // Number of months before today to get the catalog.
-		
-		
-		Calendar calendar = Calendar.getInstance();
-		
-		int years = MONTHS / 12; // Number of years. Rounded 1 up. Mathematical formula (X + Y - 1) / Y
-		int months = MONTHS - (years * 12);
-		
-		if(calendar.get(Calendar.MONTH) - months < 0) { // Check if it must be added a year.
-			years++; // Add a year
-			months -= calendar.get(Calendar.MONTH); // Substract the number of months
-		}
-		// Set year
-		calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - years);
-		// Set month
-		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - months); 
-		// Set First day of month
-		calendar.set(Calendar.DAY_OF_MONTH, 10);
-		// Set a known time 00:00:00:000
-		calendar.set(Calendar.HOUR_OF_DAY, 0); // 0 hours in the day
-		calendar.set(Calendar.MINUTE, 0); // 0 minutes
-		calendar.set(Calendar.SECOND, 0); // 0 seconds
-		calendar.set(Calendar.MILLISECOND, 0); // O miliseconds
-				
-		//calendar.setTimeInMillis(calendar.getTimeInMillis() - referenceTime); 
-		
-		return calendar;
-	}*/
-
-	
+	/*
 	@RequestMapping(value="/test", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public void test(){
@@ -425,17 +374,14 @@ public class LastCatalogController extends BaseController {
 		
 		StringBuffer sb = new StringBuffer("Total: ").append(total).append("\n");
 		for(Course c : courses) {
-			/*c.setUpdated(new Date());
-			c.setRegulated(Boolean.FALSE);
-			this.serviceLocator.getCourseService().save(c, null); */
+			
 			sb.append("http://hirubila.appspot.com/es/catalog/non-reglated/course/detail/"+c.getId());
 			sb.append("\n");
 			sb.append(c.toString() + " -> active: "+ c.getActive() + " Regulated: -> " + c.getRegulated());
 			sb.append("\n");
 		}
 		
-		//LOGGER.log(Level.SEVERE, "Removed " + courses.size() + " catalog courses");
 		LOGGER.log(Level.SEVERE, sb.toString());
-	}
+	}*/
 
 }
