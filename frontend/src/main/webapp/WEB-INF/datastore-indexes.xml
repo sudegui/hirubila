@@ -14,6 +14,11 @@
         <property name="name" direction="asc"/>
     </datastore-index>
     
+    <datastore-index kind="Town" ancestor="false" source="manual">
+        <property name="province" direction="asc"/>
+        <property name="name" direction="asc"/>
+    </datastore-index>
+    
     <datastore-index kind="Dump" ancestor="false">
         <property name="owner" direction="asc"/>
         <property name="launched" direction="desc"/>
