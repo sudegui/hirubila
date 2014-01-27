@@ -49,6 +49,11 @@
         <property name="name" direction="asc"/>
     </datastore-index>
     
+    <datastore-index kind="ExtendedCourse" ancestor="false" source="manual">
+        <property name="school" direction="asc"/>
+        <property name="title" direction="desc"/>
+    </datastore-index>
+    
     <datastore-index kind="FeedSchools" ancestor="false" source="manual">
         <property name="providerId" direction="asc"/>
         <property name="date" direction="desc"/>
