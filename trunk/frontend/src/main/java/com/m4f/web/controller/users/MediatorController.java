@@ -2,6 +2,8 @@ package com.m4f.web.controller.users;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 import org.springframework.security.access.annotation.Secured;
@@ -155,11 +157,28 @@ public class MediatorController extends BaseController {
 			paginator.setUrlBase("/" + locale.getLanguage() + 
 					"/dashboard/mediator/catalog/extended/schools");
 			paginator.setStart((page-1)*paginator.getOffset());
-			paginator.setStart((page-1)*paginator.getOffset());
-			paginator.setSize(this.serviceLocator.getExtendedSchoolService().countSchoolsByTerritorial(filterForm.getProvinceId(),
-					filterForm.getRegionId(), filterForm.getTownId()));
-			paginator.setCollection(this.serviceLocator.getExtendedSchoolService().getSchoolsByTerritorial(filterForm.getProvinceId(),
-					filterForm.getRegionId(), filterForm.getTownId(), ordering, paginator.getStart(), paginator.getEnd(), locale));
+			//paginator.setStart((page-1)*paginator.getOffset());
+			/*paginator.setSize(this.serviceLocator.getExtendedSchoolService().countSchoolsByTerritorial(filterForm.getProvinceId(),
+					filterForm.getRegionId(), filterForm.getTownId()));*/
+			List<ExtendedSchool> schools = new ArrayList<ExtendedSchool>();
+			schools = this.serviceLocator.getExtendedSchoolService().getSchoolsByTerritorial(filterForm.getProvinceId(),
+					filterForm.getRegionId(), filterForm.getTownId(), ordering, paginator.getStart(), paginator.getEnd(), locale);
+			/*paginator.setCollection(this.serviceLocator.getExtendedSchoolService().getSchoolsByTerritorial(filterForm.getProvinceId(),
+					filterForm.getRegionId(), filterForm.getTownId(), ordering, paginator.getStart(), paginator.getEnd(), locale));*/
+			paginator.setSize(schools.size());
+			if (!schools.isEmpty() && schools.size()>0){				
+				List<ExtendedSchool> schoolsPag = new ArrayList<ExtendedSchool>();				
+				int fin = 0;
+				if (paginator.getEnd()<=paginator.getSize()){
+					fin = paginator.getEnd();
+				}else{
+					fin = new Long(paginator.getSize()).intValue();
+				}
+				for (int i=paginator.getStart();i<fin;i++){
+					schoolsPag.add(schools.get(i));						
+				}
+				paginator.setCollection(schoolsPag);
+			}			
 			model.addAttribute("paginator", paginator);
 			model.addAttribute("order", ordering);
 		} catch(Exception e) {
