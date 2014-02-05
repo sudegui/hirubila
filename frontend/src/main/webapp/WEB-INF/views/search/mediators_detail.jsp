@@ -64,7 +64,7 @@
             <h2>${mediatonService.name}</h2>
             <p><strong>${mediatonService.entity}</strong><br>
 			<%-- Maite Goikouria<br> --%>
-			<strong><fmt:message key="contactInfo.fields.streetAddress"/>:</strong>&nbsp;${mediatonService.contactInfo.streetAddress}&nbsp;${mediatonService.contactInfo.city}<br>
+			<strong><fmt:message key="contactInfo.fields.streetAddress"/>:</strong>&nbsp;${mediatonService.contactInfo.streetAddress},&nbsp;${mediatonService.contactInfo.zipCode}&nbsp;${mediatonService.contactInfo.city}<br>
 			<strong><fmt:message key="contactInfo.fields.telephone"/>:</strong>&nbsp;${mediatonService.contactInfo.telephone}<br>
 			<strong><fmt:message key="contactInfo.fields.email"/>:</strong>&nbsp;<a href="mailto:${mediatonService.contactInfo.email}">${mediatonService.contactInfo.email}</a></p>
         </div> 
