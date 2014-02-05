@@ -330,6 +330,17 @@ public class SearchController extends BaseController {
 			HashMap<Long, Collection<MediationService>> mediatorsNet = new HashMap<Long, Collection<MediationService>>();
 			List<Province> provinces = this.serviceLocator.getTerritorialService().getAllProvinces(locale);
 			for(Province province : provinces) {
+				if (province.getId().longValue()==124002){
+					String nombreProvincia="Araba/Álava";
+					province.setName(nombreProvincia);
+				}else{
+					String nombreProvincia=province.getName();
+					String letra = nombreProvincia.substring(0,1);
+					letra = letra.toUpperCase();
+					StringBuffer nombreTransformado =new StringBuffer();
+					nombreTransformado.append(letra).append(nombreProvincia.substring(1));
+					province.setName(nombreTransformado.toString());
+				}
 				Collection<MediationService> mediation = this.serviceLocator.getMediatorService().getMediationServicesByProvince(province.getId(), locale);
 				mediatorsNet.put(province.getId(), mediation);
 			}
@@ -348,6 +359,17 @@ public class SearchController extends BaseController {
 			HashMap<Long, Collection<MediationService>> mediatorsNet = new HashMap<Long, Collection<MediationService>>();
 			List<Province> provinces = this.serviceLocator.getTerritorialService().getAllProvinces(locale);
 			for(Province province : provinces) {
+				if (province.getId().longValue()==124002){
+					String nombreProvincia="Araba/Álava";
+					province.setName(nombreProvincia);
+				}else{
+					String nombreProvincia=province.getName();
+					String letra = nombreProvincia.substring(0,1);
+					letra = letra.toUpperCase();
+					StringBuffer nombreTransformado =new StringBuffer();
+					nombreTransformado.append(letra).append(nombreProvincia.substring(1));
+					province.setName(nombreTransformado.toString());
+				}
 				Collection<MediationService> mediation = this.serviceLocator.getMediatorService().getMediationServicesByProvince(province.getId(), locale);
 				mediatorsNet.put(province.getId(), mediation);
 			}
