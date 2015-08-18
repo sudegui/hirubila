@@ -1,0 +1,1 @@
+Buscador basado en lenguaje natural de la oferta formativa existente dentro del país vasco.
